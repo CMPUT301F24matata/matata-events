@@ -1,5 +1,6 @@
 package com.example.matata;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(view.getContext(), ProfileActivity.class);
+                view.getContext().startActivity(intent);
             }
         });
 
