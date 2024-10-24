@@ -7,6 +7,24 @@
     android:layout_height="match_parent"
     tools:context=".ProfileActivity">
 
+    <ImageView
+        android:id="@+id/profileIcon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="16dp"
+        android:layout_marginStart="181dp"
+        android:layout_marginTop="168dp"
+        android:layout_marginEnd="347dp"
+        android:layout_marginBottom="667dp"
+        android:background="@drawable/blank_profile_pic_background"
+        android:contentDescription="Profile Icon"
+        android:scaleType="centerCrop"
+        android:src="@drawable/blank_profile_pic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.100000024" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
