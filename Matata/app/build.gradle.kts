@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+
+
 android {
     namespace = "com.example.matata"
     compileSdk = 34
@@ -35,6 +37,7 @@ android {
 }
 
 dependencies {
+
 
     implementation(libs.appcompat)
     implementation(libs.material)
