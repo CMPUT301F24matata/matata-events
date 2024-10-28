@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/ic_edit.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Pencil Body -->
+    <path
+        android:fillColor="#888888"
+        android:pathData="M3,17.25V21h3.75l11.06,-11.06 -3.75,-3.75L3,17.25z" />
+
+    <!-- Sharpened Pencil Tip -->
+    <path
+        android:fillColor="#888888"
+        android:pathData="M16.75,3.96l3.29,3.29 -1.42,1.42 -3.29,-3.29 1.42,-1.42z" />
+
+    <!-- Pencil Tip Edge -->
+    <path
+        android:fillColor="#555555"
+        android:pathData="M18.17,5.38l-0.71,-0.71 -1.42,1.42 0.71,0.71 1.42,-1.42z" />
+
+</vector>

@@ -43,4 +43,20 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="Bottom_app_nav">bottom_app_nav</string>
+    <string name="notifications">Notifications</string>
+    <string name="_99797979799">99797979799</string>
+    <string name="phone">Phone</string>
+    <string name="example_example_com">Example@example.com</string>
+    <string name="email">Email</string>
+    <string name="user_name">USER NAME</string>
+    <string name="name">Name</string>
+    <string name="entrant">Entrant</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="back_button">Back Button</string>
+    <string name="rejected">Rejected</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="events">Events</string>
+    <string name="save">Save</string>
+    <string name="lottery_app">Lottery App</string>
 </resources>
