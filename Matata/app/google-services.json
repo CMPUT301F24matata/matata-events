@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "8394642935",
+    "project_id": "matata-d53da",
+    "storage_bucket": "matata-d53da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:8394642935:android:ad90adef974b51fa71caf2",
+        "android_client_info": {
+          "package_name": "com.example.matata"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyh2aLGEOkEcXXgaPEkBKSsuk0YZ_XVMU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
