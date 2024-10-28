@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="#F3F4F6">
@@ -31,15 +32,16 @@
             android:fontFamily="sans-serif-medium" />
     </LinearLayout>
 
-    <!-- Profile Picture -->
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
         android:src="@drawable/ic_user_profile"
+        android:id="@+id/profileIcon"
         android:contentDescription="@string/profile_picture" />
 
     <TextView
+        android:id="@+id/initials"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/entrant"
@@ -47,7 +49,6 @@
         android:layout_marginTop="8dp"
         android:textColor="#888888" />
 
-    <!-- Profile Information -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,6 +57,7 @@
         android:layout_marginTop="16dp" />
 
     <EditText
+        android:id="@+id/nameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/user_name"
@@ -70,6 +72,7 @@
         android:layout_marginTop="8dp" />
 
     <EditText
+        android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/example_example_com"
@@ -84,6 +87,7 @@
         android:layout_marginTop="8dp" />
 
     <EditText
+        android:id="@+id/phoneEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/_99797979799"
@@ -102,8 +106,8 @@
         android:layout_gravity="end"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-    <!-- Save Button -->
     <Button
+        android:id="@+id/saveButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
