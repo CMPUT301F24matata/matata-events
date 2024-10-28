@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/event_map"
+        android:icon="@drawable/baseline_explore_24"
+        android:title="" />
+
+    <item
+        android:id="@+id/event_history"
+        android:icon="@drawable/event_history_24"
+        android:title="" />
+    <item
+        android:id="@+id/qr_scanner"
+
+        android:title="" />
+    <item
+        android:id="@+id/add_event"
+        android:icon="@drawable/add_event_button"
+        android:title="" />
+    <item
+        android:id="@+id/search_event"
+        android:icon="@drawable/baseline_search_24"
+        android:title="" />
+
+</menu>
