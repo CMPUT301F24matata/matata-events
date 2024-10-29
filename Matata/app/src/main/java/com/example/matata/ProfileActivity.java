@@ -3,7 +3,6 @@ package com.example.matata;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,10 +15,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
     private EditText nameEditText, phoneEditText, emailEditText;
     private ImageView profileIcon;
+    private FirebaseFirestore db;
+
+    // Replace with the unique user ID (e.g., FirebaseAuth UID) to identify each user
+    private static final String USER_ID = "unique_user_id";
 
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -34,28 +42,74 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_profile);
 
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // Initialize UI elements
         profileIcon = findViewById(R.id.profileIcon);
         nameEditText = findViewById(R.id.nameEditText);
         phoneEditText = findViewById(R.id.phoneEditText);
         emailEditText = findViewById(R.id.emailEditText);
         Button saveButton = findViewById(R.id.saveButton);
-        TextView initials = findViewById(R.id.initials);
+        ImageView back = findViewById(R.id.btnBackProfile);
 
+        back.setOnClickListener(v -> finish());
+
+        // Load profile data from Firestore
+        loadProfileData();
+
+        // Set up profile picture click listener
         profileIcon.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, ProfilePicActivity.class);
             profilePicLauncher.launch(intent);
         });
 
-        // Save button click listener
+        // Save button click listener to save profile data to Firestore
         saveButton.setOnClickListener(v -> {
-            String name = nameEditText.getText().toString();
-            String phoneNumber = phoneEditText.getText().toString();
-            String email = emailEditText.getText().toString();
+            String name = nameEditText.getText().toString().trim();
+            String phoneNumber = phoneEditText.getText().toString().trim();
+            String email = emailEditText.getText().toString().trim();
 
-            Toast.makeText(ProfileActivity.this, "Profile saved", Toast.LENGTH_SHORT).show();
+            saveProfileData(name, phoneNumber, email);
         });
 
         loadProfilePicture();
+    }
+
+    // Method to save profile data to Firestore
+    private void saveProfileData(String name, String phone, String email) {
+        // Create a map to hold the user data
+        Map<String, Object> userProfile = new HashMap<>();
+        userProfile.put("username", name);
+        userProfile.put("phone", phone);
+        userProfile.put("email", email);
+
+        // Save the data in the "USER_PROFILES" collection under a document with the user's unique ID
+        db.collection("USER_PROFILES").document(USER_ID)
+                .set(userProfile)
+                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
+    }
+
+    // Method to load profile data from Firestore
+    private void loadProfileData() {
+        DocumentReference docRef = db.collection("USER_PROFILES").document(USER_ID);
+        docRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("username");
+                        String phone = documentSnapshot.getString("phone");
+                        String email = documentSnapshot.getString("email");
+
+                        // Set the values in the EditTexts
+                        nameEditText.setText(name != null ? name : "");
+                        phoneEditText.setText(phone != null ? phone : "");
+                        emailEditText.setText(email != null ? email : "");
+                    } else {
+                        Toast.makeText(ProfileActivity.this, "No profile found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
     }
 
     // Load profile picture from SharedPreferences or show initials as a fallback
