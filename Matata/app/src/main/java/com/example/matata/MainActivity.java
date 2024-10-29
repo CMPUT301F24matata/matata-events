@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        profileIcon = findViewById(R.id.profileIcon);
+        profileIcon = findViewById(R.id.profile_picture);
 
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
