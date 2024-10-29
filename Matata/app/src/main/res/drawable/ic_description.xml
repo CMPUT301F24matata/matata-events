@@ -9,25 +9,16 @@
         android:fillColor="#4CAF50"
         android:pathData="M6,2A2,2 0,0 0,4 4V20A2,2 0,0 0,6 22H18A2,2 0,0 0,20 20V8l-6,-6H6zM13,9V3.5L18.5,9H13z" />
 
-    <rect
-        android:x="8"
-        android:y="13"
-        android:width="8"
-        android:height="1.5"
-        android:fillColor="#FFFFFF" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,13h8v1.5h-8z" />
 
-    <rect
-        android:x="8"
-        android:y="16"
-        android:width="5"
-        android:height="1.5"
-        android:fillColor="#FFFFFF" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,16h5v1.5h-5z" />
 
-    <rect
-        android:x="8"
-        android:y="10"
-        android:width="8"
-        android:height="1.5"
-        android:fillColor="#FFFFFF" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,10h8v1.5h-8z" />
 
 </vector>
