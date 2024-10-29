@@ -1,28 +1,20 @@
 package com.example.matata;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-
-import java.io.IOException;
 
 public class ProfilePicActivity extends AppCompatActivity {
 
@@ -33,15 +25,11 @@ public class ProfilePicActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     selectedImageUri = result.getData().getData();
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-                        ivProfilePicture.setImageBitmap(bitmap);
-                    } catch (IOException e) {
-                        Log.e("ProfilePicActivity", Log.getStackTraceString(e));
-                        Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
-                    }
+                    saveProfilePictureUri(selectedImageUri);
+                    loadProfilePicture();
+                    setResult(RESULT_OK);
                 } else {
                     Toast.makeText(this, "Image selection canceled", Toast.LENGTH_SHORT).show();
                 }
@@ -57,18 +45,22 @@ public class ProfilePicActivity extends AppCompatActivity {
         Button btnUploadPicture = findViewById(R.id.btnUploadPicture);
         Button btnDeletePicture = findViewById(R.id.btnDeletePicture);
 
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                finish();
-            }
-        });
+        loadProfilePicture();
 
-        btnBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        btnBack.setOnClickListener(v -> finish());
 
         ivProfilePicture.setOnClickListener(v -> openImagePicker());
 
-        btnUploadPicture.setOnClickListener(v -> uploadToProfile());
+        btnUploadPicture.setOnClickListener(v -> {
+            if (selectedImageUri != null) {
+                saveProfilePictureUri(selectedImageUri);
+                Toast.makeText(this, "Profile picture uploaded successfully", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK);
+                finish();
+            } else {
+                Toast.makeText(this, "No image selected to upload", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         btnDeletePicture.setOnClickListener(v -> deleteProfilePicture());
     }
@@ -77,6 +69,27 @@ public class ProfilePicActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         pickImageLauncher.launch(Intent.createChooser(intent, "Select Picture"));
+    }
+
+    private void saveProfilePictureUri(Uri uri) {
+        getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
+                .edit()
+                .putString("profile_image_uri", uri.toString())
+                .apply();
+    }
+
+    private void loadProfilePicture() {
+        String imageUriString = getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
+                .getString("profile_image_uri", null);
+
+        if (imageUriString != null) {
+            Uri imageUri = Uri.parse(imageUriString);
+            Glide.with(this)
+                    .load(imageUri)
+                    .into(ivProfilePicture);
+        } else {
+            ivProfilePicture.setImageResource(R.drawable.ic_upload);
+        }
     }
 
     private void deleteProfilePicture() {
@@ -88,26 +101,8 @@ public class ProfilePicActivity extends AppCompatActivity {
                 .remove("profile_image_uri")
                 .apply();
 
-        setResult(Activity.RESULT_OK);
+        setResult(RESULT_OK);
         finish();
-
         Toast.makeText(this, "Profile picture deleted", Toast.LENGTH_SHORT).show();
     }
-
-    private void uploadToProfile() {
-        if (selectedImageUri != null) {
-            getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
-                    .edit()
-                    .putString("profile_image_uri", selectedImageUri.toString())
-                    .apply();
-
-            setResult(Activity.RESULT_OK);
-            finish();
-
-            Toast.makeText(this, "Profile picture uploaded successfully", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "No image selected to upload", Toast.LENGTH_SHORT).show();
-        }
-    }
 }
-
