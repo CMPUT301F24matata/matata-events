@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- event_card.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -10,10 +8,11 @@
     android:elevation="4dp"
     android:layout_margin="8dp">
 
+    <!-- Event Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Event Title"
+        android:text="@string/event_title"
         android:textSize="18sp"
         android:textColor="#333333"
         android:fontFamily="sans-serif-medium" />
@@ -28,15 +27,16 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/ic_calendar"
-            android:contentDescription="Calendar Icon" />
+            android:contentDescription="@string/calendar_icon" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="31-12-2999"
+            android:text="@string/_31_12_2999"
             android:textSize="14sp"
             android:textColor="#555555" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -49,23 +49,67 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/ic_clock"
-            android:contentDescription="Clock Icon" />
+            android:contentDescription="@string/clock_icon" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="15:00"
+            android:text="@string/_15_00"
             android:textSize="14sp"
             android:textColor="#555555" />
+
     </LinearLayout>
 
-    <!-- Status Text -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_location"
+            android:contentDescription="@string/location_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/location"
+            android:textSize="14sp"
+            android:textColor="#555555" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_description"
+            android:contentDescription="@string/description_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/event_description_here"
+            android:textSize="14sp"
+            android:textColor="#555555" />
+
+    </LinearLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:text="Accepted"
+        android:text="@string/accepted"
         android:textSize="14sp"
         android:textColor="#4CAF50" />
 
