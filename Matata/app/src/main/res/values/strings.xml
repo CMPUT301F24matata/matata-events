@@ -59,4 +59,7 @@
     <string name="events">Events</string>
     <string name="save">Save</string>
     <string name="lottery_app">Lottery App</string>
+    <string name="edit_profile_picture">Edit Profile Picture</string>
+    <string name="delete">Delete</string>
+    <string name="upload">Upload</string>
 </resources>

@@ -36,6 +36,7 @@
                 android:layout_marginEnd="8dp"
                 android:contentDescription="@string/profile_picture"
                 android:src="@drawable/ic_user_profile" />
+
         </LinearLayout>
 
         <TextView
@@ -108,8 +109,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="5dp"
-            android:src="@drawable/baseline_explore_24"
-            />
+            android:src="@drawable/baseline_explore_24" />
+
         <ImageView
             android:id="@+id/event_history"
             android:src="@drawable/event_history_24"
@@ -118,8 +119,7 @@
             android:padding="5dp"
             android:alpha="0.92"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/qr_scanner"
@@ -148,8 +148,8 @@
             android:padding="5dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/add_event_button"
-            />
+            android:src="@drawable/add_event_button" />
+
         <ImageView
             android:id="@+id/event_search"
             android:layout_width="20dp"
@@ -158,8 +158,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="5dp"
-            android:src="@drawable/baseline_search_24"
-            />
+            android:src="@drawable/baseline_search_24" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
