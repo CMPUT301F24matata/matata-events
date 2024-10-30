@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -17,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class AddEvent extends AppCompatActivity implements TimePickerListener,DatePickerListener{
     private ImageView backBtn;
@@ -25,6 +29,10 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     private LinearLayout timeGroup;
     private TextView eventDate;
     private ImageView posterPic;
+    private Button genrQR;
+    private EditText eveTitle;
+    private EditText descriptionBox;
+    private EditText capacity;
 
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -46,6 +54,11 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         timeGroup=findViewById(R.id.timeGroup);
         eventDate=findViewById(R.id.editTextDate);
         posterPic=findViewById(R.id.posterPicUpload);
+        genrQR=findViewById(R.id.genQR);
+        eveTitle=findViewById(R.id.eventTitle);
+        descriptionBox=findViewById(R.id.desc_box);
+        capacity=findViewById(R.id.number_of_people_event);
+
 
         backBtn.setOnClickListener(v->finish());
 
@@ -64,6 +77,20 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         posterPic.setOnClickListener(v -> {
             Intent intent = new Intent(AddEvent.this, ProfilePicActivity.class);
             profilePicLauncher.launch(intent);
+        });
+
+        genrQR.setOnClickListener(v->{
+            if (!eveTitle.getText().toString().equals("") &&
+                !descriptionBox.getText().toString().equals("") &&
+                !eventDate.getText().toString().equals("") &&
+                !eventTime.getText().toString().equals("") &&
+                !capacity.getText().toString().equals("")
+            ){
+                Log.wtf(TAG,"Okayyyy Letts goooo");
+            }else{
+                Toast.makeText(AddEvent.this, "Please fill in all the details", Toast.LENGTH_SHORT).show();
+            }
+
         });
 
 

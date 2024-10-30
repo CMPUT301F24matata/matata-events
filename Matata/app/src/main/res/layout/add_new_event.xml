@@ -59,7 +59,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/editTextText2"
+                android:id="@+id/eventTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -76,12 +76,13 @@
             <ImageView
                 android:id="@+id/edit_event_title"
                 android:layout_width="24dp"
+                android:visibility="invisible"
                 android:layout_height="24dp"
                 android:layout_marginTop="10dp"
                 android:alpha="0.9"
                 android:contentDescription="@string/back_button"
                 android:src="@drawable/ic_edit"
-                app:layout_constraintStart_toEndOf="@+id/editTextText2"
+                app:layout_constraintStart_toEndOf="@+id/eventTitle"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
@@ -100,10 +101,11 @@
 
                 android:id="@+id/number_of_people_event"
                 android:layout_width="50dp"
+
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:allowUndo="true"
-                android:inputType="text"
+                android:inputType="number"
                 android:text=""
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 tools:ignore="MissingConstraints"
@@ -121,6 +123,7 @@
             android:text="Event Description" />
 
         <EditText
+            android:id="@+id/desc_box"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:fontFamily="@font/sansation_regular"
@@ -231,12 +234,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginRight="16dp"
+                android:enabled="true"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/qr_button_border"
                 android:backgroundTint="#DC4949"
                 android:padding="12dp"
                 android:text="Generate QR"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                app:elevation="5dp" />
         </LinearLayout>
 
     </LinearLayout>
