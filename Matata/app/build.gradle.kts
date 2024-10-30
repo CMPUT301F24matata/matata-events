@@ -29,6 +29,7 @@ android {
         }
     }
     compileOptions {
+
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -44,6 +45,8 @@ dependencies {
     implementation("com.google.firebase:firebase-storage:20.1.0")
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-firestore")
+    implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
+    coreLibraryDesugaring("com.android.tools.desugar_jdk_libs:1.1.6")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
