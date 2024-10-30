@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F1F2F4">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp">
+
+            <ImageView
+                android:id="@+id/btnBackCreateEvent"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:alpha="0.9"
+                android:contentDescription="@string/back_button"
+                android:src="@drawable/fancy_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.9"
+                android:fontFamily="@font/sansation_regular"
+                android:text="Add Event"
+                android:textSize="40dp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/posterPicUpload"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:alpha="0.8"
+            android:background="#E0E0E0"
+            android:contentDescription="Poster Picture"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_upload" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/editTextText2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:ems="10"
+                android:allowUndo="true"
+                android:hint="Enter Event Title"
+                android:inputType="text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
+
+            <ImageView
+                android:id="@+id/edit_event_title"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="10dp"
+                android:alpha="0.9"
+                android:contentDescription="@string/back_button"
+                android:src="@drawable/ic_edit"
+                app:layout_constraintStart_toEndOf="@+id/editTextText2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="5dp"
+                android:alpha="0.8"
+                android:src="@drawable/person"
+                app:layout_constraintStart_toEndOf="@+id/edit_event_title"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
+
+            <EditText
+
+                android:id="@+id/number_of_people_event"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:allowUndo="true"
+                android:inputType="text"
+                android:text=""
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteY="0dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:alpha="0.8"
+            android:fontFamily="@font/sansation_bold"
+            android:text="Event Description" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="150dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="4dp"
+            android:allowUndo="true"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/textbox"
+            android:backgroundTint="@color/white"
+            android:gravity="top|left"
+            android:hint="Enter event description..."
+            android:textSize="15dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/dateGroup"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/ic_clock"
+                        android:alpha="0.8"
+                        android:layout_gravity="center"
+                        app:tint="@color/black" />
+                    <TextView
+                        android:id="@+id/dateField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:text=""
+                        android:layout_marginLeft="5dp"
+                        android:hint="Click to select time"
+                         />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/timeGroup"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_margin="5dp">
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_calendar"
+                        android:alpha="0.8"
+                        app:tint="@color/black" />
+
+                    <TextView
+                        android:id="@+id/editTextDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:layout_marginLeft="5dp"
+                        android:hint="Click to select date" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_location"
+                        android:alpha="0.8"
+                        app:tint="@color/black" />
+
+                    <TextView
+                        android:id="@+id/editTextLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:layout_marginLeft="5dp"
+                        android:hint="Click to enter location" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/genQR"
+                android:layout_marginBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/qr_button_border"
+                android:backgroundTint="@null"
+                android:padding="12dp"
+                android:text="Generate QR"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
