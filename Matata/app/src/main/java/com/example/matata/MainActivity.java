@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView profileIcon;
-
+    private ImageView addEvent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,11 +26,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         profileIcon = findViewById(R.id.profile_picture);
+        addEvent = findViewById(R.id.add_event);
 
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), ProfileActivity.class);
+                view.getContext().startActivity(intent);
+            }
+        });
+
+        addEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(view.getContext(), AddEvent.class);
                 view.getContext().startActivity(intent);
             }
         });
