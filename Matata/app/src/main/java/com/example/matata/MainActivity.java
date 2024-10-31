@@ -13,14 +13,19 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView profileIcon;
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
     private List<Event> eventList;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         // Hard coded events for convenience
         eventList = new ArrayList<>();
         eventList.add(new Event("Community Cleanup", "31-12-2023", "10:00 AM", "Community Park", "Join us for a community cleanup day!"));
-        eventList.add(new Event("Swim Lessons", "01-01-2024", "9:00 AM", "City Park", "Join for beginner swim lessons!"));
+        //eventList.add(new Event("Swim Lessons", "01-01-2024", "9:00 AM", "City Park", "Join for beginner swim lessons!"));
 
         // Set adapter
         eventAdapter = new EventAdapter(this, eventList);
