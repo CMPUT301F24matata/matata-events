@@ -10,6 +10,7 @@
 
     <!-- Event Title -->
     <TextView
+        android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/event_title"
@@ -30,6 +31,7 @@
             android:contentDescription="@string/calendar_icon" />
 
         <TextView
+            android:id="@+id/dateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -52,6 +54,7 @@
             android:contentDescription="@string/clock_icon" />
 
         <TextView
+            android:id="@+id/timeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -74,6 +77,7 @@
             android:contentDescription="@string/location_icon" />
 
         <TextView
+            android:id="@+id/locationTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -96,6 +100,7 @@
             android:contentDescription="@string/description_icon" />
 
         <TextView
+            android:id="@+id/descriptionTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

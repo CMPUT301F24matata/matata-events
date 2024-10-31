@@ -10,11 +10,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView profileIcon;
-    private ImageView addEvent;
+    private RecyclerView recyclerView;
+    private EventAdapter eventAdapter;
+    private List<Event> eventList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         profileIcon = findViewById(R.id.profile_picture);
-        addEvent = findViewById(R.id.add_event);
 
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,13 +43,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        addEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(view.getContext(), AddEvent.class);
-                view.getContext().startActivity(intent);
-            }
-        });
+        // Initialize RecyclerView
+        recyclerView = findViewById(R.id.recycler_view_events); // Ensure you have this ID in your layout
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Hard coded events for convenience
+        eventList = new ArrayList<>();
+        eventList.add(new Event("Community Cleanup", "31-12-2023", "10:00 AM", "Community Park", "Join us for a community cleanup day!"));
+        eventList.add(new Event("Swim Lessons", "01-01-2024", "9:00 AM", "City Park", "Join for beginner swim lessons!"));
+
+        // Set adapter
+        eventAdapter = new EventAdapter(this, eventList);
+        recyclerView.setAdapter(eventAdapter);
     }
 }
