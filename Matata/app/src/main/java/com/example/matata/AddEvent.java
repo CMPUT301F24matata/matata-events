@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -79,16 +80,21 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
             profilePicLauncher.launch(intent);
         });
 
-        genrQR.setOnClickListener(v->{
-            if (!eveTitle.getText().toString().equals("") &&
-                !descriptionBox.getText().toString().equals("") &&
-                !eventDate.getText().toString().equals("") &&
-                !eventTime.getText().toString().equals("") &&
-                !capacity.getText().toString().equals("")
-            ){
-                Log.wtf(TAG,"Okayyyy Letts goooo");
-            }else{
-                Toast.makeText(AddEvent.this, "Please fill in all the details", Toast.LENGTH_SHORT).show();
+        genrQR.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (!eveTitle.getText().toString().equals("") &&
+                        !descriptionBox.getText().toString().equals("") &&
+                        !eventDate.getText().toString().equals("") &&
+                        !eventTime.getText().toString().equals("") &&
+                        !capacity.getText().toString().equals("")
+                ){
+                    Log.wtf(TAG,"Okayyyy Letts goooo");
+                    Intent intent = new Intent(view.getContext(), ProfileActivity.class);
+                    view.getContext().startActivity(intent);
+                }else{
+                    Toast.makeText(AddEvent.this, "Please fill in all the details", Toast.LENGTH_SHORT).show();
+                }
             }
 
         });
