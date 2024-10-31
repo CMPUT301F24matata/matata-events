@@ -1,6 +1,7 @@
 package com.example.matata;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,25 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.timeTextView.setText(event.getTime());
         holder.locationTextView.setText(event.getLocation());
         holder.descriptionTextView.setText(event.getDescription());
+
+        // Set click listener on the entire event card
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create intent to open EventDetailActivity
+                Intent intent = new Intent(context, EventDetailActivity.class);
+
+                // Pass event data to EventDetailActivity
+                intent.putExtra("title", event.getTitle());
+                intent.putExtra("date", event.getDate());
+                intent.putExtra("time", event.getTime());
+                intent.putExtra("location", event.getLocation());
+                intent.putExtra("description", event.getDescription());
+
+                // Start EventDetailActivity
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
