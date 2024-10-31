@@ -25,6 +25,9 @@ public class EventDetailActivity extends AppCompatActivity {
         // Get data from Intent
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
+        String date = intent.getStringExtra("date");
+        String time = intent.getStringExtra("time");
+        String location = intent.getStringExtra("location");
         String description = intent.getStringExtra("description");
 
         // Set data to views
