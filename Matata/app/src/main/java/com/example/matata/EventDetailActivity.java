@@ -46,6 +46,9 @@ public class EventDetailActivity extends AppCompatActivity {
 
         // Get views
         TextView titleTextView = findViewById(R.id.event_title);
+        TextView dateTextView = findViewById(R.id.dateTextView);
+        TextView timeTextView = findViewById(R.id.timeTextView);
+        TextView locationTextView = findViewById(R.id.locationTextView);
         TextView descriptionTextView = findViewById(R.id.event_description);
         ImageView posterImageView = findViewById(R.id.event_poster);
         ImageButton backButton = findViewById(R.id.back_button);
@@ -62,6 +65,9 @@ public class EventDetailActivity extends AppCompatActivity {
         // Set data to views
         titleTextView.setText(title);
         descriptionTextView.setText(description);
+        dateTextView.setText(date);
+        timeTextView.setText(time);
+        locationTextView.setText(location);
 
         // Back button listener
         backButton.setOnClickListener(new View.OnClickListener() {
