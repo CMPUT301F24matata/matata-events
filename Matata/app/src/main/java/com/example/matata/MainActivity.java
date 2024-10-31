@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         profileIcon = findViewById(R.id.profile_picture);
 
+
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
