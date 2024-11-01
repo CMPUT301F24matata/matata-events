@@ -1,9 +1,12 @@
 package com.example.matata;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -51,7 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         USER_ID=Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
-
+        Log.wtf(TAG,USER_ID.toString());
         // Initialize UI elements
         profileIcon = findViewById(R.id.profileIcon);
         nameEditText = findViewById(R.id.nameEditText);
