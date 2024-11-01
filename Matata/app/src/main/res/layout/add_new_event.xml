@@ -238,6 +238,7 @@
                 android:background="@drawable/qr_button_border"
                 android:backgroundTint="#DC4949"
                 android:enabled="true"
+                android:clickable="true"
                 android:padding="12dp"
                 android:text="Create Event"
                 android:textColor="@android:color/white"

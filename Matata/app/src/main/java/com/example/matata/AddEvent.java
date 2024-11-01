@@ -90,7 +90,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
                         !capacity.getText().toString().equals("")
                 ){
                     Log.wtf(TAG,"Okayyyy Letts goooo");
-                    Intent intent = new Intent(view.getContext(), ProfileActivity.class);
+                    Intent intent = new Intent(view.getContext(), ViewEvent.class);
                     view.getContext().startActivity(intent);
                 }else{
                     Toast.makeText(AddEvent.this, "Please fill in all the details", Toast.LENGTH_SHORT).show();

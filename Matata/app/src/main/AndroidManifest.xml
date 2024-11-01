@@ -16,6 +16,14 @@
         <activity
             android:name=".EventDetailActivity"
             android:exported="false" />
+        <activity android:name=".ViewEvent"
+            android:exported="false"
+            android:parentActivityName=".AddEvent"/>
+
+        <activity
+            android:name=".AddEvent"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
         <activity
             android:name=".ProfilePicActivity"
             android:exported="false"

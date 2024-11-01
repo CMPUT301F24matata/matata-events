@@ -1,6 +1,7 @@
 package com.example.matata;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
     private List<Event> eventList;
+    private ImageView new_event;
     private FirebaseFirestore db;
 
     @Override
@@ -39,7 +41,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         profileIcon = findViewById(R.id.profile_picture);
+        new_event=findViewById(R.id.add_event);
 
+        new_event.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), AddEvent.class);
+                view.getContext().startActivity(intent);
+            }
+        });
 
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
