@@ -32,7 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String deviceId;
 
     // Replace with the unique user ID (e.g., FirebaseAuth UID) to identify each user
-    private static final String USER_ID = "unique_user_id";
+    private static String USER_ID = "unique_user_id";
 
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -49,6 +49,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
+
+        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Initialize UI elements
         profileIcon = findViewById(R.id.profileIcon);
