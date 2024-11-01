@@ -1,7 +1,10 @@
 package com.example.matata;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,19 +22,24 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EventDetailActivity extends AppCompatActivity {
     // sample user to add to waitlist
     private FirebaseFirestore db;
+    private String Event_id = "sample_event_id";
     private static final String USER_ID = "unique_user_id";
+    //private String USER_ID;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_detail_activity);
         // get db
         db = FirebaseFirestore.getInstance();
+        //USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Get views
         TextView titleTextView = findViewById(R.id.event_title);
@@ -64,25 +72,49 @@ public class EventDetailActivity extends AppCompatActivity {
         joinWaitlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DocumentReference waitlistRef = db.collection("EVENT_PROFILES").document("sample_event_id").collection("waitlist").document(USER_ID);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailActivity.this);
+                builder.setCancelable(true);
+                builder.setMessage("Confirm your registration");
+                builder.setPositiveButton("Confirm",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                addToWaitList();
+                            }
+                        });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+            }
+
+            private void addToWaitList() {
+                DocumentReference eventRef = db.collection("EVENT_PROFILES").document(Event_id);
                 DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
                 db.runTransaction((Transaction.Function<Void>) transaction -> {
-                    // Fetch entrant data
-                    DocumentSnapshot entrantSnapshot = transaction.get(entrantRef);
-                    Map<String, Object> entrantData = new HashMap<>();
-                    entrantData.put("entrantName", entrantSnapshot.getString("username"));
-                    entrantData.put("entrantEmail", entrantSnapshot.get("email"));
-                    entrantData.put("entrantPhone", entrantSnapshot.get("phone"));
-                    entrantData.put("status", "waiting");
+                    DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+                    List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
 
-                    transaction.set(waitlistRef, entrantData);
+                    if (waitlist == null) {
+                        waitlist = new ArrayList<>();
+                    }
+                    waitlist.add(entrantRef);
+                    transaction.update(eventRef, "waitlist", waitlist);
                     return null;
                 }).addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "Entrant added to waitlist successfully");
+                    joinWaitlistButton.setText("Withdraw");
                 }).addOnFailureListener(e -> {
                     Log.e("Firebase", "Error adding entrant to waitlist", e);
                 });
-            };
+            }
+
+            ;
         });
 
     }
