@@ -5,6 +5,8 @@
     android:background="@drawable/card_background"
     android:backgroundTint="#F0F0F0"
     android:elevation="4dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp"
     android:alpha="0.85"
     android:orientation="vertical"
     android:padding="16dp">
