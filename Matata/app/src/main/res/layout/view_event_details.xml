@@ -77,85 +77,106 @@ ornare leo felis, vel molestie felis placerat vitae"
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <LinearLayout
-
-                android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:src="@drawable/ic_clock"
-                    android:alpha="0.8"
-                    android:layout_gravity="center"
-                    app:tint="@color/black" />
-                <TextView
-                    android:id="@+id/dateField"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:text=""
-                    android:layout_marginLeft="5dp"
-                    android:hint="Click to select time"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-
-                android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_margin="5dp">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_calendar"
-                    android:alpha="0.8"
-                    app:tint="@color/black" />
-
-                <TextView
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:layout_marginLeft="5dp"
-                    android:hint="Click to select date" />
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:layout_weight="1"
-                android:layout_margin="5dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_location"
-                    android:alpha="0.8"
-                    app:tint="@color/black" />
-
-                <TextView
+                <LinearLayout
 
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:layout_marginLeft="5dp"
-                    android:hint="Click to enter location" />
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:alpha="0.8"
+                        android:src="@drawable/ic_clock"
+                        app:tint="@color/black" />
+
+                    <TextView
+                        android:id="@+id/dateField"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:ems="10"
+                        android:hint="Click to select time"
+                        android:text="" />
+                </LinearLayout>
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginLeft="16dp"
+                        android:alpha="0.8"
+                        android:src="@drawable/ic_calendar"
+                        app:tint="@color/black" />
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:ems="10"
+                        android:hint="Click to select date" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginLeft="16dp"
+                        android:alpha="0.8"
+                        android:src="@drawable/ic_location"
+                        app:tint="@color/black" />
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:ems="10"
+                        android:hint="Click to enter location" />
+
+                </LinearLayout>
 
             </LinearLayout>
-
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:foreground="@drawable/baseline_qr_code_scanner_24"
+                android:foregroundGravity="center"
+                android:foregroundTint="@color/black"
+                android:clickable="true"
+                android:enabled="true"
+                android:layout_marginRight="16dp"/>
         </LinearLayout>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
