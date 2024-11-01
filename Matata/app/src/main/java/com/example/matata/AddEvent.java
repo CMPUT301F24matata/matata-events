@@ -22,6 +22,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AddEvent extends AppCompatActivity implements TimePickerListener,DatePickerListener{
     private ImageView backBtn;
@@ -34,6 +35,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     private EditText eveTitle;
     private EditText descriptionBox;
     private EditText capacity;
+    private FirebaseFirestore db;
 
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -45,6 +47,9 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+        db = FirebaseFirestore.getInstance();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_event);
 
@@ -106,6 +111,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
                         !capacity.getText().toString().equals("")
                 ){
                     Log.wtf(TAG,"Okayyyy Letts goooo");
+                    SaveEventInfo();
                     Intent intent = new Intent(view.getContext(), ViewEvent.class);
                     view.getContext().startActivity(intent);
                 }else{
@@ -134,6 +140,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         eventDate.setText(date_str);
     }
 
+
     private void loadProfilePicture() {
         String imageUriString = getSharedPreferences("ProfilePrefs", MODE_PRIVATE).getString("", null);
 
@@ -143,6 +150,11 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         } else {
             posterPic.setImageResource(R.drawable.ic_upload);
         }
+    }
+
+    private void SaveEventInfo(){
+
+
     }
 }
 
