@@ -5,15 +5,17 @@ import java.io.Serializable;
 public class Event implements Serializable {
     private String title;
     private String date;
+    private int capacity;
     private String time;
     private String location;
     private String description;
 
     // Constructor
-    public Event(String title, String date, String time, String location, String description) {
+    public Event(String title, String date, String time, String location, String description, int capacity) {
         this.title = title;
         this.date = date;
         this.time = time;
+        this.capacity=capacity;
         this.location = location;
         this.description = description;
     }
@@ -31,6 +33,7 @@ public class Event implements Serializable {
     public String getTime() {
         return time;
     }
+    public int getCapacity() {return capacity;}
     public String getLocation() {
         return location;
     }
@@ -48,6 +51,7 @@ public class Event implements Serializable {
     public void setDate(String date) {
         this.date = date;
     }
+    public void setCapacity(int capacity){this.capacity=capacity;}
     public void setTime(String time) {
         this.time = time;
     }

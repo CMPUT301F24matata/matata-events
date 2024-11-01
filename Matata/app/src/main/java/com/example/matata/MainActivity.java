@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Hard coded events for convenience
         eventList = new ArrayList<>();
-        eventList.add(new Event("Community Cleanup", "31-12-2023", "10:00 AM", "Community Park", "Join us for a community cleanup day!"));
+        eventList.add(new Event("Community Cleanup", "31-12-2023", "10:00 AM", "Community Park", "Join us for a community cleanup day!",25));
         //eventList.add(new Event("Swim Lessons", "01-01-2024", "9:00 AM", "City Park", "Join for beginner swim lessons!"));
 
         // Set adapter
