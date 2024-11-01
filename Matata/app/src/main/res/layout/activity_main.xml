@@ -4,19 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
+    android:background="@color/black"
     android:layout_height="match_parent"
+
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#F3F4F6">
+        android:background="@drawable/bg_matat_app"
+
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#B6C883"
+            android:background="#232323"
 
             android:orientation="horizontal"
             android:paddingLeft="16dp"
@@ -29,24 +32,29 @@
                 android:layout_width="316dp"
 
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="1"
+                android:alpha="0.8"
                 android:fontFamily="@font/sansation_bold"
-                android:text="@string/lottery_app"
-                android:textColor="#CB4C6827"
-                android:textSize="30sp" />
+                android:text="@string/matata"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp" />
 
             <ImageView
                 android:id="@+id/event_search"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="16dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="20dp"
+                android:alpha="0.8"
                 android:elevation="10dp"
                 android:src="@drawable/search" />
 
             <ImageView
                 android:id="@+id/add_event"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
                 android:layout_marginRight="16dp"
                 android:alpha="1"
                 android:elevation="10dp"
@@ -55,10 +63,12 @@
 
             <ImageView
                 android:id="@+id/profile_picture"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="end"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+
+                android:layout_gravity="center"
                 android:layout_marginEnd="0dp"
+                android:alpha="0.9"
                 android:contentDescription="@string/profile_picture"
                 android:elevation="10dp"
                 android:src="@drawable/profile_pic" />
@@ -82,7 +92,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:background="#B6C883"
+        android:background="#232323"
         android:gravity="center"
         android:orientation="horizontal"
 
@@ -90,15 +100,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:id="@+id/event_map"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_margin="15dp"
-            android:layout_weight="1"
-            android:alpha="0.92"
-            android:padding="5dp"
-            android:src="@drawable/baseline_explore_24" />
 
         <ImageView
             android:id="@+id/event_history"
@@ -107,30 +108,39 @@
             android:layout_margin="15dp"
             android:layout_weight="1"
             android:alpha="0.92"
-            android:padding="5dp"
-            android:src="@drawable/event_history_24" />
+            android:padding="0dp"
+            android:src="@drawable/event_history_24"
+            app:tint="@color/white" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/qr_scanner"
-            android:background="@drawable/custom_fab_layout"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_margin="4dp"
-            android:alpha="1"
-            android:backgroundTint="#CB4C6827"
+            android:alpha="0.9"
+            android:background="@drawable/custom_fab_layout"
+            android:backgroundTint="@color/white"
             android:elevation="2dp"
             android:enabled="true"
-            android:foregroundGravity="center"
             android:foreground="@drawable/baseline_qr_code_scanner_24"
-            android:foregroundTint="@color/white"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/black"
             android:scaleType="center"
-            android:tint="#FFFFFF"
+            android:tint="@color/black"
             android:translationZ="0dp"
             app:hoveredFocusedTranslationZ="4dp"
             app:useCompatPadding="false" />
 
-
-
+        <ImageView
+            android:id="@+id/event_map"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:alpha="0.92"
+            android:padding="0dp"
+            android:src="@drawable/baseline_explore_24"
+            app:tint="@color/white" />
 
 
     </LinearLayout>

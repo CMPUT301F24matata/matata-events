@@ -1,34 +1,35 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
+    android:layout_margin="8dp"
     android:background="@drawable/card_background"
+    android:backgroundTint="#F0F0F0"
     android:elevation="4dp"
-    android:layout_margin="8dp">
+    android:alpha="0.85"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <!-- Event Title -->
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/sansation_bold"
         android:text="@string/event_title"
-        android:textSize="18sp"
-        android:textColor="#333333"
-        android:fontFamily="sans-serif-medium" />
+        android:textColor="#000000"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_calendar"
-            android:contentDescription="@string/calendar_icon" />
+            android:contentDescription="@string/calendar_icon"
+            android:src="@drawable/ic_calendar" />
 
         <TextView
             android:id="@+id/dateTextView"
@@ -36,22 +37,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/_31_12_2999"
-            android:textSize="14sp"
-            android:textColor="#555555" />
+            android:textColor="#000000"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_clock"
-            android:contentDescription="@string/clock_icon" />
+            android:contentDescription="@string/clock_icon"
+            android:src="@drawable/ic_clock" />
 
         <TextView
             android:id="@+id/timeTextView"
@@ -59,22 +60,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/_15_00"
-            android:textSize="14sp"
-            android:textColor="#555555" />
+            android:textColor="#000000"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_location"
-            android:contentDescription="@string/location_icon" />
+            android:contentDescription="@string/location_icon"
+            android:src="@drawable/ic_location" />
 
         <TextView
             android:id="@+id/locationTextView"
@@ -82,22 +83,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/location"
-            android:textSize="14sp"
-            android:textColor="#555555" />
+            android:textColor="#000000"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_description"
-            android:contentDescription="@string/description_icon" />
+            android:contentDescription="@string/description_icon"
+            android:src="@drawable/ic_description" />
 
         <TextView
             android:id="@+id/descriptionTextView"
@@ -105,8 +106,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/event_description_here"
-            android:textSize="14sp"
-            android:textColor="#555555" />
+            android:textColor="#000000"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -114,8 +115,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
+        android:fontFamily="@font/sansation_bold"
         android:text="@string/accepted"
-        android:textSize="14sp"
-        android:textColor="#4CAF50" />
+        android:textColor="#4CAF50"
+        android:textSize="14sp" />
 
 </LinearLayout>
