@@ -61,7 +61,23 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         capacity=findViewById(R.id.number_of_people_event);
 
 
-        backBtn.setOnClickListener(v->finish());
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!eveTitle.getText().toString().equals("") ||
+                        !descriptionBox.getText().toString().equals("") ||
+                        !eventDate.getText().toString().equals("") ||
+                        !eventTime.getText().toString().equals("") ||
+                        !capacity.getText().toString().equals("")
+                ){
+                    ConfirmationFragment backpress=new ConfirmationFragment();
+                    backpress.show(getSupportFragmentManager(),"BackPressFragment");
+                }
+                else{
+                    finish();
+                }
+            }
+        });
 
         dateGroup.setOnClickListener(v->{
 
