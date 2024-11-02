@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     private TextView eventDate;
     private ImageView posterPic;
     private TextView location;
-    private Button genrQR;
+    private FloatingActionButton genrQR;
     private EditText eveTitle;
     private EditText descriptionBox;
     private EditText capacity;
@@ -115,17 +116,16 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
                         !capacity.getText().toString().equals("")
                 ){
                     Log.wtf(TAG,"Okayyyy Letts goooo");
+
+
                     Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()));
-                    SaveEventInfo(event);
+
+                    String u_id=SaveEventInfo(event);
+
                     Intent intent = new Intent(view.getContext(), ViewEvent.class);
-                    intent.putExtra("Title", event.getTitle());
-                    //intent.putExtra("Poster",)
-                    intent.putExtra("Date", event.getDate());
-                    intent.putExtra("Time", event.getTime());
-                    intent.putExtra("Location",event.getLocation());
-                    intent.putExtra("Description",event.getDescription());
-                    intent.putExtra("Capacity",event.getCapacity());
+                    intent.putExtra("Unique_id", u_id);
                     view.getContext().startActivity(intent);
+
                 }else{
                     Toast.makeText(AddEvent.this, "Please fill in all the details", Toast.LENGTH_SHORT).show();
                 }
@@ -164,7 +164,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         }
     }
 
-    private void SaveEventInfo(Event event){
+    private String SaveEventInfo(Event event){
 
         Map<String, Object> Event_details = new HashMap<>();
         Event_details.put("Title", event.getTitle());
@@ -174,12 +174,16 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         Event_details.put("Description",event.getDescription());
         Event_details.put("Capacity",event.getCapacity());
 
+        //Test ID
         String TEST_EVENT="Test Event";
+        //Test ID
+
         db.collection("EVENT_PROFILES").document(TEST_EVENT)
                 .set(Event_details)
                 .addOnSuccessListener(aVoid -> Toast.makeText(AddEvent.this, "Event saved successfully", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(AddEvent.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
 
+        return TEST_EVENT;
     }
 }
 
