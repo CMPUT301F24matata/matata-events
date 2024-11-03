@@ -38,8 +38,9 @@
         </LinearLayout>
 
         <ImageView
+
             android:layout_gravity="center"
-            android:id="@+id/qrDisplay"
+            android:id="@+id/poster_pic_Display"
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:layout_weight="1"

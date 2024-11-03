@@ -3,11 +3,18 @@ package com.example.matata;
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ViewEvent extends AppCompatActivity {
     private ImageView goBack;
-    //private ImageView poster;
+    private ImageView poster;
     private TextView title;
     private TextView capacity;
     private TextView desc;
@@ -35,12 +42,14 @@ public class ViewEvent extends AppCompatActivity {
         setContentView(R.layout.view_event_details);
         db= FirebaseFirestore.getInstance();
 
+        goBack=findViewById(R.id.go_back_view_event);
         title=findViewById(R.id.ViewEventTitle);
         capacity=findViewById(R.id.ViewEventCapacity);
         desc=findViewById(R.id.ViewEventDesc);
         time=findViewById(R.id.ViewEventTime);
         date=findViewById(R.id.ViewEventDate);
         location=findViewById(R.id.ViewEventLoc);
+        poster=findViewById(R.id.poster_pic_Display);
 
 
 
@@ -49,14 +58,15 @@ public class ViewEvent extends AppCompatActivity {
         String uid=intent.getStringExtra("Unique_id");
         Log.wtf(TAG,uid);
 
-
-        goBack=findViewById(R.id.go_back_view_event);
-
         goBack.setOnClickListener(v->{
             finish();
         });
 
         loadEventDetails(uid);
+
+
+
+
 
 
 
@@ -73,6 +83,12 @@ public class ViewEvent extends AppCompatActivity {
                         String Time = documentSnapshot.getString("Time");
                         String Date = documentSnapshot.getString("Date");
                         String Location = documentSnapshot.getString("Location");
+
+                        //TEst
+                        String base64str=documentSnapshot.getString("bitmap");
+                        Bitmap QR=decodeBase64toBmp(base64str);
+                        //Test
+
                         Log.wtf(TAG,"Okay now what");
                         // Set the values in the EditTexts
                         title.setText(Title != null ? Title : "");
@@ -81,6 +97,11 @@ public class ViewEvent extends AppCompatActivity {
                         time.setText(Time != null ? Time : "");
                         date.setText(Date != null ? Date : "");
                         location.setText(Location != null ? Location : "");
+
+                        //
+                        poster.setImageBitmap(QR);
+                        //
+
                     } else {
                         Toast.makeText(ViewEvent.this, "No event found", Toast.LENGTH_SHORT).show();
                     }
@@ -88,5 +109,11 @@ public class ViewEvent extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(ViewEvent.this, "Failed to load event", Toast.LENGTH_SHORT).show());
 
     }
+    public Bitmap decodeBase64toBmp(String bmp64){
+        byte[] decodedBytes = Base64.decode(bmp64, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+
 
 }

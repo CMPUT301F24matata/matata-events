@@ -2,12 +2,16 @@ package com.example.matata;
 
 import static android.content.ContentValues.TAG;
 
+import android.graphics.Bitmap;
+
+import android.util.Base64;
+import java.io.ByteArrayOutputStream;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,10 +26,21 @@ import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
+import org.checkerframework.checker.units.qual.N;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class AddEvent extends AppCompatActivity implements TimePickerListener,DatePickerListener{
     private ImageView backBtn;
@@ -53,6 +68,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         db = FirebaseFirestore.getInstance();
+
+        String EVENT_ID=generateRandomEventID();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_event);
@@ -120,11 +137,12 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
 
                     Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()));
 
-                    String u_id=SaveEventInfo(event);
-
                     Intent intent = new Intent(view.getContext(), ViewEvent.class);
-                    intent.putExtra("Unique_id", u_id);
-                    view.getContext().startActivity(intent);
+                    String u_id=SaveEventInfo(EVENT_ID,event,intent,view);
+
+
+
+
 
                 }else{
                     Toast.makeText(AddEvent.this, "Please fill in all the details", Toast.LENGTH_SHORT).show();
@@ -164,7 +182,12 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         }
     }
 
-    private String SaveEventInfo(Event event){
+    private String SaveEventInfo(String EVENT_ID,Event event,Intent intent,View view){
+
+
+
+        Bitmap bmp=generateQRbitmap(EVENT_ID);
+        String compressedBMP=bmpCompression(bmp);
 
         Map<String, Object> Event_details = new HashMap<>();
         Event_details.put("Title", event.getTitle());
@@ -173,17 +196,72 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         Event_details.put("Location",event.getLocation());
         Event_details.put("Description",event.getDescription());
         Event_details.put("Capacity",event.getCapacity());
+        Event_details.put("bitmap",compressedBMP);
 
-        //Test ID
-        String TEST_EVENT="Test Event";
-        //Test ID
 
-        db.collection("EVENT_PROFILES").document(TEST_EVENT)
+        DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);
+        doc.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    executeDBchange(Event_details,EVENT_ID);
+                    intent.putExtra("Unique_id", EVENT_ID);
+                    view.getContext().startActivity(intent);
+
+
+                }).addOnFailureListener(v->Toast.makeText(AddEvent.this, "Something Went Wrong with server upload", Toast.LENGTH_SHORT).show());
+
+
+        return EVENT_ID;
+    }
+
+    public String generateRandomEventID(){
+        return UUID.randomUUID().toString();
+    }
+
+    public void executeDBchange(Map Event_details,String EVENT_ID){
+
+        db.collection("EVENT_PROFILES").document(EVENT_ID)
                 .set(Event_details)
                 .addOnSuccessListener(aVoid -> Toast.makeText(AddEvent.this, "Event saved successfully", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(AddEvent.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
+    }
 
-        return TEST_EVENT;
+    private Bitmap generateQRbitmap(String EVENT_ID){
+        BarcodeEncoder barcodeEncoder=new BarcodeEncoder();
+
+        Bitmap bitmap= null;
+        try {
+            bitmap = barcodeEncoder.encodeBitmap(EVENT_ID, BarcodeFormat.QR_CODE,500,500);
+        } catch (WriterException e) {
+            throw new RuntimeException(e);
+        }
+
+        return bitmap;
+    }
+
+    //ChatGPT prompt "Give me some secure hash function for storage on cloud"
+    public String generateHash(String input) {
+        try {
+            MessageDigest digest=MessageDigest.getInstance("SHA-256");
+            byte[] hash=digest.digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length()==1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //ChatGPT prompt "How to store bitmap as a string"
+    public String bmpCompression(Bitmap bmp){
+        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
+        byte[] byteArray=byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray,Base64.DEFAULT);
     }
 }
 
