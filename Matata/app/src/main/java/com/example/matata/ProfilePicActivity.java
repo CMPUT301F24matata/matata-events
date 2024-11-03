@@ -28,8 +28,7 @@ public class ProfilePicActivity extends AppCompatActivity {
     private Uri selectedImageUri;
     private FirebaseFirestore db;
     private String USER_ID;
-
-    // ActivityResultLauncher to handle image picking
+    
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -97,7 +96,6 @@ public class ProfilePicActivity extends AppCompatActivity {
     private void loadProfilePicture() {
         String imageUriString = getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
                 .getString("profile_image_uri", null);
-
         if (imageUriString != null) {
             Uri imageUri = Uri.parse(imageUriString);
             Glide.with(this)
@@ -111,16 +109,12 @@ public class ProfilePicActivity extends AppCompatActivity {
     private void deleteProfilePicture() {
         ivProfilePicture.setImageResource(R.drawable.ic_upload);
         selectedImageUri = null;
-
         DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
-
         userRef.update("profileUri", "");
-
         getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
                 .edit()
                 .remove("profile_image_uri")
                 .apply();
-
         setResult(RESULT_OK);
         finish();
         Toast.makeText(this, "Profile picture deleted", Toast.LENGTH_SHORT).show();

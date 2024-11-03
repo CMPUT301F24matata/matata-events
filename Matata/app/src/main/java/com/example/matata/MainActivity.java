@@ -56,20 +56,16 @@ public class MainActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (!document.exists()) {
-
                     Map<String, Object> userProfile = new HashMap<>();
                     userProfile.put("username", "");
                     userProfile.put("phone", "");
                     userProfile.put("email", "");
                     userProfile.put("notifications", false);
                     userProfile.put("profileUri", "");
-
                     userRef.set(userProfile);
                 }
             }
         });
-
-
 
         profileIcon = findViewById(R.id.profile_picture);
         new_event=findViewById(R.id.add_event);
@@ -90,16 +86,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Initialize RecyclerView
         recyclerView = findViewById(R.id.recycler_view_events); // Ensure you have this ID in your layout
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Hard coded events for convenience
         eventList = new ArrayList<>();
         eventList.add(new Event("Community Cleanup", "31-12-2023", "10:00 AM", "Community Park", "Join us for a community cleanup day!",25));
-        //eventList.add(new Event("Swim Lessons", "01-01-2024", "9:00 AM", "City Park", "Join for beginner swim lessons!"));
 
-        // Set adapter
         eventAdapter = new EventAdapter(this, eventList);
         recyclerView.setAdapter(eventAdapter);
     }

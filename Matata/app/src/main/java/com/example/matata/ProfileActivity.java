@@ -106,7 +106,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-
     private void saveProfileData(String name, String phone, String email, boolean notificationsChecked, String imageUriString) {
 
         loadProfilePicture(imageUriString);
@@ -140,7 +139,6 @@ public class ProfileActivity extends AppCompatActivity {
                         emailEditText.setText(email != null ? email : "");
                         notifications.setChecked(notificationsChecked);
                         loadProfilePicture(sImageUri);
-
                     }
 
                 })
@@ -152,24 +150,19 @@ public class ProfileActivity extends AppCompatActivity {
             Uri imageUri = Uri.parse(imageUriString);
             Glide.with(this).load(imageUri).into(profileIcon);
         } else {
-
             String un = nameEditText.getText().toString().trim();
-
             if (un.isEmpty()) {
                 profileIcon.setImageResource(R.drawable.ic_upload);
             } else {
                 StringBuilder initials = new StringBuilder();
                 String[] words = un.trim().split("\\s+");
-
                 for (String word : words) {
                     if (!word.isEmpty()) {
                         initials.append(Character.toUpperCase(word.charAt(0)));
                     }
                 }
                 String initial = initials.toString();
-
                 Uri cimageUri = createImageFromString(this, initial);
-
                 Glide.with(this).load(cimageUri).into(profileIcon);
             }
         }
