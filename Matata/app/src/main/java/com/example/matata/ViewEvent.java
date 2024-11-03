@@ -8,10 +8,12 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -23,6 +25,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ViewEvent extends AppCompatActivity {
+
+    private String argbase64;
     private ImageView goBack;
     private ImageView poster;
     private TextView title;
@@ -32,7 +36,7 @@ public class ViewEvent extends AppCompatActivity {
     private TextView date;
     private TextView location;
     private FirebaseFirestore db;
-
+    private FloatingActionButton showQR;
 
 
     @Override
@@ -50,7 +54,7 @@ public class ViewEvent extends AppCompatActivity {
         date=findViewById(R.id.ViewEventDate);
         location=findViewById(R.id.ViewEventLoc);
         poster=findViewById(R.id.poster_pic_Display);
-
+        showQR=findViewById(R.id.show_QR);
 
 
         Intent intent=getIntent();
@@ -62,7 +66,16 @@ public class ViewEvent extends AppCompatActivity {
             finish();
         });
 
+        showQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                QR_displayFragment qrDisplayFragment=QR_displayFragment.newInstance(argbase64);
+                qrDisplayFragment.show(getSupportFragmentManager(),"Show QR");
+            }
+        });
+
         loadEventDetails(uid);
+
 
 
 
@@ -85,8 +98,10 @@ public class ViewEvent extends AppCompatActivity {
                         String Location = documentSnapshot.getString("Location");
 
                         //TEst
-                        String base64str=documentSnapshot.getString("bitmap");
-                        Bitmap QR=decodeBase64toBmp(base64str);
+                        argbase64=documentSnapshot.getString("bitmap");
+
+                        Bitmap QR=decodeBase64toBmp(argbase64);
+
                         //Test
 
                         Log.wtf(TAG,"Okay now what");
@@ -99,14 +114,16 @@ public class ViewEvent extends AppCompatActivity {
                         location.setText(Location != null ? Location : "");
 
                         //
-                        poster.setImageBitmap(QR);
+
                         //
 
                     } else {
                         Toast.makeText(ViewEvent.this, "No event found", Toast.LENGTH_SHORT).show();
                     }
+
                 })
                 .addOnFailureListener(e -> Toast.makeText(ViewEvent.this, "Failed to load event", Toast.LENGTH_SHORT).show());
+
 
     }
     public Bitmap decodeBase64toBmp(String bmp64){

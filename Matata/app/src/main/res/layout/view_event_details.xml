@@ -199,6 +199,7 @@ ornare leo felis, vel molestie felis placerat vitae"
             </LinearLayout>
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="56dp"
+                android:id="@+id/show_QR"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
                 android:foreground="@drawable/baseline_qr_code_scanner_24"
