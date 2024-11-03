@@ -46,7 +46,6 @@ public class ProfileActivity extends AppCompatActivity {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch notifications;
     private String imageUriString;
-    private Uri imageUri;
     @SuppressLint("HardwareIds")
     private String USER_ID = "";
 
@@ -110,12 +109,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void saveProfileData(String name, String phone, String email, boolean notificationsChecked, String imageUriStringi) {
 
+        loadProfilePicture(imageUriString);
+
         Map<String, Object> userProfile = new HashMap<>();
         userProfile.put("username", name);
         userProfile.put("phone", phone);
         userProfile.put("email", email);
         userProfile.put("notifications", notificationsChecked);
-        userProfile.put("profileUri", imageUri);
+        userProfile.put("profileUri", imageUriString);
 
         db.collection("USER_PROFILES").document(USER_ID)
                 .set(userProfile)
@@ -167,9 +168,9 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 String initial = initials.toString();
 
-                imageUri = createImageFromString(this, initial);
+                Uri cimageUri = createImageFromString(this, initial);
 
-                Glide.with(this).load(imageUri).into(profileIcon);
+                Glide.with(this).load(cimageUri).into(profileIcon);
             }
         }
     }
