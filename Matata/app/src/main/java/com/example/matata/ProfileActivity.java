@@ -74,6 +74,7 @@ public class ProfileActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.saveButton);
         ImageView back = findViewById(R.id.btnBackProfile);
         notifications = findViewById(R.id.switch_notification);
+        TextView initials = findViewById(R.id.initials); // Used to check if entrant/organiser/admin
 
         imageUriString = getSharedPreferences("ProfilePrefs", MODE_PRIVATE)
                 .getString("profile_image_uri", null);
@@ -107,7 +108,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    private void saveProfileData(String name, String phone, String email, boolean notificationsChecked, String imageUriStringi) {
+    private void saveProfileData(String name, String phone, String email, boolean notificationsChecked, String imageUriString) {
 
         loadProfilePicture(imageUriString);
 

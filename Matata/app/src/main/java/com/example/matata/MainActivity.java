@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -16,6 +17,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -47,14 +50,25 @@ public class MainActivity extends AppCompatActivity {
 
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        Map<String, Object> userProfile = new HashMap<>();
-        userProfile.put("username", "");
-        userProfile.put("phone", "");
-        userProfile.put("email", "");
-        userProfile.put("notifications", false);
-        userProfile.put("profileUri", "");
+        DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
 
-        db.collection("USER_PROFILES").document(USER_ID).set(userProfile);
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (!document.exists()) {
+
+                    Map<String, Object> userProfile = new HashMap<>();
+                    userProfile.put("username", "");
+                    userProfile.put("phone", "");
+                    userProfile.put("email", "");
+                    userProfile.put("notifications", false);
+                    userProfile.put("profileUri", "");
+
+                    userRef.set(userProfile);
+                }
+            }
+        });
+
 
 
         profileIcon = findViewById(R.id.profile_picture);
