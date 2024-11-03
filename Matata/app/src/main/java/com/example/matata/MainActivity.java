@@ -3,8 +3,10 @@ package com.example.matata;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> eventList;
     private ImageView new_event;
     private FirebaseFirestore db;
+    private String USER_ID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,20 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        db = FirebaseFirestore.getInstance();
+
+        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        Map<String, Object> userProfile = new HashMap<>();
+        userProfile.put("username", "");
+        userProfile.put("phone", "");
+        userProfile.put("email", "");
+        userProfile.put("notifications", false);
+        userProfile.put("profileUri", "");
+
+        db.collection("USER_PROFILES").document(USER_ID).set(userProfile);
+
 
         profileIcon = findViewById(R.id.profile_picture);
         new_event=findViewById(R.id.add_event);
