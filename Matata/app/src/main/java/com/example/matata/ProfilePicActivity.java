@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -25,6 +26,8 @@ public class ProfilePicActivity extends AppCompatActivity {
 
     private ImageView ivProfilePicture;
     private Uri selectedImageUri;
+    private FirebaseFirestore db;
+    private String USER_ID;
 
     // ActivityResultLauncher to handle image picking
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
@@ -45,6 +48,10 @@ public class ProfilePicActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_pic);
 
+        db = FirebaseFirestore.getInstance();
+
+        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         ivProfilePicture = findViewById(R.id.ivProfilePicture);
         ImageButton btnBack = findViewById(R.id.btnBack);
         Button btnUploadPicture = findViewById(R.id.btnUploadPicture);
@@ -58,6 +65,10 @@ public class ProfilePicActivity extends AppCompatActivity {
 
         btnUploadPicture.setOnClickListener(v -> {
             if (selectedImageUri != null) {
+                DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
+
+                userRef.update("profileUri", selectedImageUri);
+
                 saveProfilePictureUri(selectedImageUri);
                 Toast.makeText(this, "Profile picture uploaded successfully", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);
@@ -100,6 +111,10 @@ public class ProfilePicActivity extends AppCompatActivity {
     private void deleteProfilePicture() {
         ivProfilePicture.setImageResource(R.drawable.ic_upload);
         selectedImageUri = null;
+
+        DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
+
+        userRef.update("profileUri", "");
 
         getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
                 .edit()

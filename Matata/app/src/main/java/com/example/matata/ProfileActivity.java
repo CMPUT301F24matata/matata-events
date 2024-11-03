@@ -42,7 +42,6 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText nameEditText, phoneEditText, emailEditText;
     private ImageView profileIcon;
     private FirebaseFirestore db;
-    private String deviceId;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch notifications;
     private String imageUriString;
