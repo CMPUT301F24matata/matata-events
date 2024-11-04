@@ -56,7 +56,6 @@ public class QR_displayFragment extends DialogFragment {
         View view=inflater.inflate(R.layout.view_qr, container, false);
 
         displayQR=view.findViewById(R.id.view_qr);
-        //ShareQR=view.findViewById(R.id.QR_share);
         DownloadQR=view.findViewById(R.id.downlaod_QR);
 
         if (getArguments()!=null) {
