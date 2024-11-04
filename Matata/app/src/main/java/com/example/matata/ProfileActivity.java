@@ -77,6 +77,10 @@ public class ProfileActivity extends AppCompatActivity {
         notifications = findViewById(R.id.switch_notification);
         TextView initials = findViewById(R.id.initials); // Used to check if entrant/organiser/admin
         CompoundButton adminView = findViewById(R.id.adminView);
+        String Caller = getIntent().getStringExtra("Caller");
+        if (Caller.equals("Admin")) {
+            adminView.setChecked(true);
+        }
 
         imageUriString = getSharedPreferences("ProfilePrefs", MODE_PRIVATE)
                 .getString("profile_image_uri", null);

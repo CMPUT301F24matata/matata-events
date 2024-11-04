@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), ProfileActivity.class);
+                intent.putExtra("Caller", "Not admin");
                 view.getContext().startActivity(intent);
             }
         });

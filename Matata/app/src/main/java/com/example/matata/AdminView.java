@@ -82,6 +82,7 @@ public class AdminView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), ProfileActivity.class);
+                intent.putExtra("Caller", "Admin");
                 view.getContext().startActivity(intent);
             }
         });
