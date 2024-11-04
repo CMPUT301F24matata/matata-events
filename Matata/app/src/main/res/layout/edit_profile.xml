@@ -140,4 +140,26 @@
         android:textAllCaps="false"
         android:elevation="2dp" />
 
+    <!-- Temporary buttons to switch view -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:gravity="left">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="260dp"
+            android:text="Admin View" />
+        <CheckBox
+            android:id="@+id/adminView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+
 </LinearLayout>
