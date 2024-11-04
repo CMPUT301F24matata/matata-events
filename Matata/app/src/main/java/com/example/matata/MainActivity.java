@@ -20,10 +20,14 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 import java.io.IOException;
@@ -110,10 +114,40 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         eventList = new ArrayList<>();
-        eventList.add(new Event("Community Cleanup", "31-12-2023", "10:00 AM", "Community Park", "Join us for a community cleanup day!",25));
+        addEventsInit();
 
         eventAdapter = new EventAdapter(this, eventList);
         recyclerView.setAdapter(eventAdapter);
+    }
+
+    private void addEventsInit() {
+        //eventList.add(new Event("Community Cleanup", "31-12-2023", "10:00 AM", "Community Park", "Join us for a community cleanup day!",25));
+
+        db.collection("EVENT_PROFILES")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                //Event event = document.toObject(Event.class);
+                                String Title = document.getString("Title");
+                                String Date = document.getString("Date");
+                                String Time = document.getString("Time");
+                                String Location = document.getString("Location");
+                                String Description = document.getString("Description");
+                                int Capacity = document.getLong("Capacity").intValue();
+                                //
+                                //eventList.add(new Event(document.getString("Title"), document.getString("Date"), document.getString("Time"), document.getString("Location"), document.getString("Description"),((Long) document.get("Capacity")).intValue()));
+                                eventList.add(new Event(Title, Date, Time, Location, Description,Capacity));
+                                eventAdapter.notifyDataSetChanged();
+                            }
+                        } else {
+                            //Toast.makeText(getApplicationContext(), "Error getting documents", Toast.LENGTH_SHORT).show();
+                            Log.d("Firebase", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
 
