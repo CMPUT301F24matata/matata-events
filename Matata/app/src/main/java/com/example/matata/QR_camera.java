@@ -1,12 +1,18 @@
 
 package com.example.matata;
 
+import static android.app.PendingIntent.getActivity;
+import static androidx.core.content.ContentProviderCompat.requireContext;
+import static java.security.AccessController.getContext;
+import com.example.matata.ViewEvent;
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -32,6 +38,8 @@ public class QR_camera extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1001;
     private PreviewView previewView;
     private ImageView goBack;
+    private View view;
+    private boolean isActivityStarted = false;
 
 
     @Override
@@ -42,8 +50,12 @@ public class QR_camera extends AppCompatActivity {
         previewView = findViewById(R.id.camera_screen);
         goBack=findViewById(R.id.go_back_qr_screen);
 
+        View view=new View(this);
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             startCamera();
+
+
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
         }
@@ -97,13 +109,28 @@ public class QR_camera extends AppCompatActivity {
 
         scanner.process(image)
                 .addOnSuccessListener(barcodes -> {
-                    for (Barcode barcode : barcodes) {
-                        String rawValue = barcode.getRawValue();
-                        Log.d("QRCode", "QR Code found: " + rawValue);
-                        Toast.makeText(QR_camera.this, "QR Code: " + rawValue, Toast.LENGTH_SHORT).show();
+                    if (!isActivityStarted) {
+                        for (Barcode barcode : barcodes) {
+                            String rawValue = barcode.getRawValue();
+                            Log.d("QRCode", "QR Code found: " + rawValue);
+                            Toast.makeText(QR_camera.this, "Scan Successful", Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(this, ViewEvent.class);
+                            intent.putExtra("Unique_id", rawValue);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+
+                            finish();
+                            break;
+
+                        }
                     }
                 })
                 .addOnFailureListener(e -> Log.e("QRCode", "Failed to scan QR code", e));
+    }
+    private void View_event(View view){
+        Intent intent = new Intent(view.getContext(), ViewEvent.class);
+        view.getContext().startActivity(intent);
     }
 
     @Override

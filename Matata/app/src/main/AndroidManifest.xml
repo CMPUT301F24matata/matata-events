@@ -28,8 +28,7 @@
             android:name=".EventDetailActivity"
             android:exported="false" />
         <activity android:name=".ViewEvent"
-            android:exported="false"
-            android:parentActivityName=".AddEvent"/>
+            android:exported="false" />
 
         <activity android:name=".QR_camera"
             android:exported="false"
