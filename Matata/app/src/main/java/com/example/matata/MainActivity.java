@@ -1,6 +1,7 @@
 package com.example.matata;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -11,16 +12,22 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.integration.android.IntentIntegrator;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
     private List<Event> eventList;
+    private FloatingActionButton QR_scanner;
     private ImageView new_event;
     private FirebaseFirestore db;
     private String USER_ID = "";
@@ -45,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
 
         db = FirebaseFirestore.getInstance();
 
@@ -86,6 +96,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        QR_scanner=findViewById(R.id.qr_scanner);
+        QR_scanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(view.getContext(),QR_camera.class);
+                view.getContext().startActivity(intent);
+            }
+        });
+
         recyclerView = findViewById(R.id.recycler_view_events); // Ensure you have this ID in your layout
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -95,4 +114,6 @@ public class MainActivity extends AppCompatActivity {
         eventAdapter = new EventAdapter(this, eventList);
         recyclerView.setAdapter(eventAdapter);
     }
+
+
 }

@@ -40,8 +40,20 @@ android {
 
 dependencies {
 
+    implementation("com.google.zxing:core:3.5.3")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    implementation("com.google.mlkit:barcode-scanning:17.3.0")
+
+    implementation ("androidx.camera:camera-camera2:1.1.0")
+    implementation ("androidx.camera:camera-lifecycle:1.1.0")
+    implementation ("androidx.camera:camera-view:1.1.0")
+
     implementation ("com.github.bumptech.glide:glide:4.12.0")
+    implementation(libs.camera.view)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.vision.common)
+    implementation(libs.play.services.mlkit.barcode.scanning)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     implementation("com.google.firebase:firebase-storage:20.1.0")
 
