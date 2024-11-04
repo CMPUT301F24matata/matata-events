@@ -37,7 +37,7 @@ public class QR_displayFragment extends DialogFragment {
     private String base64encoded;
     private ImageView displayQR;
     private ImageView DownloadQR;
-    private ImageView ShareQR;
+    //private ImageView ShareQR;
     private Bitmap QR;
     private static final int REQUEST_WRITE_PERMISSION=100;
 
@@ -56,7 +56,7 @@ public class QR_displayFragment extends DialogFragment {
         View view=inflater.inflate(R.layout.view_qr, container, false);
 
         displayQR=view.findViewById(R.id.view_qr);
-        ShareQR=view.findViewById(R.id.QR_share);
+        //ShareQR=view.findViewById(R.id.QR_share);
         DownloadQR=view.findViewById(R.id.downlaod_QR);
 
         if (getArguments()!=null) {
@@ -69,7 +69,7 @@ public class QR_displayFragment extends DialogFragment {
 
 
         DownloadQR.setOnClickListener(v -> SaveQRpng(QR));
-        ShareQR.setOnClickListener(v->ShareQRpng());
+        //ShareQR.setOnClickListener(v->ShareQRpng());
 
         return view;
     }
@@ -104,11 +104,10 @@ public class QR_displayFragment extends DialogFragment {
         }
     }
 
-
-
+    /*
     public void ShareQRpng(){
 
-    }
+    }*/
 
     public Bitmap decodeBase64toBmp(String bmp64){
         byte[] decodedBytes = Base64.decode(bmp64, Base64.DEFAULT);
