@@ -13,7 +13,9 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -74,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
         ImageView back = findViewById(R.id.btnBackProfile);
         notifications = findViewById(R.id.switch_notification);
         TextView initials = findViewById(R.id.initials); // Used to check if entrant/organiser/admin
+        CompoundButton adminView = findViewById(R.id.adminView);
 
         imageUriString = getSharedPreferences("ProfilePrefs", MODE_PRIVATE)
                 .getString("profile_image_uri", null);
@@ -103,6 +106,22 @@ public class ProfileActivity extends AppCompatActivity {
                 saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString);
             }
         });
+
+
+
+        adminView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Intent intent = new Intent(buttonView.getContext(), AdminView.class);
+                    buttonView.getContext().startActivity(intent);
+                } else {
+                    Intent intent = new Intent(buttonView.getContext(), MainActivity.class);
+                    buttonView.getContext().startActivity(intent);
+                }
+            }
+        });
+
 
     }
 

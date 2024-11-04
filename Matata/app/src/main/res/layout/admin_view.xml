@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:background="@color/black"
+    android:layout_height="match_parent"
+
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_matat_app"
+
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#765A90"
+
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="9dp"
+            android:paddingBottom="16dp">
+
+
+            <TextView
+                android:layout_width="316dp"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.8"
+                android:fontFamily="@font/sansation_bold"
+                android:text="@string/matata"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp" />
+
+            <ImageView
+                android:id="@+id/event_search"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="20dp"
+                android:alpha="0.8"
+                android:elevation="10dp"
+                android:src="@drawable/search" />
+
+            <ImageView
+                android:id="@+id/add_event"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="16dp"
+                android:alpha="1"
+                android:elevation="10dp"
+                android:src="@drawable/add_event"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/profile_picture"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+
+                android:layout_gravity="center"
+                android:layout_marginEnd="0dp"
+                android:alpha="0.9"
+                android:contentDescription="@string/profile_picture"
+                android:elevation="10dp"
+                android:src="@drawable/profile_pic" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_events"
+            android:layout_width="match_parent"
+            android:layout_height="583dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            app:layout_constraintBottom_toTopOf="@id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@id/profile_picture"
+            tools:listitem="@layout/event_card" />
+
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="#232323"
+        android:gravity="center"
+        android:orientation="horizontal"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <ImageView
+            android:id="@+id/event_history"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:alpha="0.92"
+            android:padding="0dp"
+            android:src="@drawable/event_history_24"
+            app:tint="@color/white" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/qr_scanner"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_margin="4dp"
+            android:alpha="0.9"
+            android:background="@drawable/custom_fab_layout"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:enabled="true"
+            android:foreground="@drawable/baseline_qr_code_scanner_24"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/black"
+            android:scaleType="center"
+            android:tint="@color/black"
+            android:translationZ="0dp"
+            app:hoveredFocusedTranslationZ="4dp"
+            app:useCompatPadding="false" />
+
+        <ImageView
+            android:id="@+id/event_map"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:alpha="0.92"
+            android:padding="0dp"
+            android:src="@drawable/baseline_explore_24"
+            app:tint="@color/white" />
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
