@@ -16,8 +16,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
@@ -68,14 +71,70 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(Event_id);
+        DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
+
+        eventRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot eventSnapshot) {
+                if (eventSnapshot.exists()) {
+                    List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
+                    if (waitlist != null && waitlist.contains(entrantRef)) {
+                        joinWaitlistButton.setText("Withdraw");
+                    } else {
+                        joinWaitlistButton.setText("Join Waitlist");
+                    }
+                }
+            }
+        });
+
         // join waitlist
         joinWaitlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (joinWaitlistButton.getText().toString().equals("Withdraw")) {
+                    // Show dialog to confirm exiting the waitlist
+                    withdrawDialog();
+                } else {
+                    confirmationDialog(); // Show confirmation dialog for registration
+                }
+            }
 
+            private void withdrawDialog() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailActivity.this);
                 builder.setCancelable(true);
-                builder.setMessage("Confirm your registration");
+                builder.setMessage("Confirm to withdraw from waitlist");
+                builder.setPositiveButton("Confirm",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                exitWaitlist();
+                            }
+                        });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+
+            private void exitWaitlist() {
+                eventRef.update("waitlist", FieldValue.arrayRemove(entrantRef))
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("Firebase", "Entrant added to waitlist successfully");
+                            joinWaitlistButton.setText("Join Waitlist");
+                        }).addOnFailureListener(e -> {
+                            Log.e("Firebase", "Error adding entrant to waitlist", e);
+                        });
+            }
+
+            private void confirmationDialog() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailActivity.this);
+                builder.setCancelable(true);
+                builder.setMessage("Confirm to join waitlist");
                 builder.setPositiveButton("Confirm",
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -90,12 +149,9 @@ public class EventDetailActivity extends AppCompatActivity {
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
             }
 
             private void addToWaitList() {
-                DocumentReference eventRef = db.collection("EVENT_PROFILES").document(Event_id);
-                DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
                 db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot eventSnapshot = transaction.get(eventRef);
                     List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
@@ -113,8 +169,6 @@ public class EventDetailActivity extends AppCompatActivity {
                     Log.e("Firebase", "Error adding entrant to waitlist", e);
                 });
             }
-
-            ;
         });
 
     }
