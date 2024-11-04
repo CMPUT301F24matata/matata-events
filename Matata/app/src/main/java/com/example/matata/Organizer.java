@@ -4,64 +4,41 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Organizer {
+public class Organizer extends User {
+    private String organizerID;
+    private Facility facility;
 
-    private List<Facility> myFacilities = new ArrayList<>();
-
-    private String name;
-
-    public Organizer (String name) {
-        this.name = name;
+    public Organizer(String name, String email, String phoneNumber, String organizerID) {
+        super(name, email, phoneNumber);
+        this.organizerID = organizerID;
     }
 
-    public String getName () {
-        return this.name;
+    // Method to create a facility
+    public void createFacility(String name, String description) {
+        facility = new Facility(name, description);
     }
 
-    public void setName (String name) {
-        this.name = name;
-    }
-
-    private Facility getFacilityByName (String facilityName) {
-        Facility target = null;
-        for (Facility facility : myFacilities) {
-            if (facility.getName().equals(facilityName)) {
-                target = facility;
-            }
-        }
-
-        return target;
-    }
-
-    public List<Facility> getFacilities (Administrator administrator) {
-        return myFacilities;
-    }
-
-    public void createFacility (String name, String description) {
-        Facility target = getFacilityByName(name);
-        if (target == null) {
-            myFacilities.add(new Facility(name, description));
+    // Method to update facility details
+    public void updateFacility(String name, String description) {
+        if (facility != null) {
+            facility.setName(name);
+            facility.setDescription(description);
         } else {
-            System.out.println("Facility name already exist");
+            System.out.println("No facility created yet.");
         }
     }
 
-    public void deleteFacility (Facility facility) {
-        if (!myFacilities.remove(facility)) {
-            System.out.println("Facility not found");
-        }
-    }
-
-    public void updateFacility (Facility facility, String newName, String newDescription) {
-        if (myFacilities.contains(facility)){
-            facility.setName(newName, this);
-            facility.setDescription(newDescription, this);
-        } else {
-            System.out.println("Facility not found");
-        }
+    public Facility getFacility() {
+        return facility;
     }
 
 
+    public String getOrganizerID() {
+        return organizerID;
+    }
+    public void setOrganizerID(String organizerID) {
+        this.organizerID = organizerID;
+    }
 }
 
 

@@ -9,11 +9,12 @@ public class Facility {
         this.description = description;
     }
 
+    // Getters and setters
     public String getName() {
         return name;
     }
 
-    public void setName(String name, Organizer organizer) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -21,7 +22,7 @@ public class Facility {
         return description;
     }
 
-    public void setDescription(String description, Organizer organizer) {
+    public void setDescription(String description) {
         this.description = description;
     }
 }

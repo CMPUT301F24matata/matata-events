@@ -48,15 +48,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_upload" />
 
-    <TextView
-        android:id="@+id/initials"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/facility"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:textColor="#666666"
-        android:textSize="14sp" />
+
 
     <TextView
         android:layout_width="wrap_content"
