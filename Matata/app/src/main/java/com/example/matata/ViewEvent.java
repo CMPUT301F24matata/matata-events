@@ -17,9 +17,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -93,65 +96,86 @@ public class ViewEvent extends AppCompatActivity {
         eventRef = db.collection("EVENT_PROFILES").document(uid);
         entrantRef = db.collection("USER_PROFILES").document(USER_ID);
 
-        checkEntrantStatus(uid);
+        //checkEntrantStatus(uid);
+        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                // check the status of entrant
+                DocumentSnapshot document = task.getResult();
+                List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
 
-        String joinBtntext = waitlistBtn.getText().toString();
+                // Add a condition checking if entrant is in status Pending
 
-        if (joinBtntext.equals("Pending")) {
-            waitlistBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Create an AlertDialog builder
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
-                    builder.setTitle("Invitation");
-                    builder.setMessage("Do you want to accept or decline the invitation?");
 
-                    // Set the Accept button
-                    builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+
+                if (waitlist != null && waitlist.contains(entrantRef)) {
+                    waitlistBtn.setText("Withdraw");
+                } else {
+                    waitlistBtn.setText("Join Waitlist");
+                }
+
+                String joinBtntext = waitlistBtn.getText().toString();
+                if (joinBtntext.equals("Pending")) {
+                    waitlistBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Handle Accept action here
-                            Intent intent = new Intent(ViewEvent.this, SignUpSheet.class);
-                            intent.putExtra("Unique_id",uid);
-                            startActivity(intent);
-                            waitlistBtn.setText("Accepted");
-                            // Additional code for when the invitation is accepted
-                            Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
+                        public void onClick(View v) {
+                            // Create an AlertDialog builder
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
+                            builder.setTitle("Invitation");
+                            builder.setMessage("Do you want to accept or decline the invitation?");
+
+                            // Set the Accept button
+                            builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Handle Accept action here
+                                    Intent intent = new Intent(ViewEvent.this, SignUpSheet.class);
+                                    intent.putExtra("Unique_id",uid);
+                                    startActivity(intent);
+                                    waitlistBtn.setText("Accepted");
+                                    // Additional code for when the invitation is accepted
+                                    Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
 
 
+                                }
+                            });
+
+                            // Set the Decline button
+                            builder.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // Handle Decline action here
+                                    waitlistBtn.setText("Declined");
+                                    // Additional code for when the invitation is declined
+                                    Toast.makeText(ViewEvent.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                            // Show the dialog
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
                         }
                     });
-
-                    // Set the Decline button
-                    builder.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
+                }
+                else{
+                    waitlistBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Handle Decline action here
-                            waitlistBtn.setText("Declined");
-                            // Additional code for when the invitation is declined
-                            Toast.makeText(ViewEvent.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
+                        public void onClick(View view) {
+                            if (waitlistBtn.getText().toString().equals("Withdraw")) {
+                                // Show dialog to confirm exiting the waitlist
+                                withdrawDialog();
+                            } else {
+                                confirmationDialog(); // Show confirmation dialog for registration
+                            }
                         }
                     });
+                }
 
-                    // Show the dialog
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                }
-            });
-        }
-        else{
-            waitlistBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (waitlistBtn.getText().toString().equals("Withdraw")) {
-                        // Show dialog to confirm exiting the waitlist
-                        withdrawDialog();
-                    } else {
-                        confirmationDialog(); // Show confirmation dialog for registration
-                    }
-                }
-            });
-        }
+            }
+        });
+
+
+
 
 
 
@@ -161,22 +185,22 @@ public class ViewEvent extends AppCompatActivity {
 
 
 
-    private void checkEntrantStatus(String uid) {
-        DocumentReference doc = db.collection("EVENT_PROFILES").document(uid);
-        eventRef.get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    List<DocumentReference> waitlist = (List<DocumentReference>) documentSnapshot.get("waitlist");
-                    // Add a condition for pending
-                    if (waitlist != null && waitlist.contains(entrantRef)) {
-                        waitlistBtn.setText("Withdraw");
-                    } else {
-                        waitlistBtn.setText("Join Waitlist");
-                        //Toast.makeText(ViewEvent.this, "no entrant", Toast.LENGTH_SHORT).show();
-                    }
-
-                })
-                .addOnFailureListener(e -> Toast.makeText(ViewEvent.this, "Failed to load event", Toast.LENGTH_SHORT).show());
-    }
+//    private void checkEntrantStatus(String uid) {
+//
+//        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                        DocumentSnapshot document = task.getResult();
+//                        List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+//                        if (waitlist != null && waitlist.contains(entrantRef)) {
+//                            waitlistBtn.setText("Withdraw");
+//                        } else {
+//                            waitlistBtn.setText("Join Waitlist");
+//                            //Toast.makeText(ViewEvent.this, "no entrant", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//    }
 
     private void confirmationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
