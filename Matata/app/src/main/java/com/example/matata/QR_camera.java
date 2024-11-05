@@ -2,9 +2,7 @@
 package com.example.matata;
 
 import static android.app.PendingIntent.getActivity;
-import static androidx.core.content.ContentProviderCompat.requireContext;
-import static java.security.AccessController.getContext;
-import com.example.matata.ViewEvent;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -31,7 +29,7 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
-import java.util.List;
+
 import java.util.concurrent.ExecutionException;
 
 public class QR_camera extends AppCompatActivity {

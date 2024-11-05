@@ -1,19 +1,14 @@
 package com.example.matata;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.media.Image;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -28,10 +23,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.zxing.integration.android.IntentIntegrator;
+//import com.google.zxing.integration.android.IntentIntegrator;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView new_event;
     private FirebaseFirestore db;
     private String USER_ID = "";
+    private String uid=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,16 +124,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                //Event event = document.toObject(Event.class);
+
                                 String Title = document.getString("Title");
+                                uid= document.getId();
                                 String Date = document.getString("Date");
                                 String Time = document.getString("Time");
                                 String Location = document.getString("Location");
                                 String Description = document.getString("Description");
                                 int Capacity = document.getLong("Capacity").intValue();
-                                //
-                                //eventList.add(new Event(document.getString("Title"), document.getString("Date"), document.getString("Time"), document.getString("Location"), document.getString("Description"),((Long) document.get("Capacity")).intValue()));
-                                eventList.add(new Event(Title, Date, Time, Location, Description,Capacity));
+                                
+                                eventList.add(new Event(Title, Date, Time, Location, Description,Capacity,uid));
                                 eventAdapter.notifyDataSetChanged();
                             }
                         } else {

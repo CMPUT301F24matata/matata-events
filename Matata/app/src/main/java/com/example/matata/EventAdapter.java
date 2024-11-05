@@ -9,14 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.matata.Event;
-import com.example.matata.R;
-
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
     private Context context;
     private List<Event> eventList;
+
 
     public EventAdapter(Context context, List<Event> eventList) {
         this.context = context;
@@ -44,14 +42,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             @Override
             public void onClick(View v) {
                 // Create intent to open EventDetailActivity
-                Intent intent = new Intent(context, EventDetailActivity.class);
 
-                // Pass event data to EventDetailActivity
-                intent.putExtra("title", event.getTitle());
-                intent.putExtra("date", event.getDate());
-                intent.putExtra("time", event.getTime());
-                intent.putExtra("location", event.getLocation());
-                intent.putExtra("description", event.getDescription());
+                Intent intent = new Intent(context, ViewEvent.class);
+                intent.putExtra("Unique_id",event.getEventid().toString());
+
 
                 // Start EventDetailActivity
                 context.startActivity(intent);

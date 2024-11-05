@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.util.Base64;
 import java.io.ByteArrayOutputStream;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,8 +31,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import org.checkerframework.checker.units.qual.N;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -55,6 +52,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     private EditText descriptionBox;
     private EditText capacity;
     private FirebaseFirestore db;
+    private String EVENT_ID;
 
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -69,7 +67,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
 
         db = FirebaseFirestore.getInstance();
 
-        String EVENT_ID=generateRandomEventID();
+        EVENT_ID=generateRandomEventID();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_event);
@@ -135,7 +133,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
                     Log.wtf(TAG,"Okayyyy Letts goooo");
 
 
-                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()));
+                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()),EVENT_ID);
 
                     Intent intent = new Intent(view.getContext(), ViewEvent.class);
                     String u_id=SaveEventInfo(EVENT_ID,event,intent,view);

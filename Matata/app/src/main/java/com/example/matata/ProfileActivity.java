@@ -113,18 +113,18 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-        adminView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Intent intent = new Intent(buttonView.getContext(), AdminView.class);
-                    buttonView.getContext().startActivity(intent);
-                } else {
-                    Intent intent = new Intent(buttonView.getContext(), MainActivity.class);
-                    buttonView.getContext().startActivity(intent);
-                }
-            }
-        });
+//        adminView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    Intent intent = new Intent(buttonView.getContext(), AdminView.class);
+//                    buttonView.getContext().startActivity(intent);
+//                } else {
+//                    Intent intent = new Intent(buttonView.getContext(), MainActivity.class);
+//                    buttonView.getContext().startActivity(intent);
+//                }
+//            }
+//        });
 
 
     }

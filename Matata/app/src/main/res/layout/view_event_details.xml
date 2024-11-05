@@ -197,6 +197,7 @@ ornare leo felis, vel molestie felis placerat vitae"
                 </LinearLayout>
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -222,7 +223,7 @@ ornare leo felis, vel molestie felis placerat vitae"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/join_waitlist"
+                    android:text="Pending"
                     android:layout_marginStart="16dp"
                     android:padding="10dp"
                     android:textSize="16sp"
@@ -230,7 +231,6 @@ ornare leo felis, vel molestie felis placerat vitae"
                     android:textColor="@android:color/white" />
 
             </LinearLayout>
-
         </LinearLayout>
 
     </LinearLayout>

@@ -30,6 +30,11 @@
         <activity android:name=".ViewEvent"
             android:exported="false" />
 
+        <activity android:name=".SignUpSheet"
+            android:parentActivityName=".ViewEvent"
+            android:exported="false"/>
+
+
         <activity android:name=".QR_camera"
             android:exported="false"
             android:parentActivityName=".MainActivity"/>
@@ -45,9 +50,9 @@
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
-        <activity
-            android:name=".AdminView"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".AdminView"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".MainActivity"
             android:exported="true">

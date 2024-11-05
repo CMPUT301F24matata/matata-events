@@ -17,9 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +39,7 @@ public class ViewEvent extends AppCompatActivity {
     private FloatingActionButton showQR;
     private Button waitlistBtn;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -58,7 +56,8 @@ public class ViewEvent extends AppCompatActivity {
         location=findViewById(R.id.ViewEventLoc);
         poster=findViewById(R.id.poster_pic_Display);
         showQR=findViewById(R.id.show_QR);
-        waitlistBtn = findViewById((R.id.join_waitlist_button));
+        waitlistBtn = findViewById(R.id.join_waitlist_button);
+
 
         Intent intent=getIntent();
 
@@ -79,15 +78,14 @@ public class ViewEvent extends AppCompatActivity {
 
         loadEventDetails(uid);
 
-        String joinBtnTxt = waitlistBtn.getText().toString();
+        String joinBtntext = waitlistBtn.getText().toString();
 
-        if(joinBtnTxt.equals("Pending")){
+        if (joinBtntext.equals("Pending")) {
             waitlistBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                // Create an AlertDialog builder
-                    AlertDialog.Builder builder;
-                    builder = new AlertDialog.Builder(MainActivity.this);
+                public void onClick(View v) {
+                    // Create an AlertDialog builder
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
                     builder.setTitle("Invitation");
                     builder.setMessage("Do you want to accept or decline the invitation?");
 
@@ -96,10 +94,14 @@ public class ViewEvent extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // Handle Accept action here
-                            // Need to add possibility for declining after accepting once.
+                            Intent intent = new Intent(ViewEvent.this, SignUpSheet.class);
+                            intent.putExtra("Unique_id",uid);
+                            startActivity(intent);
                             waitlistBtn.setText("Accepted");
                             // Additional code for when the invitation is accepted
-                            Toast.makeText(MainActivity.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
+
+
                         }
                     });
 
@@ -110,20 +112,16 @@ public class ViewEvent extends AppCompatActivity {
                             // Handle Decline action here
                             waitlistBtn.setText("Declined");
                             // Additional code for when the invitation is declined
-                            Toast.makeText(MainActivity.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ViewEvent.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
                         }
                     });
 
                     // Show the dialog
                     AlertDialog dialog = builder.create();
                     dialog.show();
-
                 }
             });
         }
-
-
-
 
 
 
