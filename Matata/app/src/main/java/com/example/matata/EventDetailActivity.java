@@ -39,19 +39,19 @@ public class EventDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_detail_activity);
+        setContentView(R.layout.view_event_details);
         // get db
         db = FirebaseFirestore.getInstance();
         //USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Get views
-        TextView titleTextView = findViewById(R.id.event_title);
-        TextView dateTextView = findViewById(R.id.dateTextView);
-        TextView timeTextView = findViewById(R.id.timeTextView);
-        TextView locationTextView = findViewById(R.id.locationTextView);
-        TextView descriptionTextView = findViewById(R.id.event_description);
-        ImageView posterImageView = findViewById(R.id.event_poster);
-        ImageButton backButton = findViewById(R.id.back_button);
+        TextView titleTextView = findViewById(R.id.ViewEventTitle);
+        TextView dateTextView = findViewById(R.id.ViewEventDate);
+        TextView timeTextView = findViewById(R.id.ViewEventTime);
+        TextView locationTextView = findViewById(R.id.ViewEventLoc);
+        TextView descriptionTextView = findViewById(R.id.ViewEventDesc);
+        ImageView posterImageView = findViewById(R.id.poster_pic_Display);
+        ImageView backButton = findViewById(R.id.go_back_view_event);
         Button joinWaitlistButton = findViewById(R.id.join_waitlist_button);
 
         // Get data from Intent

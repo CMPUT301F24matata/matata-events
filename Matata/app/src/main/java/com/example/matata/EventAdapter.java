@@ -42,10 +42,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             @Override
             public void onClick(View v) {
                 // Create intent to open EventDetailActivity
-
                 Intent intent = new Intent(context, ViewEvent.class);
                 intent.putExtra("Unique_id",event.getEventid().toString());
-
 
                 // Start EventDetailActivity
                 context.startActivity(intent);
