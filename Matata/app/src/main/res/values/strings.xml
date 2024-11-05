@@ -73,4 +73,23 @@
     <string name="event_description_here">Event description here</string>
     <string name="accepted">Accepted</string>
     <string name="matata">Matata</string>
+    <string name="emergency_contact_name">Emergency Contact Name</string>
+    <string name="enter_your_contact_number">Enter your contact number</string>
+    <string name="contact_number">Contact Number</string>
+    <string name="emergency_contact_number">Emergency Contact Number</string>
+    <string name="enter_emergency_contact_name">Enter emergency contact name</string>
+    <string name="enter_emergency_contact_number">Enter emergency contact number</string>
+    <string name="dietary_preferences">Dietary Preferences</string>
+    <string name="specify_any_dietary_requirements">Specify any dietary requirements</string>
+    <string name="estimated_arrival_time">Estimated Arrival Time</string>
+    <string name="enter_your_estimated_arrival_time">Enter your estimated arrival time</string>
+    <string name="accessibility_needs">Accessibility Needs</string>
+    <string name="specify_any_accessibility_requirements">Specify any accessibility requirements</string>
+    <string name="i_agree_to_the_terms_and_conditions_of_this_event">I agree to the terms and conditions of this event</string>
+    <string name="submit">Submit</string>
+    <string name="enter_your_email_address">Enter your email address</string>
+    <string name="email_address">Email Address</string>
+    <string name="enter_your_full_name">Enter your full name</string>
+    <string name="full_name">Full Name</string>
+    <string name="event_sign_up">Event Sign-Up</string>
 </resources>
