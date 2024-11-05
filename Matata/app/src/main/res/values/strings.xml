@@ -92,4 +92,6 @@
     <string name="enter_your_full_name">Enter your full name</string>
     <string name="full_name">Full Name</string>
     <string name="event_sign_up">Event Sign-Up</string>
+    <string name="join_waitlist">Join Waitlist</string>
+    <string name="qr_code">QR CODE</string>
 </resources>
