@@ -34,15 +34,15 @@ public class EventDetailActivity extends AppCompatActivity {
     // sample user to add to waitlist
     private FirebaseFirestore db;
     private String Event_id = "sample_event_id";
-    private static final String USER_ID = "unique_user_id";
-    //private String USER_ID;
+    //private static final String USER_ID = "unique_user_id";
+    private String USER_ID;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_event_details);
         // get db
         db = FirebaseFirestore.getInstance();
-        //USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Get views
         TextView titleTextView = findViewById(R.id.ViewEventTitle);
