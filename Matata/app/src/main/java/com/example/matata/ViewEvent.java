@@ -116,12 +116,13 @@ public class ViewEvent extends AppCompatActivity {
                 // check the status of entrant
                 DocumentSnapshot document = task.getResult();
                 List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+                List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
 
                 // Add a condition checking if entrant is in status Pending
-
-
-
-                if (waitlist != null && waitlist.contains(entrantRef)) {
+                if (pending != null && pending.contains(entrantRef)){
+                    waitlistBtn.setText("Pending");
+                }
+                else if (waitlist != null && waitlist.contains(entrantRef)) {
                     waitlistBtn.setText("Withdraw");
                 } else {
                     waitlistBtn.setText("Join Waitlist");
