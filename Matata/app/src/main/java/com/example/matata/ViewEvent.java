@@ -107,6 +107,8 @@ public class ViewEvent extends AppCompatActivity {
         eventRef = db.collection("EVENT_PROFILES").document(uid);
         entrantRef = db.collection("USER_PROFILES").document(USER_ID);
 
+
+
         //checkEntrantStatus(uid);
         eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -125,7 +127,10 @@ public class ViewEvent extends AppCompatActivity {
                     waitlistBtn.setText("Join Waitlist");
                 }
 
+                setWaitlistButtonClickListener(waitlist);
+
                 String joinBtntext = waitlistBtn.getText().toString();
+
                 if (joinBtntext.equals("Pending")) {
                     waitlistBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -159,6 +164,37 @@ public class ViewEvent extends AppCompatActivity {
                                     waitlistBtn.setText("Declined");
                                     // Additional code for when the invitation is declined
                                     Toast.makeText(ViewEvent.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
+
+
+                                    // Remove the current user from the waitlist if they're declining
+                                    eventRef.update("waitlist", FieldValue.arrayRemove(entrantRef))
+                                            .addOnSuccessListener(aVoid -> {
+                                                Log.d("Firebase", "Entrant declined and removed from waitlist");
+
+                                                // Now check if there's another user to offer the spot to
+                                                eventRef.get().addOnSuccessListener(documentSnapshot -> {
+                                                    List<DocumentReference> waitlist = (List<DocumentReference>) documentSnapshot.get("waitlist");
+
+                                                    if (waitlist != null && !waitlist.isEmpty()) {
+                                                        // Choose the next entrant in the waitlist
+                                                        DocumentReference nextEntrant = waitlist.get(0);
+
+                                                        // Send invitation to the next entrant
+                                                        nextEntrant.update("status", "Pending");
+                                                        Log.d("Firebase", "Next entrant invited from waitlist");
+
+                                                        // Update UI or send notification (optional based on your requirements)
+                                                        Toast.makeText(ViewEvent.this, "Next entrant invited", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Log.d("Firebase", "No more entrants on the waitlist");
+                                                    }
+                                                });
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e("Firebase", "Error updating waitlist on decline", e);
+                                            });
+
+
                                 }
                             });
 
@@ -184,13 +220,25 @@ public class ViewEvent extends AppCompatActivity {
 
             }
         });
+    }
 
+    private void setWaitlistButtonClickListener(List<DocumentReference> waitlist) {
+        waitlistBtn.setOnClickListener(view -> {
+            if ("Withdraw".equals(waitlistBtn.getText().toString())) {
+                withdrawDialog();
+            } else {
+                showGeolocationRequirementDialog();
+            }
+        });
+    }
 
-
-
-
-
-
+    private void showGeolocationRequirementDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
+        builder.setTitle("Geolocation Required")
+                .setMessage("To join the waitlist, you must enable location services and allow geolocation access.")
+                .setPositiveButton("OK", (dialog, which) -> confirmationDialog())
+                .create()
+                .show();
     }
 
 
