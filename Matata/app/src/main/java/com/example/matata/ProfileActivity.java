@@ -129,6 +129,7 @@ public class ProfileActivity extends AppCompatActivity {
             String fEmail = facilityEmail.getText().toString().trim();
             String fOwner = facilityOwner.getText().toString().trim();
 
+
             if (name.isEmpty()) {
                 Toast.makeText(this, "No UserName Found", Toast.LENGTH_SHORT).show();
             } else if (email.isEmpty()) {
