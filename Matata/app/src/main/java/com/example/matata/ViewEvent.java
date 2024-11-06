@@ -81,6 +81,9 @@ public class ViewEvent extends AppCompatActivity {
         String uid=intent.getStringExtra("Unique_id");
         Log.wtf(TAG,uid);
 
+        eventRef = db.collection("EVENT_PROFILES").document(uid);
+        entrantRef = db.collection("USER_PROFILES").document(USER_ID);
+
         goBack.setOnClickListener(v->{
             finish();
         });
@@ -93,6 +96,7 @@ public class ViewEvent extends AppCompatActivity {
             }
         });
 
+
         drawBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,8 +108,6 @@ public class ViewEvent extends AppCompatActivity {
 
         loadEventDetails(uid);
 
-        eventRef = db.collection("EVENT_PROFILES").document(uid);
-        entrantRef = db.collection("USER_PROFILES").document(USER_ID);
 
 
 
@@ -117,6 +119,12 @@ public class ViewEvent extends AppCompatActivity {
                 DocumentSnapshot document = task.getResult();
                 List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
                 List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
+
+                String organizerId = document.getString("OrganizerId");
+                if(!organizerId.equals(USER_ID)){
+                    drawBtn.setClickable(false);
+                    drawBtn.setVisibility(View.INVISIBLE);
+                }
 
                 // Add a condition checking if entrant is in status Pending
                 if (pending != null && pending.contains(entrantRef)){
