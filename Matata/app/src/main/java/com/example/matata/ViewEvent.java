@@ -52,6 +52,7 @@ public class ViewEvent extends AppCompatActivity {
     private String USER_ID;
     private DocumentReference eventRef;
     private DocumentReference entrantRef;
+    private Button drawBtn;
 
 
     @Override
@@ -71,6 +72,7 @@ public class ViewEvent extends AppCompatActivity {
         poster=findViewById(R.id.poster_pic_Display);
         showQR=findViewById(R.id.show_QR);
         waitlistBtn = findViewById(R.id.join_waitlist_button);
+        drawBtn = findViewById(R.id.draw_button);
 
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -88,6 +90,15 @@ public class ViewEvent extends AppCompatActivity {
             public void onClick(View view) {
                 QR_displayFragment qrDisplayFragment=QR_displayFragment.newInstance(argbase64);
                 qrDisplayFragment.show(getSupportFragmentManager(),"Show QR");
+            }
+        });
+
+        drawBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(view.getContext(),EventDraw.class);
+                intent.putExtra("Unique_id",uid);
+                view.getContext().startActivity(intent);
             }
         });
 

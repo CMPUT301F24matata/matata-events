@@ -23,7 +23,8 @@
         android:theme="@style/Theme.Matata"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
-        <activity android:name="EventHistory"/>
+        <activity android:name=".EventHistory"/>
+        <activity android:name=".EventDraw"/>
         <activity
 
             android:name=".EventDetailActivity"
