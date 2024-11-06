@@ -114,6 +114,7 @@ public class ProfileActivity extends AppCompatActivity {
             String phoneNumber = phoneEditText.getText().toString().trim();
             boolean notificationsChecked = notifications.isChecked();
 
+
             if (name.isEmpty()) {
                 Toast.makeText(this, "No UserName Found", Toast.LENGTH_SHORT).show();
             } else if (email.isEmpty()) {

@@ -32,7 +32,6 @@ public class Organizer extends User {
         return facility;
     }
 
-
     public String getOrganizerID() {
         return organizerID;
     }
