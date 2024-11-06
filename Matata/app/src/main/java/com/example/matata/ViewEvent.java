@@ -53,6 +53,7 @@ public class ViewEvent extends AppCompatActivity {
     private String USER_ID;
     private DocumentReference eventRef;
     private DocumentReference entrantRef;
+    private Button drawBtn;
 
 
     @Override
@@ -72,6 +73,7 @@ public class ViewEvent extends AppCompatActivity {
         poster=findViewById(R.id.poster_pic_Display);
         showQR=findViewById(R.id.show_QR);
         waitlistBtn = findViewById(R.id.join_waitlist_button);
+        drawBtn = findViewById(R.id.draw_button);
 
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -92,6 +94,15 @@ public class ViewEvent extends AppCompatActivity {
             }
         });
 
+        drawBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(view.getContext(),EventDraw.class);
+                intent.putExtra("Unique_id",uid);
+                view.getContext().startActivity(intent);
+            }
+        });
+
         loadEventDetails(uid);
 
         eventRef = db.collection("EVENT_PROFILES").document(uid);
@@ -104,12 +115,13 @@ public class ViewEvent extends AppCompatActivity {
                 // check the status of entrant
                 DocumentSnapshot document = task.getResult();
                 List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+                List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
 
                 // Add a condition checking if entrant is in status Pending
-
-
-
-                if (waitlist != null && waitlist.contains(entrantRef)) {
+                if (pending != null && pending.contains(entrantRef)){
+                    waitlistBtn.setText("Pending");
+                }
+                else if (waitlist != null && waitlist.contains(entrantRef)) {
                     waitlistBtn.setText("Withdraw");
                 } else {
                     waitlistBtn.setText("Join Waitlist");
