@@ -24,12 +24,18 @@
         android:theme="@style/Theme.Matata"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
+        <activity android:name="EventHistory"/>
         <activity
 
             android:name=".EventDetailActivity"
             android:exported="false" />
         <activity android:name=".ViewEvent"
             android:exported="false" />
+
+        <activity android:name=".SignUpSheet"
+            android:parentActivityName=".ViewEvent"
+            android:exported="false"/>
+
 
         <activity android:name=".QR_camera"
             android:exported="false"

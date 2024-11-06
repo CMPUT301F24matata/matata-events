@@ -197,17 +197,40 @@ ornare leo felis, vel molestie felis placerat vitae"
                 </LinearLayout>
 
             </LinearLayout>
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_width="56dp"
-                android:id="@+id/show_QR"
-                android:layout_height="56dp"
-                android:layout_gravity="center"
-                android:foreground="@drawable/baseline_qr_code_scanner_24"
-                android:foregroundGravity="center"
-                android:foregroundTint="@color/black"
-                android:clickable="true"
-                android:enabled="true"
-                android:layout_marginRight="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/show_QR"
+                    android:layout_width="109dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="15dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/qr_code"
+                    android:enabled="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/baseline_qr_code_scanner_24"
+                    android:foregroundGravity="center"
+                    android:foregroundTint="@color/black" />
+
+                <Button
+                    android:id="@+id/join_waitlist_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Pending"
+                    android:layout_marginStart="16dp"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

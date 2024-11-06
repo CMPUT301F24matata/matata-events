@@ -87,13 +87,5 @@ public class AdminView extends AppCompatActivity {
             }
         });
 
-        recyclerView = findViewById(R.id.recycler_view_events); // Ensure you have this ID in your layout
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        eventList = new ArrayList<>();
-        eventList.add(new Event("Community Cleanup", "31-12-2023", "10:00 AM", "Community Park", "Join us for a community cleanup day!",25));
-
-        eventAdapter = new EventAdapter(this, eventList);
-        recyclerView.setAdapter(eventAdapter);
     }
 }
