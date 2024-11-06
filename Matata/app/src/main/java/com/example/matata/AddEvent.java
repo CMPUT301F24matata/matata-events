@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.provider.Settings;
 import android.util.Base64;
 import java.io.ByteArrayOutputStream;
 import android.content.Intent;
@@ -59,6 +60,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     private EditText descriptionBox;
     private EditText capacity;
     private FirebaseFirestore db;
+    private String USER_ID;
     private static final int PICK_IMAGE_REQUEST = 1;
 
 
@@ -68,6 +70,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         db = FirebaseFirestore.getInstance();
 
         String EVENT_ID=generateRandomEventID();
+
+        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_event);
@@ -135,7 +139,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
                     Log.wtf(TAG,"Okayyyy Letts goooo");
 
 
-                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()));
+                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()),EVENT_ID,USER_ID);
 
                     Intent intent = new Intent(view.getContext(), ViewEvent.class);
                     String u_id=SaveEventInfo(EVENT_ID,event,intent,view);
