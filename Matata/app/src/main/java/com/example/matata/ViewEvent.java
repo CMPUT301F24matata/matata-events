@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class ViewEvent extends AppCompatActivity {
 
     private String argbase64;
+    private String posterBase64;
     private ImageView goBack;
     private ImageView poster;
     private TextView title;
@@ -99,9 +100,10 @@ public class ViewEvent extends AppCompatActivity {
 
                         //TEst
                         argbase64=documentSnapshot.getString("bitmap");
+                        posterBase64=documentSnapshot.getString("Poster");
 
                         Bitmap QR=decodeBase64toBmp(argbase64);
-
+                        Bitmap jpegPoster=decodeBase64toBmp(posterBase64);
                         //Test
 
                         Log.wtf(TAG,"Okay now what");
@@ -112,6 +114,7 @@ public class ViewEvent extends AppCompatActivity {
                         time.setText(Time != null ? Time : "");
                         date.setText(Date != null ? Date : "");
                         location.setText(Location != null ? Location : "");
+                        poster.setImageBitmap(jpegPoster);
 
                         //
 

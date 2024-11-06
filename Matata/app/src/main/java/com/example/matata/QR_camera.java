@@ -115,6 +115,7 @@ public class QR_camera extends AppCompatActivity {
                             Log.d("QRCode", "QR Code found: " + rawValue);
                             Toast.makeText(QR_camera.this, "Scan Successful", Toast.LENGTH_SHORT).show();
 
+                            isActivityStarted=true;
                             Intent intent = new Intent(this, ViewEvent.class);
                             intent.putExtra("Unique_id", rawValue);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

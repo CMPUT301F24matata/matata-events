@@ -2,8 +2,12 @@ package com.example.matata;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Base64;
 import java.io.ByteArrayOutputStream;
 import android.content.Intent;
@@ -55,14 +59,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     private EditText descriptionBox;
     private EditText capacity;
     private FirebaseFirestore db;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
-    private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    loadProfilePicture();
-                }
-            });
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,14 +86,17 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         location=findViewById(R.id.editTextLocation);
 
 
+        //DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View view) {
-                if (!eveTitle.getText().toString().equals("") ||
+                if ((!eveTitle.getText().toString().equals("") ||
                         !descriptionBox.getText().toString().equals("") ||
                         !eventDate.getText().toString().equals("") ||
                         !eventTime.getText().toString().equals("") ||
-                        !capacity.getText().toString().equals("")
+                        !capacity.getText().toString().equals("") )
                 ){
                     ConfirmationFragment backpress=new ConfirmationFragment();
                     backpress.show(getSupportFragmentManager(),"BackPressFragment");
@@ -119,8 +120,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         });
 
         posterPic.setOnClickListener(v -> {
-            Intent intent = new Intent(AddEvent.this, ProfilePicActivity.class);
-            profilePicLauncher.launch(intent);
+            openSelector();
         });
 
         genrQR.setOnClickListener(new View.OnClickListener(){
@@ -171,16 +171,24 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     }
 
 
-    private void loadProfilePicture() {
-        String imageUriString = getSharedPreferences("ProfilePrefs", MODE_PRIVATE).getString("", null);
 
-        if (imageUriString != null) {
-            Uri imageUri = Uri.parse(imageUriString);
-            Glide.with(this).load(imageUri).into(posterPic);
-        } else {
-            posterPic.setImageResource(R.drawable.ic_upload);
-        }
+    private ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Uri imageUri = result.getData().getData();
+                    posterPic.setImageURI(imageUri);
+                }
+            }
+    );
+
+    public void openSelector(){
+        Intent intent =new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        pickImageLauncher.launch(intent);
     }
+
+
 
     private String SaveEventInfo(String EVENT_ID,Event event,Intent intent,View view){
 
@@ -190,6 +198,19 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         String compressedBMP=bmpCompression(bmp);
 
         Map<String, Object> Event_details = new HashMap<>();
+        if (posterPic.getDrawable()==null){
+            Event_details.put("Poster","");
+        }else{
+            Drawable drawable = posterPic.getDrawable();
+            Bitmap jpeg_bmp=null;
+            if (drawable instanceof BitmapDrawable) {
+                jpeg_bmp=((BitmapDrawable) drawable).getBitmap();
+                String base64jpeg=bmpCompression(jpeg_bmp);
+                Event_details.put("Poster",base64jpeg);
+            }
+
+        }
+
         Event_details.put("Title", event.getTitle());
         Event_details.put("Date", event.getDate());
         Event_details.put("Time", event.getTime());
