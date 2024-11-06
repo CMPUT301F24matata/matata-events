@@ -67,7 +67,7 @@
             android:id="@+id/full_name"
             style="@style/FancyEditText"
             android:hint="@string/enter_your_full_name"
-            android:drawableLeft="@drawable/ic_person"
+            android:drawableStart="@drawable/ic_person"
             android:drawablePadding="8dp" />
 
         <!-- Email -->
@@ -82,7 +82,7 @@
             style="@style/FancyEditText"
             android:hint="@string/enter_your_email_address"
             android:inputType="textEmailAddress"
-            android:drawableLeft="@drawable/ic_email"
+            android:drawableStart="@drawable/ic_email"
             android:drawablePadding="8dp" />
 
         <!-- Contact Number -->
@@ -97,7 +97,7 @@
             style="@style/FancyEditText"
             android:hint="@string/enter_your_contact_number"
             android:inputType="phone"
-            android:drawableLeft="@drawable/ic_phone"
+            android:drawableStart="@drawable/ic_phone"
             android:drawablePadding="8dp" />
 
         <!-- Emergency Contact Name -->
@@ -110,7 +110,7 @@
         <EditText
             android:id="@+id/emergency_contact_name"
             style="@style/FancyEditText"
-            android:drawableLeft="@drawable/ic_person"
+            android:drawableStart="@drawable/ic_person"
             android:drawablePadding="8dp"
             android:hint="@string/enter_emergency_contact_name" />
 
@@ -125,7 +125,7 @@
             android:id="@+id/emergency_contact_number"
             style="@style/FancyEditText"
             android:drawablePadding="8dp"
-            android:drawableLeft="@drawable/ic_phone"
+            android:drawableStart="@drawable/ic_phone"
             android:hint="@string/enter_emergency_contact_number"
             android:inputType="phone" />
 
