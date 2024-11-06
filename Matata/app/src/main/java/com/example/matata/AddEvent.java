@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.graphics.Bitmap;
 
+import android.provider.Settings;
 import android.util.Base64;
 import java.io.ByteArrayOutputStream;
 import android.content.Intent;
@@ -53,6 +54,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     private EditText capacity;
     private FirebaseFirestore db;
     private String EVENT_ID;
+    private String USER_ID;
 
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -68,6 +70,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         db = FirebaseFirestore.getInstance();
 
         EVENT_ID=generateRandomEventID();
+
+        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_event);
@@ -133,7 +137,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
                     Log.wtf(TAG,"Okayyyy Letts goooo");
 
 
-                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()),EVENT_ID);
+                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()),EVENT_ID,USER_ID);
 
                     Intent intent = new Intent(view.getContext(), ViewEvent.class);
                     String u_id=SaveEventInfo(EVENT_ID,event,intent,view);
@@ -195,6 +199,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         Event_details.put("Description",event.getDescription());
         Event_details.put("Capacity",event.getCapacity());
         Event_details.put("bitmap",compressedBMP);
+        Event_details.put("OrganizerId", event.getOrganizerid());
 
 
         DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);

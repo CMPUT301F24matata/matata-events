@@ -10,9 +10,10 @@ public class Event implements Serializable {
     private String location;
     private String description;
     private String Eventid;
+    private String Organizerid;
 
     // Constructor
-    public Event(String title, String date, String time, String location, String description, int capacity,String Eventid) {
+    public Event(String title, String date, String time, String location, String description, int capacity,String Eventid, String Organizerid) {
         this.title = title;
         this.Eventid=Eventid;
         this.date = date;
@@ -20,6 +21,7 @@ public class Event implements Serializable {
         this.capacity=capacity;
         this.location = location;
         this.description = description;
+        this.Organizerid = Organizerid;
     }
 
     /**
@@ -45,6 +47,7 @@ public class Event implements Serializable {
     public String getDescription() {
         return description;
     }
+    public String getOrganizerid() {return Organizerid;}
 
     /**
      * Setters for the Event class
@@ -70,4 +73,5 @@ public class Event implements Serializable {
     public void setEventid(String eventid) {
         Eventid = eventid;
     }
+    public void setOrganizerid(String organizerid) {Organizerid = organizerid;}
 }

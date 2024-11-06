@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String USER_ID = "";
     private String uid=null;
+    private ImageView eventHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +114,15 @@ public class MainActivity extends AppCompatActivity {
 
         eventAdapter = new EventAdapter(this, eventList);
         recyclerView.setAdapter(eventAdapter);
+
+        eventHistory = findViewById(R.id.event_history);
+        eventHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(view.getContext(),EventHistory.class);
+                view.getContext().startActivity(intent);
+           }
+        });
     }
 
     private void addEventsInit() {
@@ -131,9 +142,10 @@ public class MainActivity extends AppCompatActivity {
                                 String Time = document.getString("Time");
                                 String Location = document.getString("Location");
                                 String Description = document.getString("Description");
+                                String OrganizerId = document.getString("OrganizerId");
                                 int Capacity = document.getLong("Capacity").intValue();
                                 
-                                eventList.add(new Event(Title, Date, Time, Location, Description,Capacity,uid));
+                                eventList.add(new Event(Title, Date, Time, Location, Description,Capacity,uid,OrganizerId));
                                 eventAdapter.notifyDataSetChanged();
                             }
                         } else {
