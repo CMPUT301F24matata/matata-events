@@ -9,10 +9,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -21,8 +19,6 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -34,9 +30,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +42,10 @@ public class ProfileActivity extends AppCompatActivity {
     private String imageUriString;
     @SuppressLint("HardwareIds")
     private String USER_ID = "";
+    private CompoundButton adminView;
+    private Switch isOrganizer;
+
+    private View organizerField;
 
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -75,12 +72,14 @@ public class ProfileActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.saveButton);
         ImageView back = findViewById(R.id.btnBackProfile);
         notifications = findViewById(R.id.switch_notification);
+        isOrganizer = findViewById(R.id.switch_organizer);
         TextView initials = findViewById(R.id.initials); // Used to check if entrant/organiser/admin
-        CompoundButton adminView = findViewById(R.id.adminView);
+        adminView = findViewById(R.id.adminView);
         String Caller = getIntent().getStringExtra("Caller");
         if (Caller.equals("Admin")) {
             adminView.setChecked(true);
         }
+        organizerField = findViewById(R.id.organizerFields);
 
         imageUriString = getSharedPreferences("ProfilePrefs", MODE_PRIVATE)
                 .getString("profile_image_uri", null);
@@ -95,6 +94,19 @@ public class ProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(ProfileActivity.this, ProfilePicActivity.class);
             profilePicLauncher.launch(intent);
         });
+
+
+        isOrganizer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    organizerField.setVisibility(View.VISIBLE);
+                } else {
+                    organizerField.setVisibility(View.GONE);
+                }
+            }
+        });
+
 
         saveButton.setOnClickListener(v -> {
             String name = nameEditText.getText().toString().trim();
