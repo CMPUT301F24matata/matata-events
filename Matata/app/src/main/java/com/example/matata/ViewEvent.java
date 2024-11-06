@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -301,10 +302,14 @@ public class ViewEvent extends AppCompatActivity {
 
                         //TEst
                         argbase64=documentSnapshot.getString("bitmap");
-                        posterBase64=documentSnapshot.getString("Poster");
+                        String ImageUri=documentSnapshot.getString("Poster");
+                        if (ImageUri!=""){
+                            Glide.with(this).load(ImageUri);
+                        }
+                        else{;}
 
                         Bitmap QR=decodeBase64toBmp(argbase64);
-                        Bitmap jpegPoster=decodeBase64toBmp(posterBase64);
+
                         //Test
 
                         Log.wtf(TAG,"Okay now what");
@@ -315,7 +320,6 @@ public class ViewEvent extends AppCompatActivity {
                         time.setText(Time != null ? Time : "");
                         date.setText(Date != null ? Date : "");
                         location.setText(Location != null ? Location : "");
-                        poster.setImageBitmap(jpegPoster);
 
                         //
 
