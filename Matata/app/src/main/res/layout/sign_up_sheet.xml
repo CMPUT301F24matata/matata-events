@@ -13,8 +13,6 @@
         android:padding="16dp"
         android:elevation="8dp"
         android:layout_margin="8dp"
-        android:clipToOutline="true"
-        android:backgroundTint="#ffffff"
         android:background="@drawable/rounded_container_background">
 
         <!-- Header with Back Button and Title -->
@@ -32,20 +30,16 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/back_button"
                 android:src="@drawable/ic_back_arrow"
-                app:tint="#333333" />
+                app:tint="#4CAF50" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="@string/event_sign_up"
-                android:textSize="24sp"
+                android:textSize="16dp"
                 android:textColor="#333333"
-                android:fontFamily="sans-serif-medium"
-                android:shadowColor="#A3A3A3"
-                android:shadowRadius="1.5"
-                android:shadowDx="1"
-                android:shadowDy="1"/>
+                android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
         <!-- Divider -->
@@ -55,31 +49,41 @@
             android:background="#DDDDDD"
             android:layout_marginBottom="16dp" />
 
-
+        <!-- Form Fields -->
         <!-- Full Name -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/full_name"
             android:textSize="16sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="8dp" />
+
         <EditText
             android:id="@+id/full_name"
-            style="@style/FancyEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext_background"
+            android:padding="12dp"
             android:hint="@string/enter_your_full_name"
             android:drawableStart="@drawable/ic_person"
             android:drawablePadding="8dp" />
 
-        <!-- Email -->
+        <!-- Email Field -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/email_address"
             android:textSize="16sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="12dp" />
+
         <EditText
             android:id="@+id/email"
-            style="@style/FancyEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext_background"
+            android:padding="12dp"
             android:hint="@string/enter_your_email_address"
             android:inputType="textEmailAddress"
             android:drawableStart="@drawable/ic_email"
@@ -91,43 +95,73 @@
             android:layout_height="wrap_content"
             android:text="@string/contact_number"
             android:textSize="16sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="12dp" />
+
         <EditText
             android:id="@+id/contact_number"
-            style="@style/FancyEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext_background"
+            android:padding="12dp"
             android:hint="@string/enter_your_contact_number"
             android:inputType="phone"
             android:drawableStart="@drawable/ic_phone"
             android:drawablePadding="8dp" />
 
+        <!-- Emergency Contact Fields -->
         <!-- Emergency Contact Name -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/emergency_contact_name"
             android:textSize="16sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="12dp" />
+
         <EditText
             android:id="@+id/emergency_contact_name"
-            style="@style/FancyEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext_background"
+            android:padding="12dp"
+            android:hint="@string/enter_emergency_contact_name"
             android:drawableStart="@drawable/ic_person"
-            android:drawablePadding="8dp"
-            android:hint="@string/enter_emergency_contact_name" />
+            android:drawablePadding="8dp" />
 
-        <!-- Emergency Contact Number -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/emergency_contact_number"
             android:textSize="16sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="12dp" />
+
         <EditText
             android:id="@+id/emergency_contact_number"
-            style="@style/FancyEditText"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext_background"
+            android:padding="12dp"
             android:hint="@string/enter_emergency_contact_number"
-            android:inputType="phone" />
+            android:drawableStart="@drawable/ic_person"
+            android:drawablePadding="8dp" />
+        <!-- Arrival Time -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/estimated_arrival_time"
+            android:textSize="16sp"
+            android:textColor="#666666"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/arrival_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext_background"
+            android:padding="12dp"
+            android:hint="@string/enter_your_estimated_arrival_time" />
 
         <!-- Dietary Preferences -->
         <TextView
@@ -135,25 +169,16 @@
             android:layout_height="wrap_content"
             android:text="@string/dietary_preferences"
             android:textSize="16sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="12dp" />
+
         <Spinner
             android:id="@+id/dietary_preferences_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:prompt="@string/dietary_preferences_prompt" />
-
-
-        <!-- Arrival Time -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/estimated_arrival_time"
-            android:textSize="16sp"
-            android:textColor="#666666" />
-        <EditText
-            android:id="@+id/arrival_time"
-            style="@style/FancyEditText"
-            android:hint="@string/enter_your_estimated_arrival_time" />
+            android:background="@drawable/rounded_spinner_background"
+            android:padding="12dp"
+            android:spinnerMode="dropdown" />
 
         <!-- Accessibility Needs -->
         <TextView
@@ -161,37 +186,36 @@
             android:layout_height="wrap_content"
             android:text="@string/accessibility_needs"
             android:textSize="16sp"
-            android:textColor="#666666" />
+            android:textColor="#666666"
+            android:layout_marginTop="12dp" />
+
         <Spinner
             android:id="@+id/accessibility_needs_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:prompt="@string/accessibility_needs_prompt" />
+            android:background="@drawable/rounded_spinner_background"
+            android:padding="12dp"
+            android:spinnerMode="dropdown" />
 
-
-        <!-- Participation Agreement -->
+        <!-- Terms and Conditions -->
         <CheckBox
             android:id="@+id/agree_to_terms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/i_agree_to_the_terms_and_conditions_of_this_event"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginTop="16dp"
             android:textColor="#333333" />
 
-        <!-- Submit Button with Gradient Background -->
+        <!-- Submit Button -->
         <Button
             android:id="@+id/submit_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/submit"
-            android:textSize="18sp"
-            android:fontFamily="sans-serif-medium"
+            android:background="@drawable/rounded_button_background"
             android:textColor="#FFFFFF"
-            android:padding="12dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/gradient_button_background"
-            android:elevation="4dp" />
+            android:padding="16dp"
+            android:layout_marginTop="20dp"
+            android:elevation="6dp" />
     </LinearLayout>
 </ScrollView>
