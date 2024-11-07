@@ -138,7 +138,7 @@ public class ViewEvent extends AppCompatActivity {
                 }
 
 
-                waitlistBtn.setText("Join Waitlist");
+             //   waitlistBtn.setText("Join Waitlist");
                 //setWaitlistButtonClickListener(waitlist);
 
 
