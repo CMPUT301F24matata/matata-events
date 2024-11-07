@@ -88,7 +88,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Remaining: "
-            android:paddingTop="8dp" />
+            android:paddingTop="8dp"
+            android:visibility="gone"/>
 
         <!-- Accepted Section -->
         <TextView

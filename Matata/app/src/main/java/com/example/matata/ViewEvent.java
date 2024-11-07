@@ -121,6 +121,7 @@ public class ViewEvent extends AppCompatActivity {
                 DocumentSnapshot document = task.getResult();
                 List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
                 List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
+                List<DocumentReference> accepted = (List<DocumentReference>) document.get("pending");
 
                 String organizerId = document.getString("OrganizerID");
                 if (organizerId == null || !organizerId.equals(USER_ID)) {
@@ -131,6 +132,8 @@ public class ViewEvent extends AppCompatActivity {
                 // Add a condition checking if entrant is in status Pending
                 if (pending != null && pending.contains(entrantRef)) {
                     waitlistBtn.setText("Pending");
+                } else if (accepted != null && accepted.contains(entrantRef)){
+                    waitlistBtn.setText("Accepted");
                 } else if (waitlist != null && waitlist.contains(entrantRef)) {
                     waitlistBtn.setText("Withdraw");
                 } else {
@@ -179,6 +182,7 @@ public class ViewEvent extends AppCompatActivity {
                         waitlistBtn.setText("Accepted");
                         // Additional code for when the invitation is accepted
                         Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
+                        addToAccepted();
                     }
                 });
 
@@ -196,12 +200,51 @@ public class ViewEvent extends AppCompatActivity {
                                 }).addOnFailureListener(e -> {
                                     Log.e("Firebase", "Error declining invitation", e);
                                 });
+                        addToRejected();
                     }
                 });
 
                 // Show the dialog
                 AlertDialog dialog = builder.create();
                 dialog.show();
+            }
+
+            private void addToRejected() {
+                db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+                    List<DocumentReference> rejected = (List<DocumentReference>) eventSnapshot.get("rejected");
+
+                    if (rejected == null) {
+                        rejected = new ArrayList<>();
+                    }
+                    rejected.add(entrantRef);
+                    transaction.update(eventRef, "rejected", rejected);
+                    return null;
+                }).addOnSuccessListener(aVoid -> {
+                    Log.d("Firebase", "Entrant added to rejected list successfully");
+                    eventRef.update("pending", FieldValue.arrayRemove(entrantRef));
+                }).addOnFailureListener(e -> {
+                    Log.e("Firebase", "Error adding entrant to rejected list", e);
+                });
+            }
+
+            private void addToAccepted() {
+                db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+                    List<DocumentReference> accepted = (List<DocumentReference>) eventSnapshot.get("accepted");
+
+                    if (accepted == null) {
+                        accepted = new ArrayList<>();
+                    }
+                    accepted.add(entrantRef);
+                    transaction.update(eventRef, "accepted", accepted);
+                    return null;
+                }).addOnSuccessListener(aVoid -> {
+                    Log.d("Firebase", "Entrant added to accepted list successfully");
+                    eventRef.update("pending", FieldValue.arrayRemove(entrantRef));
+                }).addOnFailureListener(e -> {
+                    Log.e("Firebase", "Error adding entrant to accepted list", e);
+                });
             }
 
             private void joinWaitlist() {
@@ -289,6 +332,7 @@ public class ViewEvent extends AppCompatActivity {
                 }).addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "Entrant added to waitlist successfully");
                     waitlistBtn.setText("Withdraw");
+                    eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
                 }).addOnFailureListener(e -> {
                     Log.e("Firebase", "Error adding entrant to waitlist", e);
                 });

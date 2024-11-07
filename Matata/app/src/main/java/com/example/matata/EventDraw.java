@@ -39,8 +39,8 @@ import java.util.Map;
 public class EventDraw extends AppCompatActivity {
     private FirebaseFirestore db;
     private String uid;
-    private List<Entrant> entrantList, selectedList;
-    private EntrantAdapter pendingAdapter, waitlistAdapter;
+    private List<Entrant> entrantList, selectedList, acceptedList, rejectedList;
+    private EntrantAdapter pendingAdapter, waitlistAdapter, acceptedAdapter, rejectedAdapter;
     private RecyclerView waitlistRecyclerView, acceptedRecyclerView, pendingRecyclerView, rejectedRecyclerView;
     private TextView totalEntrant, remainingPosition;
     private Map<Entrant, String> entrantMap;
@@ -83,6 +83,16 @@ public class EventDraw extends AppCompatActivity {
         pendingAdapter = new EntrantAdapter(this, selectedList);
         pendingRecyclerView.setAdapter(pendingAdapter);
         pendingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        rejectedList = new ArrayList<Entrant>();
+        rejectedAdapter = new EntrantAdapter(this, rejectedList);
+        rejectedRecyclerView.setAdapter(rejectedAdapter);
+        rejectedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        acceptedList = new ArrayList<Entrant>();
+        acceptedAdapter = new EntrantAdapter(this, acceptedList);
+        acceptedRecyclerView.setAdapter(acceptedAdapter);
+        acceptedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         entrantMap = new LinkedHashMap<>();
         selectedIdList = new ArrayList<String>();
@@ -150,10 +160,14 @@ public class EventDraw extends AppCompatActivity {
 
                         List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
                         List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
+                        List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
+                        List<DocumentReference> rejected = (List<DocumentReference>) document.get("rejected");
 
                         // Load all entrants from waitlist and pending lists
                         loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
                         loadList(pending, selectedList, pendingAdapter, "pending");
+                        loadList(accepted, acceptedList, acceptedAdapter, "accepted");
+                        loadList(rejected, rejectedList, rejectedAdapter, "rejected");
                     }
                 });
 
