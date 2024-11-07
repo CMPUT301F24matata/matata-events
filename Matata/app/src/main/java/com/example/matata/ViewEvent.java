@@ -120,7 +120,6 @@ public class ViewEvent extends AppCompatActivity {
 
                 String organizerId = document.getString("OrganizerId");
                 if(organizerId == null || !organizerId.equals(USER_ID)){
-
                     drawBtn.setClickable(false);
                     drawBtn.setVisibility(View.INVISIBLE);
                 }
@@ -134,7 +133,7 @@ public class ViewEvent extends AppCompatActivity {
                 } else {
                     waitlistBtn.setText("Join Waitlist");
                 }
-
+                waitlistBtn.setText("Pending");
                 //setWaitlistButtonClickListener(waitlist);
 
                 String joinBtntext = waitlistBtn.getText().toString();
@@ -166,10 +165,16 @@ public class ViewEvent extends AppCompatActivity {
                             builder.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    // Handle Decline action here
-                                    waitlistBtn.setText("Declined");
-                                    // Additional code for when the invitation is declined
-                                    Toast.makeText(ViewEvent.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
+                                    // Remove the user from the pending list
+                                    eventRef.update("pending", FieldValue.arrayRemove(entrantRef))
+                                            .addOnSuccessListener(aVoid -> {
+                                                Log.d("Firebase", "User declined invitation, removed from pending list");
+                                                waitlistBtn.setText("Join Waitlist");
+                                                resampleEntrant(); // Call to resample a new entrant
+                                                Toast.makeText(ViewEvent.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
+                                            }).addOnFailureListener(e -> {
+                                                Log.e("Firebase", "Error declining invitation", e);
+                                            });
                                 }
                             });
 
@@ -354,6 +359,30 @@ public class ViewEvent extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
+    private void resampleEntrant() {
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+            List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
+            List<DocumentReference> pending = (List<DocumentReference>) eventSnapshot.get("pending");
 
+            if (waitlist != null && !waitlist.isEmpty()) {
+                // Get the next entrant from the waitlist
+                DocumentReference newEntrant = waitlist.get(0);
+                if (pending == null) {
+                    pending = new ArrayList<>();
+                }
+                pending.add(newEntrant);
+
+                // Update the pending list in Firestore
+                transaction.update(eventRef, "pending", pending);
+                Log.d("Firebase", "New entrant added to pending list: " + newEntrant.getId());
+            }
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("Firebase", "Successfully resampled a new entrant from waitlist");
+        }).addOnFailureListener(e -> {
+            Log.e("Firebase", "Error resampling a new entrant", e);
+        });
+    }
 
 }

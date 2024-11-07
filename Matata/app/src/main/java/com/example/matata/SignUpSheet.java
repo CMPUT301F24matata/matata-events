@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -24,13 +25,15 @@ import java.util.Map;
 
 public class SignUpSheet extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up_sheet);
 
-        FirebaseFirestore db= FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        ImageButton back = findViewById(R.id.btnBack);
         EditText name = findViewById(R.id.full_name);
         EditText email = findViewById(R.id.email);
         EditText phone = findViewById(R.id.contact_number);
@@ -42,10 +45,11 @@ public class SignUpSheet extends AppCompatActivity {
         CheckBox terms = findViewById(R.id.agree_to_terms);
         Button submit = findViewById(R.id.submit_button);
 
-        Intent intent=getIntent();
-
+        Intent intent = getIntent();
         String uid=intent.getStringExtra("Unique_id");
         Log.wtf(TAG,uid);
+
+
 
         // Set up adapter for dietary preferences
         ArrayAdapter<CharSequence> dietAdapter = ArrayAdapter.createFromResource(
@@ -59,6 +63,10 @@ public class SignUpSheet extends AppCompatActivity {
         accessibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accessibilitySpinner.setAdapter(accessibilityAdapter);
 
+        back.setOnClickListener(v -> {
+            Log.d("SignUpSheet", "Back button clicked");
+            finish();
+        });
 
         submit.setOnClickListener(v -> {
 
@@ -69,7 +77,7 @@ public class SignUpSheet extends AppCompatActivity {
             String s_emergency_phone = emergency_phone.getText().toString().trim();
             String s_diet = dietSpinner.getSelectedItem().toString().trim();
             String s_arrival = arrival.getText().toString().trim();
-            String s_accessibility  = accessibilitySpinner .getSelectedItem().toString().trim();
+            String s_accessibility = accessibilitySpinner.getSelectedItem().toString().trim();
             boolean s_terms = terms.isChecked();
 
             if (s_name.isEmpty()) {
@@ -106,8 +114,10 @@ public class SignUpSheet extends AppCompatActivity {
 
                 finish();
             }
-
         });
 
+
+
     }
+
 }
