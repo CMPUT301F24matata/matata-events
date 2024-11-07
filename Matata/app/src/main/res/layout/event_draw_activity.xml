@@ -150,6 +150,32 @@
             android:textStyle="bold"
             android:paddingTop="16dp" />
 
+        <Switch
+            android:id="@+id/limitSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="250dp"
+            android:text="Set waitlist limit"/>
+
+        <EditText
+            android:id="@+id/waitlistLimit"
+            android:paddingLeft="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="365dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:inputType="number"
+            android:hint="# of entrants allowed in waitlist"
+            android:drawableEnd="@drawable/ic_edit"
+            android:background="@drawable/edit_text_background" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:visibility="gone"
+            android:layout_marginLeft="300dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"/>
 
 
         <androidx.recyclerview.widget.RecyclerView

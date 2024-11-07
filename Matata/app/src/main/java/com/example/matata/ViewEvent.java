@@ -189,7 +189,31 @@ public class ViewEvent extends AppCompatActivity {
                                 // Show dialog to confirm exiting the waitlist
                                 withdrawDialog();
                             } else {
-                                confirmationDialog(); // Show confirmation dialog for registration
+                                eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                // Retrieve the 'limit' field
+                                                int limit = document.getLong("WaitlistLimit").intValue();
+                                                List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+                                                if (limit == -1 || waitlist.size() < limit) {
+                                                    confirmationDialog(); // Show confirmation dialog for registration
+                                                } else {
+                                                    runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Toast.makeText(ViewEvent.this, "Waitlist Full", Toast.LENGTH_SHORT).show();
+                                                            // Optionally, handle the over-limit case
+                                                        }
+                                                    });                                                }
+                                            } else {
+                                                System.out.println("No such document!");
+                                            }
+                                        }
+                                    }
+                                });
                             }
                         }
                     });

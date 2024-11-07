@@ -11,7 +11,7 @@ public class Event implements Serializable {
     private String description;
     private String Eventid;
     private String Organizerid;
-    private int waitList;
+    private int waitlistLimit;
 
     // Constructor
     public Event(String title, String date, String time, String location, String description, int capacity,String Eventid, String Organizerid, int weightlistSize) {
@@ -23,7 +23,7 @@ public class Event implements Serializable {
         this.location = location;
         this.description = description;
         this.Organizerid = Organizerid;
-        this.waitList = weightlistSize;
+        this.waitlistLimit = weightlistSize;
     }
 
     /**
@@ -50,7 +50,7 @@ public class Event implements Serializable {
         return description;
     }
     public String getOrganizerid() {return Organizerid;}
-    public int getWaitList() {return waitList;}
+    public int getWaitlistLimit() {return waitlistLimit;}
 
     /**
      * Setters for the Event class
@@ -77,5 +77,5 @@ public class Event implements Serializable {
         Eventid = eventid;
     }
     public void setOrganizerid(String organizerid) {Organizerid = organizerid;}
-    public void setWaitList(int waitList) {this.waitList = waitList;}
+    public void setWaitlistLimit(int waitlistLimit) {this.waitlistLimit = waitlistLimit;}
 }

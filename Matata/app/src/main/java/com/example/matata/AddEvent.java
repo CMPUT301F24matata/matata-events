@@ -2,19 +2,14 @@ package com.example.matata;
 
 import static android.content.ContentValues.TAG;
 
-import static java.lang.System.out;
-
 import android.app.Activity;
 import android.graphics.Bitmap;
 
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.util.Base64;
 import java.io.ByteArrayOutputStream;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +26,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -42,10 +36,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import org.checkerframework.checker.units.qual.N;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -226,6 +217,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         Event_details.put("Location",event.getLocation());
         Event_details.put("Description",event.getDescription());
         Event_details.put("Capacity",event.getCapacity());
+        Event_details.put("WaitlistLimit", event.getWaitlistLimit());
         Event_details.put("bitmap",compressedBMP);
 
         if (isDefaultImage) {

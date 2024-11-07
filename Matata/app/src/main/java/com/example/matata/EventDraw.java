@@ -7,8 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +48,9 @@ public class EventDraw extends AppCompatActivity {
     private ImageView backBtn;
     private Button drawBtn;
     private Button clearPendingList;
+    private Switch limitSwitch;
+    private EditText waitlistLimit;
+    private Button saveButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,6 +106,39 @@ public class EventDraw extends AppCompatActivity {
                 clearConfirmDialog();
                 Log.d("Selected List", "Selected List Cleared");
                 pendingAdapter.notifyDataSetChanged();
+            }
+        });
+
+        limitSwitch = findViewById(R.id.limitSwitch);
+        waitlistLimit = findViewById(R.id.waitlistLimit);
+        saveButton = findViewById(R.id.saveButton);
+
+        limitSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    waitlistLimit.setVisibility(View.VISIBLE);
+                    saveButton.setVisibility(View.VISIBLE);
+                } else {
+                    waitlistLimit.setVisibility(View.GONE);
+                    saveButton.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (waitlistLimit != null) {
+                    try {
+                        int limit = Integer.parseInt(waitlistLimit.getText().toString().trim());
+                        db.collection("EVENT_PROFILES").document(uid).update("WaitlistLimit", Integer.valueOf(waitlistLimit.getText().toString().trim()));
+                        Toast.makeText(EventDraw.this, "Limit Saved", Toast.LENGTH_SHORT).show();
+                    } catch (NumberFormatException e) {
+                        waitlistLimit.setError("Invalid number, please endter an integer");
+                        waitlistLimit.requestFocus();
+                    }
+                }
             }
         });
 

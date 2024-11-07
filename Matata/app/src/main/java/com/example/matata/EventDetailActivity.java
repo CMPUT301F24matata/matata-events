@@ -13,11 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -103,7 +106,31 @@ public class EventDetailActivity extends AppCompatActivity {
                     // Show dialog to confirm exiting the waitlist
                     withdrawDialog();
                 } else {
-                    confirmationDialog(); // Show confirmation dialog for registration
+                    eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    // Retrieve the 'limit' field
+                                    int limit = document.getLong("WaitlistLimit").intValue();
+                                    List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+                                    if (limit == -1 || waitlist.size() < limit) {
+                                        confirmationDialog(); // Show confirmation dialog for registration
+                                    } else {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(EventDetailActivity.this, "Waitlist Full", Toast.LENGTH_SHORT).show();
+                                                // Optionally, handle the over-limit case
+                                            }
+                                        });                                                }
+                                } else {
+                                    System.out.println("No such document!");
+                                }
+                            }
+                        }
+                    });
                 }
             }
 
@@ -145,7 +172,7 @@ public class EventDetailActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                addToWaitList();
+                                //addToWaitList();
                             }
                         });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -161,6 +188,7 @@ public class EventDetailActivity extends AppCompatActivity {
                 db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot eventSnapshot = transaction.get(eventRef);
                     List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
+
 
                     if (waitlist == null) {
                         waitlist = new ArrayList<>();
