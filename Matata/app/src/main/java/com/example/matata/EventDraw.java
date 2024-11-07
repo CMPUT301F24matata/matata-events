@@ -43,6 +43,7 @@ public class EventDraw extends AppCompatActivity {
     private TextView title;
     private ImageView backBtn;
     private Button drawBtn;
+    private Button clearPendingList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,6 +89,18 @@ public class EventDraw extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 drawConfirmDialog();
+            }
+        });
+
+        clearPendingList = findViewById(R.id.clearPendingList);
+        clearPendingList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //ClearPendingListFragment clear = new ClearPendingListFragment();
+                //clear.show(getSupportFragmentManager(), "ClearPendingListFragment");
+                selectedList.clear();
+                selectedIdList.clear();
+                Log.d("Selected List", "Selected List Cleared");
             }
         });
 
