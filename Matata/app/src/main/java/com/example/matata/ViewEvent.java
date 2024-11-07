@@ -86,6 +86,7 @@ public class ViewEvent extends AppCompatActivity {
         eventRef = db.collection("EVENT_PROFILES").document(uid);
         entrantRef = db.collection("USER_PROFILES").document(USER_ID);
 
+
         goBack.setOnClickListener(v -> {
             finish();
         });
@@ -109,8 +110,8 @@ public class ViewEvent extends AppCompatActivity {
             }
         });
 
-        loadEventDetails(uid);
 
+        loadEventDetails(uid);
 
         //checkEntrantStatus(uid);
         eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -139,7 +140,6 @@ public class ViewEvent extends AppCompatActivity {
 
                 waitlistBtn.setText("Join Waitlist");
                 //setWaitlistButtonClickListener(waitlist);
-
 
 
                 String joinBtntext = waitlistBtn.getText().toString();
@@ -207,39 +207,41 @@ public class ViewEvent extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
 
-                        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    // Retrieve the 'limit' field
-                                    int limit = document.getLong("WaitlistLimit").intValue();
-                                    List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
-                                    if (limit == -1 || waitlist.size() < limit) {
-                                        confirmationDialog(); // Show confirmation dialog for registration
-                                    } else {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(ViewEvent.this, "Waitlist Full", Toast.LENGTH_SHORT).show();
-                                                // Optionally, handle the over-limit case
+                                    eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful() && task.getResult().exists()) {
+                                                    DocumentSnapshot document = task.getResult();
+                                                    Long limitValue = document.getLong("WaitlistLimit");
+
+                                                if (limitValue != null) {
+                                                    int limit = limitValue.intValue();
+                                                    List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+
+                                                    if (limit == -1 || (waitlist != null && waitlist.size() < limit)) {
+                                                        confirmationDialog(); // Show confirmation dialog for registration
+                                                    }
+
+                                                    else {
+                                                        runOnUiThread(() ->
+                                                                Toast.makeText(ViewEvent.this, "Waitlist Full", Toast.LENGTH_SHORT).show()
+                                                        );
+                                                    }
+                                                } else {
+                                                    Log.e(TAG, "Error: WaitlistLimit field missing");
+                                                }
+                                            } else {
+                                                Log.e(TAG, "No such document or error fetching document");
                                             }
-                                        });
-                                    }
-                                } else {
-                                    System.out.println("No such document!");
                                 }
-                            }
+                            });
                         }
                     });
-                    }
-                    });
+
                 }
             }
         });
     }
-
 
 
 
@@ -405,30 +407,28 @@ public class ViewEvent extends AppCompatActivity {
 
             private void resampleEntrant() {
                 db.runTransaction((Transaction.Function<Void>) transaction -> {
-                    DocumentSnapshot eventSnapshot = transaction.get(eventRef);
-                    List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
-                    List<DocumentReference> pending = (List<DocumentReference>) eventSnapshot.get("pending");
+                    DocumentSnapshot snapshot = transaction.get(eventRef);
+                    List<DocumentReference> waitlist = (List<DocumentReference>) snapshot.get("waitlist");
+                    List<DocumentReference> pending = (List<DocumentReference>) snapshot.get("pending");
 
                     if (waitlist != null && !waitlist.isEmpty()) {
-                        // Get the next entrant from the waitlist
                         DocumentReference newEntrant = waitlist.get(0);
-                        if (pending == null) {
-                            pending = new ArrayList<>();
-                        }
+                        if (pending == null) pending = new ArrayList<>();
                         pending.add(newEntrant);
 
-                        // Update the pending list in Firestore
+                        // Update the pending list and remove from waitlist
                         transaction.update(eventRef, "pending", pending);
+                        transaction.update(eventRef, "waitlist", FieldValue.arrayRemove(newEntrant));
+
                         Log.d("Firebase", "New entrant added to pending list: " + newEntrant.getId());
                     }
                     return null;
                 }).addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "Successfully resampled a new entrant from waitlist");
-                }).addOnFailureListener(e -> {
-                    Log.e("Firebase", "Error resampling a new entrant", e);
-                });
+                    Toast.makeText(ViewEvent.this, "A new entrant has been selected!", Toast.LENGTH_SHORT).show();
+                }).addOnFailureListener(e -> Log.e("Firebase", "Error resampling a new entrant", e));
             }
 
 
-    }
+        }
 
