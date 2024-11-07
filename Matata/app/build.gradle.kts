@@ -70,6 +70,7 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.android.gms:play-services-base:18.2.0")
     implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
     coreLibraryDesugaring("com.android.tools.desugar_jdk_libs:1.1.6")
     implementation(libs.appcompat)

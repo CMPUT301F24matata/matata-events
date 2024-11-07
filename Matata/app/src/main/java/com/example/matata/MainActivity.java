@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
         notificationButton.setOnClickListener(view -> {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
+            Log.d("NotificationTest", "Sending notifications to waitlist...");
             retrieveWaitlistAndNotify();
         });
 
@@ -158,17 +159,27 @@ public class MainActivity extends AppCompatActivity {
 
     private void retrieveWaitlistAndNotify() {
         db.collection("EVENT_PROFILES")
-                .whereEqualTo("OrganizerId", USER_ID)
+                .whereEqualTo("OrganizerID", USER_ID)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            List<String> waitlistIds = (List<String>) document.get("waitlist");
-                            String title = "Event Update";
-                            String message = "You have been selected for an event!";
-                            notificationManager.sendNotificationsToWaitlist(this, waitlistIds, title, message);
+                            String organizerId = document.getString("OrganizerID");
+                            Log.d("OrganizerId", "OrganizerId: " + organizerId);  // Log each OrganizerId
+
+                            List<Object> waitlistIds = (List<Object>) document.get("waitlist");
+                            if (waitlistIds != null && !waitlistIds.isEmpty()) {
+                                String title = "Event Update";
+                                String message = "You have been selected for an event!";
+                                notificationManager.sendNotificationsToWaitlist(this, waitlistIds, title, message);
+                            } else {
+                                Log.d("Waitlist Acquisition", "No waitlist entries found.");
+                            }
                         }
                     }
                 });
     }
 }
+
+
+

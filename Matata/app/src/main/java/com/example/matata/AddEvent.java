@@ -219,6 +219,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         Event_details.put("Capacity",event.getCapacity());
         Event_details.put("WaitlistLimit", event.getWaitlistLimit());
         Event_details.put("bitmap",compressedBMP);
+        Event_details.put("OrganizerID",USER_ID);
 
         if (isDefaultImage) {
             Event_details.put("Poster", "");
