@@ -121,7 +121,8 @@ public class ViewEvent extends AppCompatActivity {
                 List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
 
                 String organizerId = document.getString("OrganizerId");
-                if(!organizerId.equals(USER_ID)){
+                if(organizerId == null || !organizerId.equals(USER_ID)){
+
                     drawBtn.setClickable(false);
                     drawBtn.setVisibility(View.INVISIBLE);
                 }
