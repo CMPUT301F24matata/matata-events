@@ -113,37 +113,12 @@ public class ViewEvent extends AppCompatActivity {
 
         loadEventDetails(uid);
 
+        refreshWaitlistStatus();
+
         //checkEntrantStatus(uid);
         eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                // check the status of entrant
-                DocumentSnapshot document = task.getResult();
-                List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
-                List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
-                List<DocumentReference> accepted = (List<DocumentReference>) document.get("pending");
-
-                String organizerId = document.getString("OrganizerID");
-                if (organizerId == null || !organizerId.equals(USER_ID)) {
-                    drawBtn.setClickable(false);
-                    drawBtn.setVisibility(View.INVISIBLE);
-                }
-
-                // Add a condition checking if entrant is in status Pending
-                if (pending != null && pending.contains(entrantRef)) {
-                    waitlistBtn.setText("Pending");
-                } else if (accepted != null && accepted.contains(entrantRef)){
-                    waitlistBtn.setText("Accepted");
-                } else if (waitlist != null && waitlist.contains(entrantRef)) {
-                    waitlistBtn.setText("Withdraw");
-                } else {
-                    waitlistBtn.setText("Join Waitlist");
-                }
-
-
-             //   waitlistBtn.setText("Join Waitlist");
-                //setWaitlistButtonClickListener(waitlist);
-
 
                 String joinBtntext = waitlistBtn.getText().toString();
 
@@ -280,8 +255,48 @@ public class ViewEvent extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshWaitlistStatus();
+    }
+    private void refreshWaitlistStatus() {
+        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+                        List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
+                        List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
 
-            private void confirmationDialog() {
+                        String organizerId = document.getString("OrganizerID");
+                        if (organizerId == null || !organizerId.equals(USER_ID)) {
+                            drawBtn.setClickable(false);
+                            drawBtn.setVisibility(View.INVISIBLE);
+                        }
+
+                        if (pending != null && pending.contains(entrantRef)) {
+                            waitlistBtn.setText("Pending");
+                        } else if (accepted != null && accepted.contains(entrantRef)) {
+                            waitlistBtn.setText("Accepted");
+                        } else if (waitlist != null && waitlist.contains(entrantRef)) {
+                            waitlistBtn.setText("Withdraw");
+                        } else {
+                            waitlistBtn.setText("Join Waitlist");
+                        }
+                    }
+                } else {
+                    Log.e("Firebase", "Error fetching event details: ", task.getException());
+                }
+            }
+        });
+    }
+
+
+
+    private void confirmationDialog() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
                 builder.setCancelable(true);
                 builder.setMessage("Confirm to join waitlist");
@@ -452,96 +467,3 @@ public class ViewEvent extends AppCompatActivity {
         }
 
 
-
-//                if (joinBtntext.equals("Pending")) {
-//                    waitlistBtn.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            // Create an AlertDialog builder
-//                            AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
-//                            builder.setTitle("Invitation");
-//                            builder.setMessage("Do you want to accept or decline the invitation?");
-//
-//                            // Set the Accept button
-//                            builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    // Handle Accept action here
-//                                    Intent intent = new Intent(ViewEvent.this, SignUpSheet.class);
-//                                    intent.putExtra("Unique_id", uid);
-//                                    startActivity(intent);
-//                                    waitlistBtn.setText("Accepted");
-//                                    // Additional code for when the invitation is accepted
-//                                    Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
-//                                }
-//                            });
-//
-//                            // Set the Decline button
-//                            builder.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    // Remove the user from the pending list
-//                                    eventRef.update("pending", FieldValue.arrayRemove(entrantRef))
-//                                            .addOnSuccessListener(aVoid -> {
-//                                                Log.d("Firebase", "User declined invitation, removed from pending list");
-//                                                waitlistBtn.setText("Join Waitlist");
-//                                                resampleEntrant(); // Call to resample a new entrant
-//                                                Toast.makeText(ViewEvent.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
-//                                            }).addOnFailureListener(e -> {
-//                                                Log.e("Firebase", "Error declining invitation", e);
-//                                            });
-//                                }
-//                            });
-//
-//                            // Show the dialog
-//                            AlertDialog dialog = builder.create();
-//                            dialog.show();
-//                        }
-//                    });
-//
-//                } else if (joinBtntext.equals("Withdraw")) {
-//                    waitlistBtn.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            withdrawDialog();
-//                        }
-//                    });
-//
-//
-//                } else if (joinBtntext.equals("Join Waitlist")) {
-//                    waitlistBtn.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//
-//                                    eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                            if (task.isSuccessful() && task.getResult().exists()) {
-//                                                    DocumentSnapshot document = task.getResult();
-//                                                    Long limitValue = document.getLong("WaitlistLimit");
-//
-//                                                if (limitValue != null) {
-//                                                    int limit = limitValue.intValue();
-//                                                    List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
-//
-//                                                    if (limit == -1 || (waitlist != null && waitlist.size() < limit)) {
-//                                                        confirmationDialog(); // Show confirmation dialog for registration
-//                                                    }
-//
-//                                                    else {
-//                                                        runOnUiThread(() ->
-//                                                                Toast.makeText(ViewEvent.this, "Waitlist Full", Toast.LENGTH_SHORT).show()
-//                                                        );
-//                                                    }
-//                                                } else {
-//                                                    Log.e(TAG, "Error: WaitlistLimit field missing");
-//                                                }
-//                                            } else {
-//                                                Log.e(TAG, "No such document or error fetching document");
-//                                            }
-//                                }
-//                            });
-//                        }
-//                    });
-//
-//                }
