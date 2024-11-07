@@ -31,6 +31,7 @@ import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,7 @@ public class EventDraw extends AppCompatActivity {
         selectedIdList = new ArrayList<String>();
 
         //loadEntrants();
+        loadLimit(uid);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +122,7 @@ public class EventDraw extends AppCompatActivity {
                     waitlistLimit.setVisibility(View.VISIBLE);
                     saveButton.setVisibility(View.VISIBLE);
                 } else {
+                    removeLimit(uid);
                     waitlistLimit.setVisibility(View.GONE);
                     saveButton.setVisibility(View.GONE);
                 }
@@ -130,14 +133,7 @@ public class EventDraw extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (waitlistLimit != null) {
-                    try {
-                        int limit = Integer.parseInt(waitlistLimit.getText().toString().trim());
-                        db.collection("EVENT_PROFILES").document(uid).update("WaitlistLimit", Integer.valueOf(waitlistLimit.getText().toString().trim()));
-                        Toast.makeText(EventDraw.this, "Limit Saved", Toast.LENGTH_SHORT).show();
-                    } catch (NumberFormatException e) {
-                        waitlistLimit.setError("Invalid number, please endter an integer");
-                        waitlistLimit.requestFocus();
-                    }
+                    setLimit(uid);
                 }
             }
         });
@@ -287,5 +283,39 @@ public class EventDraw extends AppCompatActivity {
         });
     }
 
+
+    private void setLimit(String uid) {
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
+
+        eventRef.update("WaitlistLimit", Integer.valueOf(waitlistLimit.getText().toString().trim()));
+        Toast.makeText(EventDraw.this, "Limit Saved", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void removeLimit(String uid) {
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
+
+        eventRef.update("WaitlistLimit", -1);
+        Toast.makeText(EventDraw.this, "Limit Removed", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void loadLimit(String uid) {
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
+
+        eventRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        int limit = documentSnapshot.getLong("WaitlistLimit").intValue();
+                        String stringLimit = String.valueOf(limit);
+                        if (limit != -1) {
+                            limitSwitch.setChecked(true);
+                            waitlistLimit.setText(stringLimit != null ? stringLimit : "");
+                        }
+                    }
+
+                })
+                .addOnFailureListener(e -> Toast.makeText(EventDraw.this, "Failed to load limit", Toast.LENGTH_SHORT).show());
+    }
 
 }
