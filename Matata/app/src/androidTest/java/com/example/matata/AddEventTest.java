@@ -17,6 +17,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -46,6 +47,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -142,6 +146,36 @@ public class AddEventTest {
         Thread.sleep(2000);
 
         Intents.intended(IntentMatchers.hasComponent(ViewEvent.class.getName()));
+
+        // Database verification
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Add a delay to give Firestore enough time to save the data
+        Thread.sleep(3000);
+
+        // Assuming EVENT_ID is generated and saved in Firestore, retrieve and verify the data
+        String expectedEventTitle = "Testing Event";
+        String expectedDescription = "Testing Description";
+        String expectedCapacity = "100";
+
+        db.collection("EVENT_PROFILES")
+                .whereEqualTo("Title", expectedEventTitle)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (querySnapshot.isEmpty()) {
+                        throw new AssertionError("No matching document found in Firestore for the given Title");
+                    }
+
+                    for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                        // Validate the document fields
+                        assertEquals(expectedEventTitle, document.getString("Title"));
+                        assertEquals(expectedDescription, document.getString("Description"));
+                        assertEquals(expectedCapacity, String.valueOf(document.getLong("Capacity")));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    throw new AssertionError("Failed to retrieve document: " + e.getMessage());
+                });
     }
 
     @Test

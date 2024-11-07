@@ -43,7 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String imageUriString;
     @SuppressLint("HardwareIds")
     private String USER_ID = "";
-    private CompoundButton adminView;
+    CompoundButton adminView;
     private Switch isOrganizer;
 
     private View organizerField;
@@ -261,7 +261,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
     }
 
-    private void loadProfilePicture(String imageUriString) {
+    void loadProfilePicture(String imageUriString) {
         if (imageUriString != null) {
             Uri imageUri = Uri.parse(imageUriString);
             Glide.with(this).load(imageUri).into(profileIcon);
