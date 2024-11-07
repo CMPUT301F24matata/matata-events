@@ -2,8 +2,10 @@ package com.example.matata;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.provider.Settings;
 import android.util.Base64;
 import java.io.ByteArrayOutputStream;
@@ -24,14 +26,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -53,23 +60,22 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     private EditText descriptionBox;
     private EditText capacity;
     private FirebaseFirestore db;
-    private String EVENT_ID;
+    private StorageReference ref;
     private String USER_ID;
+    private String posterURI;
+    private boolean isDefaultImage = true;
 
-    private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    loadProfilePicture();
-                }
-            });
+    private static final int PICK_IMAGE_REQUEST = 1;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         db = FirebaseFirestore.getInstance();
+        ref=FirebaseStorage.getInstance("gs://matata-d53da.firebasestorage.app").getReference();
 
-        EVENT_ID=generateRandomEventID();
+
+        String EVENT_ID=generateRandomEventID();
 
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -90,14 +96,17 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         location=findViewById(R.id.editTextLocation);
 
 
+        //DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);
+
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View view) {
-                if (!eveTitle.getText().toString().equals("") ||
+                if ((!eveTitle.getText().toString().equals("") ||
                         !descriptionBox.getText().toString().equals("") ||
                         !eventDate.getText().toString().equals("") ||
                         !eventTime.getText().toString().equals("") ||
-                        !capacity.getText().toString().equals("")
+                        !capacity.getText().toString().equals("") )
                 ){
                     ConfirmationFragment backpress=new ConfirmationFragment();
                     backpress.show(getSupportFragmentManager(),"BackPressFragment");
@@ -121,8 +130,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         });
 
         posterPic.setOnClickListener(v -> {
-            Intent intent = new Intent(AddEvent.this, ProfilePicActivity.class);
-            profilePicLauncher.launch(intent);
+            openSelector();
         });
 
         genrQR.setOnClickListener(new View.OnClickListener(){
@@ -137,7 +145,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
                     Log.wtf(TAG,"Okayyyy Letts goooo");
 
 
-                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()),EVENT_ID,USER_ID);
+                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()),EVENT_ID,USER_ID, -1);
 
                     Intent intent = new Intent(view.getContext(), ViewEvent.class);
                     String u_id=SaveEventInfo(EVENT_ID,event,intent,view);
@@ -173,39 +181,82 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
     }
 
 
-    private void loadProfilePicture() {
-        String imageUriString = getSharedPreferences("ProfilePrefs", MODE_PRIVATE).getString("", null);
 
-        if (imageUriString != null) {
-            Uri imageUri = Uri.parse(imageUriString);
-            Glide.with(this).load(imageUri).into(posterPic);
-        } else {
-            posterPic.setImageResource(R.drawable.ic_upload);
-        }
+    private ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Uri imageUri = result.getData().getData();
+                    posterPic.setImageURI(imageUri);
+                    isDefaultImage = false;
+                }
+            }
+    );
+
+    public void openSelector(){
+        Intent intent =new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        pickImageLauncher.launch(intent);
     }
 
+
+
     private String SaveEventInfo(String EVENT_ID,Event event,Intent intent,View view){
-
-
 
         Bitmap bmp=generateQRbitmap(EVENT_ID);
         String compressedBMP=bmpCompression(bmp);
 
+        StorageReference imagesRef = ref.child("EventsPosters/"+EVENT_ID+".jpg");
+
+
         Map<String, Object> Event_details = new HashMap<>();
+        Event_details.put("Poster",posterURI);
         Event_details.put("Title", event.getTitle());
         Event_details.put("Date", event.getDate());
         Event_details.put("Time", event.getTime());
         Event_details.put("Location",event.getLocation());
         Event_details.put("Description",event.getDescription());
         Event_details.put("Capacity",event.getCapacity());
+        Event_details.put("WaitlistLimit", event.getWaitlistLimit());
         Event_details.put("bitmap",compressedBMP);
-        Event_details.put("OrganizerId", event.getOrganizerid());
 
+        if (isDefaultImage) {
+            Event_details.put("Poster", "");
+            executeDBchange(Event_details,EVENT_ID,intent, view);
+        } else {
+            Bitmap bmpjpg = ((BitmapDrawable) posterPic.getDrawable()).getBitmap();
+            File temp = new File(getCacheDir(), EVENT_ID + ".jpg");
+
+            try (FileOutputStream out = new FileOutputStream(temp)) {
+                bmpjpg.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            Uri returned = Uri.fromFile(temp);
+
+            imagesRef.putFile(returned)
+                    .addOnSuccessListener(v -> imagesRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        posterURI = uri.toString();
+                        Log.wtf("345", posterURI);
+                        Event_details.put("Poster", posterURI);
+                        Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                        temp.delete();
+                        // Now save to Firestore after the URI is set
+                        executeDBchange(Event_details, EVENT_ID,intent, view);
+                    }))
+                    .addOnFailureListener(e -> Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        }
+
+
+
+
+        Log.wtf("23", Event_details.toString());
 
         DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);
         doc.get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    executeDBchange(Event_details,EVENT_ID);
+                    executeDBchange(Event_details,EVENT_ID,intent, view);
                     intent.putExtra("Unique_id", EVENT_ID);
                     view.getContext().startActivity(intent);
 
@@ -220,10 +271,11 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         return UUID.randomUUID().toString();
     }
 
-    public void executeDBchange(Map Event_details,String EVENT_ID){
+    public void executeDBchange(Map Event_details,String EVENT_ID,Intent intent,View view){
+
 
         db.collection("EVENT_PROFILES").document(EVENT_ID)
-                .set(Event_details)
+                .set(Event_details, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> Toast.makeText(AddEvent.this, "Event saved successfully", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(AddEvent.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
     }

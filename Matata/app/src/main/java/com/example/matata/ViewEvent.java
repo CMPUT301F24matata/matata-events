@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -38,6 +39,7 @@ import java.util.List;
 public class ViewEvent extends AppCompatActivity {
 
     private String argbase64;
+    private String posterBase64;
     private ImageView goBack;
     private ImageView poster;
     private TextView title;
@@ -192,7 +194,31 @@ public class ViewEvent extends AppCompatActivity {
                                 // Show dialog to confirm exiting the waitlist
                                 withdrawDialog();
                             } else {
-                                confirmationDialog(); // Show confirmation dialog for registration
+                                eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                // Retrieve the 'limit' field
+                                                int limit = document.getLong("WaitlistLimit").intValue();
+                                                List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+                                                if (limit == -1 || waitlist.size() < limit) {
+                                                    confirmationDialog(); // Show confirmation dialog for registration
+                                                } else {
+                                                    runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Toast.makeText(ViewEvent.this, "Waitlist Full", Toast.LENGTH_SHORT).show();
+                                                            // Optionally, handle the over-limit case
+                                                        }
+                                                    });                                                }
+                                            } else {
+                                                System.out.println("No such document!");
+                                            }
+                                        }
+                                    }
+                                });
                             }
                         }
                     });
@@ -327,6 +353,11 @@ public class ViewEvent extends AppCompatActivity {
 
                         //TEst
                         argbase64=documentSnapshot.getString("bitmap");
+                        String ImageUri=documentSnapshot.getString("Poster");
+                        if (ImageUri!=""){
+                            Glide.with(this).load(ImageUri).into(poster);
+                        }
+                        else{;}
 
                         Bitmap QR=decodeBase64toBmp(argbase64);
 

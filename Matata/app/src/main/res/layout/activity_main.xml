@@ -50,6 +50,17 @@
                 android:elevation="10dp"
                 android:src="@drawable/search" />
 
+            <ImageButton
+                android:id="@+id/notifiy_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+
+                android:layout_gravity="center"
+                android:layout_marginEnd="0dp"
+                android:alpha="0.9"
+                android:elevation="10dp"
+                android:src="@drawable/ic_notification_icon" />
+
             <ImageView
                 android:id="@+id/add_event"
                 android:layout_width="30dp"

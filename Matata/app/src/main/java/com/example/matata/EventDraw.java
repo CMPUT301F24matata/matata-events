@@ -7,8 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +48,9 @@ public class EventDraw extends AppCompatActivity {
     private ImageView backBtn;
     private Button drawBtn;
     private Button clearPendingList;
+    private Switch limitSwitch;
+    private EditText waitlistLimit;
+    private Button saveButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,11 +103,42 @@ public class EventDraw extends AppCompatActivity {
         clearPendingList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ClearPendingListFragment clear = new ClearPendingListFragment();
-                //clear.show(getSupportFragmentManager(), "ClearPendingListFragment");
-                selectedList.clear();
-                selectedIdList.clear();
+                clearConfirmDialog();
                 Log.d("Selected List", "Selected List Cleared");
+                pendingAdapter.notifyDataSetChanged();
+            }
+        });
+
+        limitSwitch = findViewById(R.id.limitSwitch);
+        waitlistLimit = findViewById(R.id.waitlistLimit);
+        saveButton = findViewById(R.id.saveButton);
+
+        limitSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    waitlistLimit.setVisibility(View.VISIBLE);
+                    saveButton.setVisibility(View.VISIBLE);
+                } else {
+                    waitlistLimit.setVisibility(View.GONE);
+                    saveButton.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (waitlistLimit != null) {
+                    try {
+                        int limit = Integer.parseInt(waitlistLimit.getText().toString().trim());
+                        db.collection("EVENT_PROFILES").document(uid).update("WaitlistLimit", Integer.valueOf(waitlistLimit.getText().toString().trim()));
+                        Toast.makeText(EventDraw.this, "Limit Saved", Toast.LENGTH_SHORT).show();
+                    } catch (NumberFormatException e) {
+                        waitlistLimit.setError("Invalid number, please endter an integer");
+                        waitlistLimit.requestFocus();
+                    }
+                }
             }
         });
 
@@ -115,8 +153,8 @@ public class EventDraw extends AppCompatActivity {
                         List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
 
                         // Load all entrants from waitlist and pending lists
-                        loadList(waitlist, entrantList, waitlistAdapter, true);
-                        loadList(pending, selectedList, pendingAdapter, false);
+                        loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
+                        loadList(pending, selectedList, pendingAdapter, "pending");
                     }
                 });
 
@@ -142,6 +180,26 @@ public class EventDraw extends AppCompatActivity {
         dialog.show();
     }
 
+    private void clearConfirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(EventDraw.this);
+        builder.setCancelable(true);
+        builder.setMessage("You are about remove all entrants that haven't accepted the invitation yet.\nProceed?");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        clearSelectedEntrant();
+                    }
+                });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private void setSelectedEntrant() {
         List<Map.Entry<Entrant, String>> tempList = new ArrayList<>(entrantMap.entrySet());
         Collections.shuffle(entrantList);
@@ -152,6 +210,7 @@ public class EventDraw extends AppCompatActivity {
         db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
             List<DocumentReference> pending = (List<DocumentReference>) eventSnapshot.get("pending");
+            List<DocumentReference> waitlist= (List<DocumentReference>) eventSnapshot.get("waitlist");
 
             if (pending == null) {
                 pending = new ArrayList<>();
@@ -164,19 +223,42 @@ public class EventDraw extends AppCompatActivity {
 
                 DocumentReference entrantRef = db.collection("USER_PROFILES").document(entry.getValue());
                 pending.add(entrantRef);
+                waitlist.remove(entrantRef);
+                entrantList.remove(entry.getKey());
             }
             transaction.update(eventRef, "pending", pending);
+            transaction.update(eventRef, "waitlist",waitlist);
             return null;
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Entrant added to pending list successfully");
             pendingAdapter.notifyDataSetChanged();
+            waitlistAdapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> {
             Log.e("Firebase", "Error adding entrant to pending list", e);
         });
 
     }
 
-    private void loadList(List<DocumentReference> ref, List<Entrant> list, EntrantAdapter adapter, boolean updateMap) {
+    private void clearSelectedEntrant() {
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
+
+        selectedList.clear();
+        selectedIdList.clear();
+
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+
+            transaction.update(eventRef, "pending", new ArrayList<>());
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("Firebase", "Clearing pending list successfully");
+            pendingAdapter.notifyDataSetChanged();
+        }).addOnFailureListener(e -> {
+            Log.e("Firebase", "Error clearing pending list", e);
+        });
+
+    }
+
+    private void loadList(List<DocumentReference> ref, List<Entrant> list, EntrantAdapter adapter, String listType) {
         if (ref == null || ref.isEmpty()){
             return;
         }
@@ -196,7 +278,7 @@ public class EventDraw extends AppCompatActivity {
 
                     Entrant entrant = new Entrant(name, phone, email);
                     list.add(entrant);
-                    if (updateMap){
+                    if (listType == "waitlist"){
                         entrantMap.put(entrant, snapshot.getId());
                     }
                 }
