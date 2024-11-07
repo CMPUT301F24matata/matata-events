@@ -96,10 +96,7 @@ public class EventDraw extends AppCompatActivity {
         clearPendingList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ClearPendingListFragment clear = new ClearPendingListFragment();
-                //clear.show(getSupportFragmentManager(), "ClearPendingListFragment");
-                selectedList.clear();
-                selectedIdList.clear();
+                clearSelectedEntrant();
                 Log.d("Selected List", "Selected List Cleared");
             }
         });
@@ -140,6 +137,25 @@ public class EventDraw extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void clearSelectedEntrant() {
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
+
+        selectedList.clear();
+        selectedIdList.clear();
+
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+
+            transaction.update(eventRef, "pending", new ArrayList<>());
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("Firebase", "Clearing pending list successfully");
+            pendingAdapter.notifyDataSetChanged();
+        }).addOnFailureListener(e -> {
+            Log.e("Firebase", "Error clearing pending list", e);
+        });
+
     }
 
     private void setSelectedEntrant() {

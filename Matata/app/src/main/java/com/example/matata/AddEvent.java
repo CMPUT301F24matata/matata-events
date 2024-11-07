@@ -137,7 +137,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
                     Log.wtf(TAG,"Okayyyy Letts goooo");
 
 
-                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()),EVENT_ID,USER_ID);
+                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()),EVENT_ID,USER_ID, -1);
 
                     Intent intent = new Intent(view.getContext(), ViewEvent.class);
                     String u_id=SaveEventInfo(EVENT_ID,event,intent,view);

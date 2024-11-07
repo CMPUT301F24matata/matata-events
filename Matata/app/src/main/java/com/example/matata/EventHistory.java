@@ -73,7 +73,7 @@ public class EventHistory extends AppCompatActivity {
                                 String Description = document.getString("Description");
                                 int Capacity = document.getLong("Capacity").intValue();
 
-                                eventHistoryList.add(new Event(Title, Date, Time, Location, Description,Capacity,uid,USER_ID));
+                                eventHistoryList.add(new Event(Title, Date, Time, Location, Description,Capacity,uid,USER_ID,-1));
                                 eventAdapter.notifyDataSetChanged();
                             }
                         } else {

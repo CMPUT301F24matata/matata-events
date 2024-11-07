@@ -150,6 +150,8 @@
             android:textStyle="bold"
             android:paddingTop="16dp" />
 
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/waitlist_recyclerView"
             android:layout_width="match_parent"

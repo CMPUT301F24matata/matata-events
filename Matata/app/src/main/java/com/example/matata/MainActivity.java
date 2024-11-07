@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                                 String OrganizerId = document.getString("OrganizerId");
                                 int Capacity = document.getLong("Capacity").intValue();
                                 
-                                eventList.add(new Event(Title, Date, Time, Location, Description,Capacity,uid,OrganizerId));
+                                eventList.add(new Event(Title, Date, Time, Location, Description, Capacity, uid, OrganizerId, -1));
                                 eventAdapter.notifyDataSetChanged();
                             }
                         } else {
