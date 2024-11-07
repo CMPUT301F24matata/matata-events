@@ -101,6 +101,7 @@ public class EventDraw extends AppCompatActivity {
                 selectedList.clear();
                 selectedIdList.clear();
                 Log.d("Selected List", "Selected List Cleared");
+                pendingAdapter.notifyDataSetChanged();
             }
         });
 
@@ -115,8 +116,8 @@ public class EventDraw extends AppCompatActivity {
                         List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
 
                         // Load all entrants from waitlist and pending lists
-                        loadList(waitlist, entrantList, waitlistAdapter, true);
-                        loadList(pending, selectedList, pendingAdapter, false);
+                        loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
+                        loadList(pending, selectedList, pendingAdapter, "pending");
                     }
                 });
 
@@ -152,6 +153,7 @@ public class EventDraw extends AppCompatActivity {
         db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
             List<DocumentReference> pending = (List<DocumentReference>) eventSnapshot.get("pending");
+            List<DocumentReference> waitlist= (List<DocumentReference>) eventSnapshot.get("waitlist");
 
             if (pending == null) {
                 pending = new ArrayList<>();
@@ -164,19 +166,23 @@ public class EventDraw extends AppCompatActivity {
 
                 DocumentReference entrantRef = db.collection("USER_PROFILES").document(entry.getValue());
                 pending.add(entrantRef);
+                waitlist.remove(entrantRef);
+                entrantList.remove(entry.getKey());
             }
             transaction.update(eventRef, "pending", pending);
+            transaction.update(eventRef, "waitlist",waitlist);
             return null;
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Entrant added to pending list successfully");
             pendingAdapter.notifyDataSetChanged();
+            waitlistAdapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> {
             Log.e("Firebase", "Error adding entrant to pending list", e);
         });
 
     }
 
-    private void loadList(List<DocumentReference> ref, List<Entrant> list, EntrantAdapter adapter, boolean updateMap) {
+    private void loadList(List<DocumentReference> ref, List<Entrant> list, EntrantAdapter adapter, String listType) {
         if (ref == null || ref.isEmpty()){
             return;
         }
@@ -196,7 +202,7 @@ public class EventDraw extends AppCompatActivity {
 
                     Entrant entrant = new Entrant(name, phone, email);
                     list.add(entrant);
-                    if (updateMap){
+                    if (listType == "waitlist"){
                         entrantMap.put(entrant, snapshot.getId());
                     }
                 }
