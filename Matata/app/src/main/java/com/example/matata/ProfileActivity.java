@@ -77,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
         TextView initials = findViewById(R.id.initials); // Used to check if entrant/organiser/admin
         adminView = findViewById(R.id.adminView);
         String Caller = getIntent().getStringExtra("Caller");
-        if (Caller.equals("Admin")) {
+        if ("Admin".equals(Caller)) {
             adminView.setChecked(true);
         }
         organizerField = findViewById(R.id.organizerFields);
