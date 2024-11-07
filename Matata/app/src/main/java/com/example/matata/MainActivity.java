@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private String USER_ID = "";
     private String uid=null;
     private ImageView eventHistory;
-
+    private ImageButton notificationButton;
     private ImageView eventSearch;
 
     @Override
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
 
 
         db = FirebaseFirestore.getInstance();
@@ -123,6 +124,27 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent=new Intent(view.getContext(),EventHistory.class);
                 view.getContext().startActivity(intent);
            }
+        });
+
+        notificationButton = findViewById(R.id.notifiy_button);
+        notificationButton.setOnClickListener(view -> {
+            // Retrieve list of waitlisted users for the Organizer’s events
+            db.collection("EVENT_PROFILES")
+                    .whereEqualTo("OrganizerId", USER_ID)  // Assuming USER_ID is the Organizer's ID
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                               List<String> waitlistIds = (List<String>) document.get("waitlist");  // Fetch waitlist IDs
+                               String title = "Event Update";  // Notification title
+                                String message = "You have been selected for an event!";  // Notification message
+
+                                // Send notifications to waitlisted users
+                                Notification notificationManager = new Notification();
+                                notificationManager.sendNotificationsToWaitlist(this, waitlistIds, title, message);
+                            }
+                        }
+                   });
         });
 
         eventSearch = findViewById(R.id.event_search);
