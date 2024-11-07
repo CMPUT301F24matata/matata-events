@@ -42,6 +42,7 @@ public class EventDraw extends AppCompatActivity {
     private List<Entrant> entrantList, selectedList;
     private EntrantAdapter pendingAdapter, waitlistAdapter;
     private RecyclerView waitlistRecyclerView, acceptedRecyclerView, pendingRecyclerView, rejectedRecyclerView;
+    private TextView totalEntrant, remainingPosition;
     private Map<Entrant, String> entrantMap;
     private List<String> selectedIdList;
     private int drawNum;
@@ -63,6 +64,8 @@ public class EventDraw extends AppCompatActivity {
         uid=intent.getStringExtra("Unique_id");
 
         title = findViewById(R.id.event_title_draw_event);
+        totalEntrant = findViewById(R.id.total_entrant_text);
+        remainingPosition = findViewById(R.id.remaining_text);
         drawBtn = findViewById(R.id.draw_button);
         backBtn = findViewById(R.id.go_back_draw_event);
 
@@ -276,6 +279,7 @@ public class EventDraw extends AppCompatActivity {
                     list.add(entrant);
                     if (listType == "waitlist"){
                         entrantMap.put(entrant, snapshot.getId());
+                        totalEntrant.setText("From: " + list.size());
                     }
                 }
             }

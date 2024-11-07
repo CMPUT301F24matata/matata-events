@@ -122,7 +122,7 @@ public class ViewEvent extends AppCompatActivity {
                 List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
                 List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
 
-                String organizerId = document.getString("OrganizerId");
+                String organizerId = document.getString("OrganizerID");
                 if (organizerId == null || !organizerId.equals(USER_ID)) {
                     drawBtn.setClickable(false);
                     drawBtn.setVisibility(View.INVISIBLE);
@@ -155,7 +155,7 @@ public class ViewEvent extends AppCompatActivity {
                         } else if (joinBtnText.equals("Withdraw")) {
                             withdrawDialog();
                         } else if (joinBtnText.equals("Join Waitlist")) {
-                            checkWaitlistCapacityAndJoin();
+                            joinWaitlist();
                         }
                     }
                 });
@@ -204,7 +204,7 @@ public class ViewEvent extends AppCompatActivity {
                 dialog.show();
             }
 
-            private void checkWaitlistCapacityAndJoin() {
+            private void joinWaitlist() {
                 eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
