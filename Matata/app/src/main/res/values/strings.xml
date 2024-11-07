@@ -94,4 +94,7 @@
     <string name="event_sign_up">Event Sign-Up</string>
     <string name="join_waitlist">Join Waitlist</string>
     <string name="qr_code">QR CODE</string>
+    <string name="dietary_preferences_prompt">Select Dietary Preferences</string>
+    <string name="accessibility_needs_prompt">Select Accessibility Needs</string>
+
 </resources>

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
@@ -42,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private String USER_ID = "";
     private String uid=null;
     private ImageView eventHistory;
+
+    private ImageView eventSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +124,15 @@ public class MainActivity extends AppCompatActivity {
                 view.getContext().startActivity(intent);
            }
         });
+
+        eventSearch = findViewById(R.id.event_search);
+        eventSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
     private void addEventsInit() {
