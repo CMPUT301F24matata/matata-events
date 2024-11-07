@@ -96,7 +96,7 @@ public class EventDraw extends AppCompatActivity {
         clearPendingList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearSelectedEntrant();
+                clearConfirmDialog();
                 Log.d("Selected List", "Selected List Cleared");
                 pendingAdapter.notifyDataSetChanged();
             }
@@ -140,23 +140,24 @@ public class EventDraw extends AppCompatActivity {
         dialog.show();
     }
 
-    private void clearSelectedEntrant() {
-        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
-
-        selectedList.clear();
-        selectedIdList.clear();
-
-        db.runTransaction((Transaction.Function<Void>) transaction -> {
-
-            transaction.update(eventRef, "pending", new ArrayList<>());
-            return null;
-        }).addOnSuccessListener(aVoid -> {
-            Log.d("Firebase", "Clearing pending list successfully");
-            pendingAdapter.notifyDataSetChanged();
-        }).addOnFailureListener(e -> {
-            Log.e("Firebase", "Error clearing pending list", e);
+    private void clearConfirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(EventDraw.this);
+        builder.setCancelable(true);
+        builder.setMessage("You are about remove all entrants that haven't accepted the invitation yet.\nProceed?");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        clearSelectedEntrant();
+                    }
+                });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
         });
-
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void setSelectedEntrant() {
@@ -194,6 +195,25 @@ public class EventDraw extends AppCompatActivity {
             waitlistAdapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> {
             Log.e("Firebase", "Error adding entrant to pending list", e);
+        });
+
+    }
+
+    private void clearSelectedEntrant() {
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
+
+        selectedList.clear();
+        selectedIdList.clear();
+
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+
+            transaction.update(eventRef, "pending", new ArrayList<>());
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("Firebase", "Clearing pending list successfully");
+            pendingAdapter.notifyDataSetChanged();
+        }).addOnFailureListener(e -> {
+            Log.e("Firebase", "Error clearing pending list", e);
         });
 
     }
