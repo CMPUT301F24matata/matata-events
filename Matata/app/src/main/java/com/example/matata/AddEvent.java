@@ -182,7 +182,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
 
 
 
-    private ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+    ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
