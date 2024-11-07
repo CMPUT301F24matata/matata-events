@@ -114,6 +114,13 @@
             android:textStyle="bold"
             android:paddingTop="16dp" />
 
+        <Button
+            android:id="@+id/clearPendingList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="240dp"
+            android:text="Clear Pending list"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pending_recyclerView"
             android:layout_width="match_parent"
@@ -142,6 +149,8 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:paddingTop="16dp" />
+
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/waitlist_recyclerView"

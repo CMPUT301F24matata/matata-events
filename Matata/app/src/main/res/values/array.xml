@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dietary_options">
+        <item>None</item>
+        <item>Vegetarian</item>
+        <item>Vegan</item>
+        <item>Gluten-Free</item>
+        <item>Halal</item>
+        <item>Kosher</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="accessibility_options">
+        <item>None</item>
+        <item>Wheelchair Access</item>
+        <item>Sign Language Interpreter</item>
+        <item>Visual Assistance</item>
+        <item>Hearing Assistance</item>
+        <item>Other</item>
+    </string-array>
+</resources>

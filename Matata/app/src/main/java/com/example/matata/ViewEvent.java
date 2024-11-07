@@ -83,6 +83,9 @@ public class ViewEvent extends AppCompatActivity {
         String uid=intent.getStringExtra("Unique_id");
         Log.wtf(TAG,uid);
 
+        eventRef = db.collection("EVENT_PROFILES").document(uid);
+        entrantRef = db.collection("USER_PROFILES").document(USER_ID);
+
         goBack.setOnClickListener(v->{
             finish();
         });
@@ -95,6 +98,7 @@ public class ViewEvent extends AppCompatActivity {
             }
         });
 
+
         drawBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,8 +110,6 @@ public class ViewEvent extends AppCompatActivity {
 
         loadEventDetails(uid);
 
-        eventRef = db.collection("EVENT_PROFILES").document(uid);
-        entrantRef = db.collection("USER_PROFILES").document(USER_ID);
 
         //checkEntrantStatus(uid);
         eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -117,6 +119,13 @@ public class ViewEvent extends AppCompatActivity {
                 DocumentSnapshot document = task.getResult();
                 List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
                 List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
+
+                String organizerId = document.getString("OrganizerId");
+                if(organizerId == null || !organizerId.equals(USER_ID)){
+
+                    drawBtn.setClickable(false);
+                    drawBtn.setVisibility(View.INVISIBLE);
+                }
 
                 // Add a condition checking if entrant is in status Pending
                 if (pending != null && pending.contains(entrantRef)){
@@ -128,7 +137,10 @@ public class ViewEvent extends AppCompatActivity {
                     waitlistBtn.setText("Join Waitlist");
                 }
 
+                //setWaitlistButtonClickListener(waitlist);
+
                 String joinBtntext = waitlistBtn.getText().toString();
+
                 if (joinBtntext.equals("Pending")) {
                     waitlistBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -149,8 +161,6 @@ public class ViewEvent extends AppCompatActivity {
                                     waitlistBtn.setText("Accepted");
                                     // Additional code for when the invitation is accepted
                                     Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
-
-
                                 }
                             });
 
@@ -187,13 +197,25 @@ public class ViewEvent extends AppCompatActivity {
 
             }
         });
+    }
 
+    private void setWaitlistButtonClickListener(List<DocumentReference> waitlist) {
+        waitlistBtn.setOnClickListener(view -> {
+            if ("Withdraw".equals(waitlistBtn.getText().toString())) {
+                withdrawDialog();
+            } else {
+                showGeolocationRequirementDialog();
+            }
+        });
+    }
 
-
-
-
-
-
+    private void showGeolocationRequirementDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
+        builder.setTitle("Geolocation Required")
+                .setMessage("To join the waitlist, you must enable location services and allow geolocation access.")
+                .setPositiveButton("OK", (dialog, which) -> confirmationDialog())
+                .create()
+                .show();
     }
 
 

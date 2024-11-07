@@ -9,10 +9,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -21,8 +19,6 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -34,14 +30,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
     private EditText nameEditText, phoneEditText, emailEditText;
+    private EditText facilityName, facilityAddress, facilityCapacity, facilityContact, facilityEmail, facilityOwner;
     private ImageView profileIcon;
     private FirebaseFirestore db;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -49,6 +43,10 @@ public class ProfileActivity extends AppCompatActivity {
     private String imageUriString;
     @SuppressLint("HardwareIds")
     private String USER_ID = "";
+    private CompoundButton adminView;
+    private Switch isOrganizer;
+
+    private View organizerField;
 
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -75,12 +73,20 @@ public class ProfileActivity extends AppCompatActivity {
         Button saveButton = findViewById(R.id.saveButton);
         ImageView back = findViewById(R.id.btnBackProfile);
         notifications = findViewById(R.id.switch_notification);
+        isOrganizer = findViewById(R.id.switch_organizer);
         TextView initials = findViewById(R.id.initials); // Used to check if entrant/organiser/admin
-        CompoundButton adminView = findViewById(R.id.adminView);
+        adminView = findViewById(R.id.adminView);
         String Caller = getIntent().getStringExtra("Caller");
         if (Caller.equals("Admin")) {
             adminView.setChecked(true);
         }
+        organizerField = findViewById(R.id.organizerFields);
+        facilityName = findViewById(R.id.facilityName);
+        facilityAddress = findViewById(R.id.facilityAddress);
+        facilityCapacity = findViewById(R.id.facilityCapacity);
+        facilityContact = findViewById(R.id.facilityContact);
+        facilityEmail = findViewById(R.id.facilityEmail);
+        facilityOwner = findViewById(R.id.facilityOwner);
 
         imageUriString = getSharedPreferences("ProfilePrefs", MODE_PRIVATE)
                 .getString("profile_image_uri", null);
@@ -96,11 +102,34 @@ public class ProfileActivity extends AppCompatActivity {
             profilePicLauncher.launch(intent);
         });
 
+
+        isOrganizer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    organizerField.setVisibility(View.VISIBLE);
+                    loadFacilityData();
+                } else {
+                    organizerField.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
         saveButton.setOnClickListener(v -> {
             String name = nameEditText.getText().toString().trim();
             String email = emailEditText.getText().toString().trim();
             String phoneNumber = phoneEditText.getText().toString().trim();
             boolean notificationsChecked = notifications.isChecked();
+            boolean organizerChecked = isOrganizer.isChecked();
+
+            String fName = facilityName.getText().toString().trim();
+            String fAddress = facilityAddress.getText().toString().trim();
+            String fCapacity = facilityCapacity.getText().toString().trim();
+            String fContact = facilityContact.getText().toString().trim();
+            String fEmail = facilityEmail.getText().toString().trim();
+            String fOwner = facilityOwner.getText().toString().trim();
+
 
             if (name.isEmpty()) {
                 Toast.makeText(this, "No UserName Found", Toast.LENGTH_SHORT).show();
@@ -108,6 +137,10 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "No Email Found", Toast.LENGTH_SHORT).show();
             } else {
                 saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString);
+                if (organizerChecked) {
+                    saveFacilityData(fName, fAddress, fCapacity, fContact, fEmail, fOwner);
+                    addToOrganizer(name, phoneNumber, email, notificationsChecked, imageUriString);
+                }
             }
         });
 
@@ -146,6 +179,41 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
     }
 
+    private void saveFacilityData(String name, String address, String capacity, String contactInfo, String
+                                  email, String owner) {
+        loadFacilityData();
+
+        Map<String, Object> facilityProfile = new HashMap<>();
+        facilityProfile.put("facility name", name);
+        facilityProfile.put("address", address);
+        facilityProfile.put("capacity", capacity);
+        facilityProfile.put("contact information", contactInfo);
+        facilityProfile.put("email", email);
+        facilityProfile.put("owner", owner);
+
+        db.collection("FACILITY_PROFILES")
+                .document(USER_ID).set(facilityProfile)
+                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
+    }
+
+    private void addToOrganizer(String name, String phone, String email, boolean notificationsChecked, String imageUriString) {
+
+        loadProfilePicture(imageUriString);
+
+        Map<String, Object> userProfile = new HashMap<>();
+        userProfile.put("username", name);
+        userProfile.put("phone", phone);
+        userProfile.put("email", email);
+        userProfile.put("notifications", notificationsChecked);
+        userProfile.put("profileUri", imageUriString);
+
+        db.collection("ORGANIZER_PROFILES").document(USER_ID)
+                .set(userProfile)
+                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
+    }
+
     private void loadProfileData() {
         DocumentReference docRef = db.collection("USER_PROFILES").document(USER_ID);
         docRef.get()
@@ -162,6 +230,31 @@ public class ProfileActivity extends AppCompatActivity {
                         emailEditText.setText(email != null ? email : "");
                         notifications.setChecked(notificationsChecked);
                         loadProfilePicture(sImageUri);
+                    }
+
+                })
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
+    }
+
+    private void loadFacilityData() {
+        DocumentReference docRef = db.collection("FACILITY_PROFILES").document(USER_ID);
+
+        docRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("facility name");
+                        String address = documentSnapshot.getString("address");
+                        String capacity = documentSnapshot.getString("capacity");
+                        String contactInfo = documentSnapshot.getString("contact information");
+                        String email = documentSnapshot.getString("email");
+                        String owner = documentSnapshot.getString("owner");
+
+                        facilityName.setText(name != null ? name : "");
+                        facilityAddress.setText(address != null ? address : "");
+                        facilityCapacity.setText(capacity != null ? capacity : "");
+                        facilityContact.setText(contactInfo != null ? contactInfo : "");
+                        facilityEmail.setText(email != null ? email : "");
+                        facilityOwner.setText(owner != null ? owner : "");
                     }
 
                 })
