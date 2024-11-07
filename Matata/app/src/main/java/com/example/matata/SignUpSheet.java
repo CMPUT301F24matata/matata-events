@@ -5,9 +5,11 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -34,9 +36,9 @@ public class SignUpSheet extends AppCompatActivity {
         EditText phone = findViewById(R.id.contact_number);
         EditText emergency_name = findViewById(R.id.emergency_contact_name);
         EditText emergency_phone = findViewById(R.id.emergency_contact_number);
-        EditText diet = findViewById(R.id.dietary_preferences);
+        Spinner dietSpinner = findViewById(R.id.dietary_preferences_spinner);
         EditText arrival = findViewById(R.id.arrival_time);
-        EditText accessibility = findViewById(R.id.accessibility_needs);
+        Spinner accessibilitySpinner = findViewById(R.id.accessibility_needs_spinner);
         CheckBox terms = findViewById(R.id.agree_to_terms);
         Button submit = findViewById(R.id.submit_button);
 
@@ -45,6 +47,19 @@ public class SignUpSheet extends AppCompatActivity {
         String uid=intent.getStringExtra("Unique_id");
         Log.wtf(TAG,uid);
 
+        // Set up adapter for dietary preferences
+        ArrayAdapter<CharSequence> dietAdapter = ArrayAdapter.createFromResource(
+                this, R.array.dietary_options, android.R.layout.simple_spinner_item);
+        dietAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dietSpinner.setAdapter(dietAdapter);
+
+        // Set up adapter for accessibility needs
+        ArrayAdapter<CharSequence> accessibilityAdapter = ArrayAdapter.createFromResource(
+                this, R.array.accessibility_options, android.R.layout.simple_spinner_item);
+        accessibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        accessibilitySpinner.setAdapter(accessibilityAdapter);
+
+
         submit.setOnClickListener(v -> {
 
             String s_name = name.getText().toString().trim();
@@ -52,9 +67,9 @@ public class SignUpSheet extends AppCompatActivity {
             String s_phone = phone.getText().toString().trim();
             String s_emergency_name = emergency_name.getText().toString().trim();
             String s_emergency_phone = emergency_phone.getText().toString().trim();
-            String s_diet = diet.getText().toString().trim();
+            String s_diet = dietSpinner.getSelectedItem().toString().trim();
             String s_arrival = arrival.getText().toString().trim();
-            String s_accessibility  = accessibility .getText().toString().trim();
+            String s_accessibility  = accessibilitySpinner .getSelectedItem().toString().trim();
             boolean s_terms = terms.isChecked();
 
             if (s_name.isEmpty()) {

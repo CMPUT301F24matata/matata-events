@@ -136,10 +136,12 @@
             android:text="@string/dietary_preferences"
             android:textSize="16sp"
             android:textColor="#666666" />
-        <EditText
-            android:id="@+id/dietary_preferences"
-            style="@style/FancyEditText"
-            android:hint="@string/specify_any_dietary_requirements" />
+        <Spinner
+            android:id="@+id/dietary_preferences_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/dietary_preferences_prompt" />
+
 
         <!-- Arrival Time -->
         <TextView
@@ -160,10 +162,12 @@
             android:text="@string/accessibility_needs"
             android:textSize="16sp"
             android:textColor="#666666" />
-        <EditText
-            android:id="@+id/accessibility_needs"
-            style="@style/FancyEditText"
-            android:hint="@string/specify_any_accessibility_requirements" />
+        <Spinner
+            android:id="@+id/accessibility_needs_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/accessibility_needs_prompt" />
+
 
         <!-- Participation Agreement -->
         <CheckBox
