@@ -219,36 +219,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
 
 
         Map<String, Object> Event_details = new HashMap<>();
-        if (isDefaultImage){
-            Event_details.put("Poster","");
-        }else{
-
-
-            Bitmap bmpjpg=((BitmapDrawable) posterPic.getDrawable()).getBitmap();
-            File temp=new File(getCacheDir(),EVENT_ID+".jpg");
-
-            try (FileOutputStream out=new FileOutputStream(temp)){
-                bmpjpg.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            }
-             catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            Uri returned=Uri.fromFile(temp);
-
-            imagesRef.putFile(returned)
-                    .addOnSuccessListener(v->imagesRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        posterURI= uri.toString();
-                        Log.wtf("345",posterURI);
-                        Event_details.put("Poster",posterURI);
-                        Log.wtf("345",Event_details.toString());
-                        Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                        temp.delete();
-                    }))
-                    .addOnFailureListener(e -> Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-            }
-
-
-
+        Event_details.put("Poster",posterURI);
         Event_details.put("Title", event.getTitle());
         Event_details.put("Date", event.getDate());
         Event_details.put("Time", event.getTime());
@@ -257,12 +228,43 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         Event_details.put("Capacity",event.getCapacity());
         Event_details.put("bitmap",compressedBMP);
 
+        if (isDefaultImage) {
+            Event_details.put("Poster", "");
+            executeDBchange(Event_details,EVENT_ID,intent, view);
+        } else {
+            Bitmap bmpjpg = ((BitmapDrawable) posterPic.getDrawable()).getBitmap();
+            File temp = new File(getCacheDir(), EVENT_ID + ".jpg");
+
+            try (FileOutputStream out = new FileOutputStream(temp)) {
+                bmpjpg.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            Uri returned = Uri.fromFile(temp);
+
+            imagesRef.putFile(returned)
+                    .addOnSuccessListener(v -> imagesRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        posterURI = uri.toString();
+                        Log.wtf("345", posterURI);
+                        Event_details.put("Poster", posterURI);
+                        Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                        temp.delete();
+                        // Now save to Firestore after the URI is set
+                        executeDBchange(Event_details, EVENT_ID,intent, view);
+                    }))
+                    .addOnFailureListener(e -> Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        }
+
+
+
+
         Log.wtf("23", Event_details.toString());
 
         DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);
         doc.get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    executeDBchange(Event_details,EVENT_ID);
+                    executeDBchange(Event_details,EVENT_ID,intent, view);
                     intent.putExtra("Unique_id", EVENT_ID);
                     view.getContext().startActivity(intent);
 
@@ -277,7 +279,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         return UUID.randomUUID().toString();
     }
 
-    public void executeDBchange(Map Event_details,String EVENT_ID){
+    public void executeDBchange(Map Event_details,String EVENT_ID,Intent intent,View view){
+
 
         db.collection("EVENT_PROFILES").document(EVENT_ID)
                 .set(Event_details, SetOptions.merge())
