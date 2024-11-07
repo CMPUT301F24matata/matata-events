@@ -13,8 +13,6 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-<<<<<<< HEAD
-=======
       <SelectionState runConfigName="testProfilePictureUpload()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
@@ -30,7 +28,6 @@
       <SelectionState runConfigName="testInitialProfileDataLoad()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
->>>>>>> 64c57f563282d286afd275b03b55602c86be3637
     </selectionStates>
   </component>
 </project>
