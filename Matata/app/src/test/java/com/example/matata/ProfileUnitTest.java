@@ -11,12 +11,19 @@ import android.widget.ImageView;
 import android.widget.Switch;
 
 import androidx.test.core.app.ApplicationProvider;
-import org.mockito.Mockito;
+
+import com.bumptech.glide.Glide;
+
+import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
 
 import java.util.Arrays;
 
@@ -25,10 +32,12 @@ import java.util.Arrays;
 public class ProfileUnitTest {
 
     private ProfileActivity mockprofile;
-
+    private ActivityController<ProfileActivity> controller;
     @Before
     public void setUp(){
-        mockprofile=new ProfileActivity();
+        controller = Robolectric.buildActivity(ProfileActivity.class);
+        mockprofile = controller.get();
+
         mockprofile.nameEditText=new EditText(ApplicationProvider.getApplicationContext());
         mockprofile.phoneEditText=new EditText(ApplicationProvider.getApplicationContext());
         mockprofile.emailEditText=new EditText(ApplicationProvider.getApplicationContext());
@@ -49,19 +58,21 @@ public class ProfileUnitTest {
     public void testGenerateInitialsBitmap() {
 
         String initials="TN";
-        Uri uri =mockprofile.createImageFromString(ApplicationProvider.getApplicationContext(), initials);
-        String uri_64= Arrays.toString(uri.toString().trim().split("data:image/png;base64,"));
-        //System.out.println(uri_64);
-        assertNotNull(uri_64);
-
+        Context context=ApplicationProvider.getApplicationContext();
+        Uri generatedUri=mockprofile.createImageFromString(context, initials);
+        assertNotNull(generatedUri);
+        String uriString=generatedUri.toString();
+        assertTrue(uriString.startsWith("data:image/png;base64,"));
     }
 
     @Test
-    public void profileLoadTest(){
-        Context context = ApplicationProvider.getApplicationContext();
-        mockprofile.profileIcon = Mockito.mock(ImageView.class);
-        mockprofile.loadProfilePicture(null);
-        Mockito.verify(mockprofile.profileIcon).setImageBitmap(Mockito.any(Bitmap.class));
+    public void testLoadProfilePictureWithNullUri() {
+        Uri mockUri=null;
+        mockprofile.loadProfilePicture(String.valueOf(mockUri));
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
+        assertNull(mockprofile.profileIcon.getDrawable());
     }
+
+
 
 }
