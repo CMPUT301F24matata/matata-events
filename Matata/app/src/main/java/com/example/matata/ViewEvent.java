@@ -36,10 +36,21 @@ import com.google.firebase.firestore.Transaction;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The ViewEvent class represents the activity to view details of a specific event.
+ * It allows users to join or withdraw from a waitlist, respond to invitations, and view event details.
+ * The activity also includes options for event organizers to manage entrant status.
+ * Note: Geolocation consent is required to join the waitlist.
+ */
 public class ViewEvent extends AppCompatActivity {
 
+    // Event details encoded in Base64
     private String argbase64;
+
+    // Base64 string for event poster image
     private String posterBase64;
+
+    // UI elements
     private ImageView goBack;
     private ImageView poster;
     private TextView title;
@@ -48,24 +59,47 @@ public class ViewEvent extends AppCompatActivity {
     private TextView time;
     private TextView date;
     private TextView location;
+
+    // Firestore instance
     private FirebaseFirestore db;
+
+    // Floating action button for showing QR code
     private FloatingActionButton showQR;
+
+    // Button to join waitlist
     private Button waitlistBtn;
+
+    // Unique device ID for identifying the user
     private String USER_ID;
+
+    // Firestore references to event and entrant documents
     private DocumentReference eventRef;
     private DocumentReference entrantRef;
+
+    // Button for draw event management
     private Button drawBtn;
+
+    // Unique identifier for the event
     private String uid;
 
-
-
+    /**
+     * Called when the activity is first created.
+     * Sets up initial configurations, initializes Firebase and UI elements,
+     * and loads the event details based on the unique event ID.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in onSaveInstanceState.
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_event_details);
+
         db = FirebaseFirestore.getInstance();
 
+        // Initialize UI elements
         goBack = findViewById(R.id.go_back_view_event);
         title = findViewById(R.id.ViewEventTitle);
         capacity = findViewById(R.id.ViewEventCapacity);
@@ -87,146 +121,116 @@ public class ViewEvent extends AppCompatActivity {
         eventRef = db.collection("EVENT_PROFILES").document(uid);
         entrantRef = db.collection("USER_PROFILES").document(USER_ID);
 
+        goBack.setOnClickListener(v -> finish());
 
-        goBack.setOnClickListener(v -> {
-            finish();
+        showQR.setOnClickListener(view -> {
+            QR_displayFragment qrDisplayFragment = QR_displayFragment.newInstance(argbase64);
+            qrDisplayFragment.show(getSupportFragmentManager(), "Show QR");
         });
 
-
-        showQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                QR_displayFragment qrDisplayFragment = QR_displayFragment.newInstance(argbase64);
-                qrDisplayFragment.show(getSupportFragmentManager(), "Show QR");
-            }
+        drawBtn.setOnClickListener(view -> {
+            Intent intent1 = new Intent(view.getContext(), EventDraw.class);
+            intent1.putExtra("Unique_id", uid);
+            view.getContext().startActivity(intent1);
         });
-
-
-        drawBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), EventDraw.class);
-                intent.putExtra("Unique_id", uid);
-                view.getContext().startActivity(intent);
-            }
-        });
-
 
         loadEventDetails(uid);
-
         refreshEntrantStatus();
-
     }
 
-
+    /**
+     * Refreshes the entrant status whenever the activity resumes.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         refreshEntrantStatus();
     }
 
+    /**
+     * Retrieves and updates the user's current status in the event (e.g., pending, accepted, waitlist).
+     */
     private void refreshEntrantStatus() {
-        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
-                        List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
-                        List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+                    List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
+                    List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
 
-                        String organizerId = document.getString("OrganizerID");
-                        if (organizerId == null || !organizerId.equals(USER_ID)) {
-                            drawBtn.setVisibility(View.INVISIBLE);
-                        }
-
-                        if (organizerId != null && USER_ID.equals(organizerId)){
-                            waitlistBtn.setVisibility(View.INVISIBLE);
-                        }
-                        else if (pending != null && pending.contains(entrantRef)) {
-                            waitlistBtn.setText("Pending");
-                        } else if (accepted != null && accepted.contains(entrantRef)) {
-                            waitlistBtn.setText("Accepted");
-                        } else if (waitlist != null && waitlist.contains(entrantRef)) {
-                            waitlistBtn.setText("Withdraw");
-                        } else {
-                            waitlistBtn.setText("Join Waitlist");
-                        }
+                    String organizerId = document.getString("OrganizerID");
+                    if (organizerId == null || !organizerId.equals(USER_ID)) {
+                        drawBtn.setVisibility(View.INVISIBLE);
                     }
-                } else {
-                    Log.e("Firebase", "Error fetching event details: ", task.getException());
+
+                    if (organizerId != null && USER_ID.equals(organizerId)) {
+                        waitlistBtn.setVisibility(View.INVISIBLE);
+                    } else if (pending != null && pending.contains(entrantRef)) {
+                        waitlistBtn.setText("Pending");
+                    } else if (accepted != null && accepted.contains(entrantRef)) {
+                        waitlistBtn.setText("Accepted");
+                    } else if (waitlist != null && waitlist.contains(entrantRef)) {
+                        waitlistBtn.setText("Withdraw");
+                    } else {
+                        waitlistBtn.setText("Join Waitlist");
+                    }
                 }
+            } else {
+                Log.e("Firebase", "Error fetching event details: ", task.getException());
             }
         });
-        String joinBtntext = waitlistBtn.getText().toString();
-
-
-        waitlistBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String joinBtnText = waitlistBtn.getText().toString();
-
-                if (joinBtnText.equals("Pending")) {
-                    showInvitationDialog();
-                } else if (joinBtnText.equals("Withdraw")) {
-                    withdrawDialog();
-                } else if (joinBtnText.equals("Join Waitlist")) {
-                    joinWaitlist();
-                }
+        waitlistBtn.setOnClickListener(v -> {
+            String joinBtnText = waitlistBtn.getText().toString();
+            if (joinBtnText.equals("Pending")) {
+                showInvitationDialog();
+            } else if (joinBtnText.equals("Withdraw")) {
+                withdrawDialog();
+            } else if (joinBtnText.equals("Join Waitlist")) {
+                joinWaitlist();
             }
         });
     }
 
+    /**
+     * Displays a dialog for accepting or declining an invitation.
+     */
     private void showInvitationDialog() {
-        // Create an AlertDialog builder
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
         builder.setTitle("Invitation");
         builder.setMessage("Do you want to accept or decline the invitation?");
 
-        // Set the Accept button
-        builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Handle Accept action here
-                Intent intent = new Intent(ViewEvent.this, SignUpSheet.class);
-                intent.putExtra("Unique_id", uid);
-                startActivity(intent);
-                waitlistBtn.setText("Accepted");
-                // Additional code for when the invitation is accepted
-                Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
-                addToAccepted();
-            }
+        builder.setPositiveButton("Accept", (dialog, which) -> {
+            Intent intent = new Intent(ViewEvent.this, SignUpSheet.class);
+            intent.putExtra("Unique_id", uid);
+            startActivity(intent);
+            waitlistBtn.setText("Accepted");
+            Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
+            addToAccepted();
         });
 
-        // Set the Decline button
-        builder.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Remove the user from the pending list
-                eventRef.update("pending", FieldValue.arrayRemove(entrantRef))
-                        .addOnSuccessListener(aVoid -> {
-                            Log.d("Firebase", "User declined invitation, removed from pending list");
-                            waitlistBtn.setText("Join Waitlist");
-                            resampleEntrant(); // Call to resample a new entrant
-                            Toast.makeText(ViewEvent.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
-                        }).addOnFailureListener(e -> {
-                            Log.e("Firebase", "Error declining invitation", e);
-                        });
-                addToRejected();
-            }
+        builder.setNegativeButton("Decline", (dialog, which) -> {
+            eventRef.update("pending", FieldValue.arrayRemove(entrantRef))
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("Firebase", "User declined invitation, removed from pending list");
+                        waitlistBtn.setText("Join Waitlist");
+                        resampleEntrant();
+                        Toast.makeText(ViewEvent.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
+                    }).addOnFailureListener(e -> Log.e("Firebase", "Error declining invitation", e));
+            addToRejected();
         });
 
-        // Show the dialog
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
+    /**
+     * Adds the user to the rejected list in Firestore.
+     */
     private void addToRejected() {
         db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
             List<DocumentReference> rejected = (List<DocumentReference>) eventSnapshot.get("rejected");
-
             if (rejected == null) {
                 rejected = new ArrayList<>();
             }
@@ -236,16 +240,16 @@ public class ViewEvent extends AppCompatActivity {
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Entrant added to rejected list successfully");
             eventRef.update("pending", FieldValue.arrayRemove(entrantRef));
-        }).addOnFailureListener(e -> {
-            Log.e("Firebase", "Error adding entrant to rejected list", e);
-        });
+        }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to rejected list", e));
     }
 
+    /**
+     * Adds the user to the accepted list in Firestore.
+     */
     private void addToAccepted() {
         db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
             List<DocumentReference> accepted = (List<DocumentReference>) eventSnapshot.get("accepted");
-
             if (accepted == null) {
                 accepted = new ArrayList<>();
             }
@@ -255,210 +259,174 @@ public class ViewEvent extends AppCompatActivity {
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Entrant added to accepted list successfully");
             eventRef.update("pending", FieldValue.arrayRemove(entrantRef));
-        }).addOnFailureListener(e -> {
-            Log.e("Firebase", "Error adding entrant to accepted list", e);
-        });
+        }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to accepted list", e));
     }
 
+    /**
+     * Adds the user to the waitlist after verifying capacity and user's consent for geolocation access.
+     */
     private void joinWaitlist() {
-        eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful() && task.getResult().exists()) {
-                    DocumentSnapshot document = task.getResult();
-                    Long limitValue = document.getLong("WaitlistLimit");
-
-                    if (limitValue != null) {
-                        int limit = limitValue.intValue();
-                        List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
-
-                        if (limit == -1 || (waitlist != null && waitlist.size() < limit)) {
-                            confirmationDialog(); // Show confirmation dialog for registration
-                        }
-
-                        else {
-                            runOnUiThread(() ->
-                                    Toast.makeText(ViewEvent.this, "Waitlist Full", Toast.LENGTH_SHORT).show()
-                            );
-                        }
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                DocumentSnapshot document = task.getResult();
+                Long limitValue = document.getLong("WaitlistLimit");
+                if (limitValue != null) {
+                    int limit = limitValue.intValue();
+                    List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+                    if (limit == -1 || (waitlist != null && waitlist.size() < limit)) {
+                        confirmationDialog();
                     } else {
-                        Log.e(TAG, "Error: WaitlistLimit field missing");
+                        runOnUiThread(() -> Toast.makeText(ViewEvent.this, "Waitlist Full", Toast.LENGTH_SHORT).show());
                     }
                 } else {
-                    Log.e(TAG, "No such document or error fetching document");
+                    Log.e(TAG, "Error: WaitlistLimit field missing");
                 }
+            } else {
+                Log.e(TAG, "No such document or error fetching document");
             }
         });
     }
 
+    /**
+     * Displays a confirmation dialog before joining the waitlist.
+     */
     private void confirmationDialog() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
-                builder.setCancelable(true);
-                builder.setMessage("Confirm to join waitlist");
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
+        builder.setCancelable(true);
+        builder.setMessage("Confirm to join waitlist");
+        builder.setPositiveButton("Confirm", (dialog, which) -> showGeolocationWarning());
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
+    /**
+     * Displays a warning dialog to request user's consent for geolocation access.
+     */
+    private void showGeolocationWarning() {
+        AlertDialog.Builder geoBuilder = new AlertDialog.Builder(ViewEvent.this);
+        geoBuilder.setTitle("Geolocation Required");
+        geoBuilder.setMessage("To join the waitlist for this event, we need access to your location. Do you agree to share your location data?");
+        geoBuilder.setPositiveButton("Accept", (dialog, which) -> addToWaitList());
+        geoBuilder.setNegativeButton("Decline", (dialog, which) -> Toast.makeText(ViewEvent.this, "You must accept geolocation to join the waitlist", Toast.LENGTH_SHORT).show());
+        AlertDialog geoDialog = geoBuilder.create();
+        geoDialog.show();
+    }
 
-                builder.setPositiveButton("Confirm",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Show geolocation warning before actually adding to the waitlist
-                                showGeolocationWarning();
-                            }
-                        });
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
+    /**
+     * Adds the user to the waitlist in Firestore.
+     */
+    private void addToWaitList() {
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+            List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
+            if (waitlist == null) {
+                waitlist = new ArrayList<>();
             }
+            waitlist.add(entrantRef);
+            transaction.update(eventRef, "waitlist", waitlist);
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("Firebase", "Entrant added to waitlist successfully");
+            waitlistBtn.setText("Withdraw");
+            eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
+        }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
+    }
 
-            private void showGeolocationWarning() {
-                AlertDialog.Builder geoBuilder = new AlertDialog.Builder(ViewEvent.this);
-                geoBuilder.setTitle("Geolocation Required");
-                geoBuilder.setMessage("To join the waitlist for this event, we need access to your location. Do you agree to share your location data?");
-                geoBuilder.setPositiveButton("Accept", (dialog, which) -> addToWaitList());
-                geoBuilder.setNegativeButton("Decline", (dialog, which) -> {
-                    Toast.makeText(ViewEvent.this, "You must accept geolocation to join the waitlist", Toast.LENGTH_SHORT).show();
-                });
+    /**
+     * Displays a dialog for confirming withdrawal from the waitlist.
+     */
+    private void withdrawDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
+        builder.setCancelable(true);
+        builder.setMessage("Confirm to withdraw from waitlist");
+        builder.setPositiveButton("Confirm", (dialog, which) -> exitWaitlist());
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
-                AlertDialog geoDialog = geoBuilder.create();
-                geoDialog.show();
+    /**
+     * Removes the user from the waitlist in Firestore.
+     */
+    private void exitWaitlist() {
+        eventRef.update("waitlist", FieldValue.arrayRemove(entrantRef))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firebase", "Entrant withdrew from waitlist successfully");
+                    waitlistBtn.setText("Join Waitlist");
+                }).addOnFailureListener(e -> Log.e("Firebase", "Error deleting entrant from waitlist", e));
+    }
+
+    /**
+     * Loads event details from Firestore and sets them in the respective UI elements.
+     *
+     * @param uid The unique identifier for the event.
+     */
+    public void loadEventDetails(String uid) {
+        DocumentReference doc = db.collection("EVENT_PROFILES").document(uid);
+        doc.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String Title = documentSnapshot.getString("Title");
+                Long Capacity = documentSnapshot.getLong("Capacity");
+                String Description = documentSnapshot.getString("Description");
+                String Time = documentSnapshot.getString("Time");
+                String Date = documentSnapshot.getString("Date");
+                String Location = documentSnapshot.getString("Location");
+
+                argbase64 = documentSnapshot.getString("bitmap");
+                String ImageUri = documentSnapshot.getString("Poster");
+                if (!ImageUri.isEmpty()) {
+                    Glide.with(this).load(ImageUri).into(poster);
+                }
+
+                Bitmap QR = decodeBase64toBmp(argbase64);
+
+                title.setText(Title != null ? Title : "");
+                capacity.setText(String.valueOf(Capacity));
+                desc.setText(Description != null ? Description : "");
+                time.setText(Time != null ? Time : "");
+                date.setText(Date != null ? Date : "");
+                location.setText(Location != null ? Location : "");
+            } else {
+                Toast.makeText(ViewEvent.this, "No event found", Toast.LENGTH_SHORT).show();
             }
+        }).addOnFailureListener(e -> Toast.makeText(ViewEvent.this, "Failed to load event", Toast.LENGTH_SHORT).show());
+    }
 
-            private void addToWaitList() {
-                db.runTransaction((Transaction.Function<Void>) transaction -> {
-                    DocumentSnapshot eventSnapshot = transaction.get(eventRef);
-                    List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
+    /**
+     * Decodes a Base64 encoded string to a Bitmap image.
+     *
+     * @param bmp64 The Base64 encoded string.
+     * @return The decoded Bitmap image.
+     */
+    public Bitmap decodeBase64toBmp(String bmp64) {
+        byte[] decodedBytes = Base64.decode(bmp64, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
 
-                    if (waitlist == null) {
-                        waitlist = new ArrayList<>();
-                    }
-                    waitlist.add(entrantRef);
-                    transaction.update(eventRef, "waitlist", waitlist);
-                    return null;
-                }).addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "Entrant added to waitlist successfully");
-                    waitlistBtn.setText("Withdraw");
-                    eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
-                }).addOnFailureListener(e -> {
-                    Log.e("Firebase", "Error adding entrant to waitlist", e);
-                });
+    /**
+     * Resamples the entrant from the waitlist to the pending list when a user declines an invitation.
+     */
+    private void resampleEntrant() {
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot snapshot = transaction.get(eventRef);
+            List<DocumentReference> waitlist = (List<DocumentReference>) snapshot.get("waitlist");
+            List<DocumentReference> pending = (List<DocumentReference>) snapshot.get("pending");
+
+            if (waitlist != null && !waitlist.isEmpty()) {
+                DocumentReference newEntrant = waitlist.get(0);
+                if (pending == null) pending = new ArrayList<>();
+                pending.add(newEntrant);
+
+                transaction.update(eventRef, "pending", pending);
+                transaction.update(eventRef, "waitlist", FieldValue.arrayRemove(newEntrant));
+
+                Log.d("Firebase", "New entrant added to pending list: " + newEntrant.getId());
             }
-
-
-            private void withdrawDialog() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
-                builder.setCancelable(true);
-                builder.setMessage("Confirm to withdraw from waitlist");
-                builder.setPositiveButton("Confirm",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                exitWaitlist();
-                            }
-                        });
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-
-            private void exitWaitlist() {
-                eventRef.update("waitlist", FieldValue.arrayRemove(entrantRef))
-                        .addOnSuccessListener(aVoid -> {
-                            Log.d("Firebase", "Entrant withdraw from waitlist successfully");
-                            waitlistBtn.setText("Join Waitlist");
-                        }).addOnFailureListener(e -> {
-                            Log.e("Firebase", "Error deleting entrant from waitlist", e);
-                        });
-            }
-
-
-            public void loadEventDetails(String uid) {
-                DocumentReference doc = db.collection("EVENT_PROFILES").document(uid);
-                doc.get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-
-                                String Title = documentSnapshot.getString("Title");
-                                Long Capacity = documentSnapshot.getLong("Capacity");
-                                String Description = documentSnapshot.getString("Description");
-                                String Time = documentSnapshot.getString("Time");
-                                String Date = documentSnapshot.getString("Date");
-                                String Location = documentSnapshot.getString("Location");
-
-                                //TEst
-                                argbase64 = documentSnapshot.getString("bitmap");
-                                String ImageUri = documentSnapshot.getString("Poster");
-                                if (ImageUri != "") {
-                                    Glide.with(this).load(ImageUri).into(poster);
-                                } else {
-                                    ;
-                                }
-
-                                Bitmap QR = decodeBase64toBmp(argbase64);
-
-                                //Test
-
-                                Log.wtf(TAG, "Okay now what");
-                                // Set the values in the EditTexts
-                                title.setText(Title != null ? Title : "");
-                                capacity.setText(String.valueOf(Capacity.intValue()));
-                                desc.setText(Description != null ? Description : "");
-                                time.setText(Time != null ? Time : "");
-                                date.setText(Date != null ? Date : "");
-                                location.setText(Location != null ? Location : "");
-
-                                //
-
-                                //
-
-                            } else {
-                                Toast.makeText(ViewEvent.this, "No event found", Toast.LENGTH_SHORT).show();
-                            }
-
-                        })
-                        .addOnFailureListener(e -> Toast.makeText(ViewEvent.this, "Failed to load event", Toast.LENGTH_SHORT).show());
-
-
-            }
-
-            public Bitmap decodeBase64toBmp(String bmp64) {
-                byte[] decodedBytes = Base64.decode(bmp64, Base64.DEFAULT);
-                return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-            }
-
-            private void resampleEntrant() {
-                db.runTransaction((Transaction.Function<Void>) transaction -> {
-                    DocumentSnapshot snapshot = transaction.get(eventRef);
-                    List<DocumentReference> waitlist = (List<DocumentReference>) snapshot.get("waitlist");
-                    List<DocumentReference> pending = (List<DocumentReference>) snapshot.get("pending");
-
-                    if (waitlist != null && !waitlist.isEmpty()) {
-                        DocumentReference newEntrant = waitlist.get(0);
-                        if (pending == null) pending = new ArrayList<>();
-                        pending.add(newEntrant);
-
-                        // Update the pending list and remove from waitlist
-                        transaction.update(eventRef, "pending", pending);
-                        transaction.update(eventRef, "waitlist", FieldValue.arrayRemove(newEntrant));
-
-                        Log.d("Firebase", "New entrant added to pending list: " + newEntrant.getId());
-                    }
-                    return null;
-                }).addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "Successfully resampled a new entrant from waitlist");
-                    Toast.makeText(ViewEvent.this, "A new entrant has been selected!", Toast.LENGTH_SHORT).show();
-                }).addOnFailureListener(e -> Log.e("Firebase", "Error resampling a new entrant", e));
-            }
-
-
-        }
-
-
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("Firebase", "Successfully resampled a new entrant from waitlist");
+            Toast.makeText(ViewEvent.this, "A new entrant has been selected!", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(e -> Log.e("Firebase", "Error resampling a new entrant", e));
+    }
+}
