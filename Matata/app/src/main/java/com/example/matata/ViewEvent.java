@@ -161,21 +161,9 @@ public class ViewEvent extends AppCompatActivity {
                     List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
 
                     String organizerId = document.getString("OrganizerID");
-                    if (organizerId == null || !organizerId.equals(USER_ID)) {
-                        drawBtn.setVisibility(View.INVISIBLE);
-                    }
 
-                    if (organizerId != null && USER_ID.equals(organizerId)) {
-                        waitlistBtn.setVisibility(View.INVISIBLE);
-                    } else if (pending != null && pending.contains(entrantRef)) {
-                        waitlistBtn.setText("Pending");
-                    } else if (accepted != null && accepted.contains(entrantRef)) {
-                        waitlistBtn.setText("Accepted");
-                    } else if (waitlist != null && waitlist.contains(entrantRef)) {
-                        waitlistBtn.setText("Withdraw");
-                    } else {
-                        waitlistBtn.setText("Join Waitlist");
-                    }
+                    updateButtonVisibility(organizerId);
+                    updateWaitlistButtonText(waitlist, pending, accepted);
                 }
             } else {
                 Log.e("Firebase", "Error fetching event details: ", task.getException());
@@ -194,9 +182,35 @@ public class ViewEvent extends AppCompatActivity {
     }
 
     /**
+     * Updates the text of waitlistBtn based on the user staus.
+     */
+    void updateWaitlistButtonText(List<DocumentReference> waitlist, List<DocumentReference> pending, List<DocumentReference> accepted) {
+        if (pending != null && pending.contains(entrantRef)) {
+            waitlistBtn.setText("Pending");
+        } else if (accepted != null && accepted.contains(entrantRef)) {
+            waitlistBtn.setText("Accepted");
+        } else if (waitlist != null && waitlist.contains(entrantRef)) {
+            waitlistBtn.setText("Withdraw");
+        } else {
+            waitlistBtn.setText("Join Waitlist");
+        }
+    }
+
+    /**
+     * Updates the visibility of buttons based on whether user is the organizer.
+     */
+    void updateButtonVisibility(String organizerId) {
+        if (organizerId == null || !organizerId.equals(USER_ID)) {
+            drawBtn.setVisibility(View.INVISIBLE);
+        }else {
+            waitlistBtn.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    /**
      * Displays a dialog for accepting or declining an invitation.
      */
-    private void showInvitationDialog() {
+    void showInvitationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
         builder.setTitle("Invitation");
         builder.setMessage("Do you want to accept or decline the invitation?");
