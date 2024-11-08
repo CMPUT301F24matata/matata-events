@@ -19,11 +19,26 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.util.List;
 
+/**
+ * Notification class manages the setup and sending of notifications within the application.
+ * This class is responsible for initializing the notification channel and sending notifications
+ * to entrants when they are selected from a waitlist.
+ *
+ * Outstanding issues: Notification permissions must be granted by the user, and the app handles
+ * this with a permission launcher. The `sendNotificationsToWaitlist` method checks for both
+ * String IDs and DocumentReferences, assuming both formats may be used for entrant identification.
+ */
 public class Notification {
 
     private static final String CHANNEL_ID = "waitlist_notification_channel";
     private ActivityResultLauncher<String> notificationPermissionLauncher;
 
+    /**
+     * Initializes the notification channel for waitlist notifications if the device's Android version
+     * supports notification channels (Android O and above).
+     *
+     * @param context the application context needed to create the notification channel
+     */
     public static void initNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Waitlist Notifications";
@@ -39,6 +54,14 @@ public class Notification {
         }
     }
 
+    /**
+     * Sends a notification to a specific entrant when they are selected from a waitlist.
+     *
+     * @param context the application context for accessing system services
+     * @param title the title of the notification
+     * @param message the content text of the notification
+     * @param entrantId the ID of the entrant to notify, used to create unique notifications per entrant
+     */
     public void sendWaitlistNotification(Context context, String title, String message, String entrantId) {
         Log.d("NotificationSendingTest", "sendWaitlistNotification");
 
@@ -65,6 +88,14 @@ public class Notification {
         notificationManager.notify(entrantId.hashCode(), builder.build());
     }
 
+    /**
+     * Sends notifications to a list of entrants on the waitlist, using their unique IDs or DocumentReferences.
+     *
+     * @param context the application context for accessing system services
+     * @param waitlistIds a list of entrant IDs or DocumentReferences for entrants to be notified
+     * @param title the title of the notification
+     * @param message the content text of the notification
+     */
     public void sendNotificationsToWaitlist(Context context, List<Object> waitlistIds, String title, String message) {
         Log.d("NotificationTest", "Sending notifications to waitlist...");
         try {
@@ -73,7 +104,6 @@ public class Notification {
                     sendWaitlistNotification(context, title, message, (String) entrantId);
                     Log.d("NotificationTest", "Notification sent to: " + entrantId);
                 } else if (entrantId instanceof DocumentReference) {
-                    // Handle DocumentReference case if necessary
                     DocumentReference ref = (DocumentReference) entrantId;
                     String entrantIdString = ref.getId(); // Get the ID of the document
                     sendWaitlistNotification(context, title, message, entrantIdString);
@@ -85,6 +115,11 @@ public class Notification {
         }
     }
 
+    /**
+     * Sets the ActivityResultLauncher to request notification permissions.
+     *
+     * @param launcher the launcher to request notification permissions from the user
+     */
     public void setNotificationPermissionLauncher(ActivityResultLauncher<String> launcher) {
         this.notificationPermissionLauncher = launcher;
     }
