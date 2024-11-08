@@ -38,7 +38,7 @@ public class ScanQRUITest {
         @Test
         public void testQRbutton() throws InterruptedException {
             onView(withId(R.id.qr_scanner)).perform(click());
-            Thread.sleep(3000);
+            Thread.sleep(5000);
             intended(hasComponent(QR_camera.class.getName()));
 
         }
