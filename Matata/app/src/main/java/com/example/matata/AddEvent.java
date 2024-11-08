@@ -4,7 +4,6 @@ import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.Settings;
 import android.util.Base64;
@@ -42,145 +41,136 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class AddEvent extends AppCompatActivity implements TimePickerListener,DatePickerListener{
+/**
+ * AddEvent Activity for creating new events within the Matata application.
+ * This activity allows users to input event details, select a date and time,
+ * upload an event poster, and generate a QR code. The event information is stored
+ * in Firebase Firestore and the image in Firebase Storage.
+ * Implements TimePickerListener and DatePickerListener for selecting event date and time.
+ */
+public class AddEvent extends AppCompatActivity implements TimePickerListener,DatePickerListener {
+
     private ImageView backBtn;
-    private TextView eventTime;
-    private LinearLayout dateGroup;
-    private LinearLayout timeGroup;
-    private TextView eventDate;
+    private TextView eventTime, eventDate, location;
+    private LinearLayout dateGroup, timeGroup;
     private ImageView posterPic;
-    private TextView location;
     private FloatingActionButton genrQR;
-    private EditText eveTitle;
-    private EditText descriptionBox;
-    private EditText capacity;
+    private EditText eveTitle, descriptionBox, capacity;
     private FirebaseFirestore db;
     private StorageReference ref;
-    private String USER_ID;
-    private String posterURI;
+    private String USER_ID, posterURI;
     private boolean isDefaultImage = true;
-
     private static final int PICK_IMAGE_REQUEST = 1;
 
-
+    /**
+     * Initializes the activity, sets up the Firebase instances, and assigns view elements.
+     * Also, sets up click listeners for back button, date and time pickers, and QR generation.
+     *
+     * @param savedInstanceState Bundle object containing the activity's previously saved state.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
         db = FirebaseFirestore.getInstance();
-        ref=FirebaseStorage.getInstance("gs://matata-d53da.firebasestorage.app").getReference();
+        ref = FirebaseStorage.getInstance("gs://matata-d53da.firebasestorage.app").getReference();
 
-
-        String EVENT_ID=generateRandomEventID();
-
+        String EVENT_ID = generateRandomEventID();
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_event);
 
+        initializeViews();
 
-        backBtn=findViewById(R.id.btnBackCreateEvent);
-        eventTime=findViewById(R.id.dateField);
-        dateGroup=findViewById(R.id.dateGroup);
-        timeGroup=findViewById(R.id.timeGroup);
-        eventDate=findViewById(R.id.editTextDate);
-        posterPic=findViewById(R.id.posterPicUpload);
-        genrQR=findViewById(R.id.genQR);
-        eveTitle=findViewById(R.id.eventTitle);
-        descriptionBox=findViewById(R.id.desc_box);
-        capacity=findViewById(R.id.number_of_people_event);
-        location=findViewById(R.id.editTextLocation);
-
-
-        //DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-
-            public void onClick(View view) {
-                if ((!eveTitle.getText().toString().equals("") ||
-                        !descriptionBox.getText().toString().equals("") ||
-                        !eventDate.getText().toString().equals("") ||
-                        !eventTime.getText().toString().equals("") ||
-                        !capacity.getText().toString().equals("") )
-                ){
-                    ConfirmationFragment backpress=new ConfirmationFragment();
-                    backpress.show(getSupportFragmentManager(),"BackPressFragment");
-                }
-                else{
-                    finish();
-                }
-            }
-        });
-
-        dateGroup.setOnClickListener(v->{
-
-            DialogFragment timePicker=new TimePickerFragment();
-            timePicker.show(getSupportFragmentManager(),"timePicker");
-
-        });
-
-        timeGroup.setOnClickListener(v->{
-            DialogFragment datePicker=new DatePickerFragment();
-            datePicker.show(getSupportFragmentManager(),"datePicker");
-        });
-
-        posterPic.setOnClickListener(v -> {
-            openSelector();
-        });
-
-        genrQR.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                if (!eveTitle.getText().toString().equals("") &&
-                        !descriptionBox.getText().toString().equals("") &&
-                        !eventDate.getText().toString().equals("") &&
-                        !eventTime.getText().toString().equals("") &&
-                        !capacity.getText().toString().equals("")
-                ){
-                    Log.wtf(TAG,"Okayyyy Letts goooo");
-
-
-                    Event event=new Event(eveTitle.getText().toString(),eventDate.getText().toString(),eventTime.getText().toString(),location.getText().toString(),descriptionBox.getText().toString(), Integer.parseInt(capacity.getText().toString()),EVENT_ID,USER_ID, -1);
-
-                    Intent intent = new Intent(view.getContext(), ViewEvent.class);
-                    String u_id=SaveEventInfo(EVENT_ID,event,intent,view);
-
-
-
-
-
-                }else{
-                    Toast.makeText(AddEvent.this, "Please fill in all the details", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-        });
-
-
+        backBtn.setOnClickListener(view -> handleBackPress());
+        timeGroup.setOnClickListener(v -> openTimePicker());
+        dateGroup.setOnClickListener(v -> openDatePicker());
+        posterPic.setOnClickListener(v -> openSelector());
+        genrQR.setOnClickListener(view -> handleGenerateQR(EVENT_ID, view));
     }
 
-
-    @Override
-    public void onTimeSelected(int hour, int min) {
-        // Handle the selected time
-        String time=String.format("%02d:%02d",hour,min);
-        Log.wtf(TAG,time);
-        eventTime.setText(time);
-
+    /**
+     * Sets up references to UI components for use within the activity.
+     */
+    private void initializeViews() {
+        backBtn = findViewById(R.id.btnBackCreateEvent);
+        eventTime = findViewById(R.id.dateField);
+        dateGroup = findViewById(R.id.dateGroup);
+        timeGroup = findViewById(R.id.timeGroup);
+        eventDate = findViewById(R.id.editTextDate);
+        posterPic = findViewById(R.id.posterPicUpload);
+        genrQR = findViewById(R.id.genQR);
+        eveTitle = findViewById(R.id.eventTitle);
+        descriptionBox = findViewById(R.id.desc_box);
+        capacity = findViewById(R.id.number_of_people_event);
+        location = findViewById(R.id.editTextLocation);
     }
 
-    @Override
-    public void onDateSelected(int year, int month, int date) {
-        String date_str=String.format("%02d/%02d/%04d",date,month+1,year);
-        eventDate.setText(date_str);
+    /**
+     * Handles back button press, showing a confirmation dialog if fields are filled.
+     */
+    private void handleBackPress() {
+        if (!eveTitle.getText().toString().isEmpty() ||
+                !descriptionBox.getText().toString().isEmpty() ||
+                !eventDate.getText().toString().isEmpty() ||
+                !eventTime.getText().toString().isEmpty() ||
+                !capacity.getText().toString().isEmpty()) {
+
+            ConfirmationFragment backpress = new ConfirmationFragment();
+            backpress.show(getSupportFragmentManager(), "BackPressFragment");
+        } else {
+            finish();
+        }
     }
 
+    /**
+     * Opens the time picker dialog.
+     */
+    private void openTimePicker() {
+        DialogFragment timePicker = new TimePickerFragment();
+        timePicker.show(getSupportFragmentManager(), "timePicker");
+    }
 
+    /**
+     * Opens the date picker dialog.
+     */
+    private void openDatePicker() {
+        DialogFragment datePicker = new DatePickerFragment();
+        datePicker.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    /**
+     * Validates input fields and initiates event QR generation and storage if fields are complete.
+     *
+     * @param EVENT_ID Unique identifier for the event.
+     * @param view Current view context.
+     */
+    private void handleGenerateQR(String EVENT_ID, View view) {
+        if (!eveTitle.getText().toString().isEmpty() &&
+                !descriptionBox.getText().toString().isEmpty() &&
+                !eventDate.getText().toString().isEmpty() &&
+                !eventTime.getText().toString().isEmpty() &&
+                !capacity.getText().toString().isEmpty()) {
+
+            Event event = new Event(
+                    eveTitle.getText().toString(),
+                    eventDate.getText().toString(),
+                    eventTime.getText().toString(),
+                    location.getText().toString(),
+                    descriptionBox.getText().toString(),
+                    Integer.parseInt(capacity.getText().toString()),
+                    EVENT_ID, USER_ID, -1
+            );
+
+            Intent intent = new Intent(view.getContext(), ViewEvent.class);
+            SaveEventInfo(EVENT_ID, event, intent, view);
+        } else {
+            Toast.makeText(AddEvent.this, "Please fill in all the details", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -193,37 +183,44 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
             }
     );
 
-    public void openSelector(){
-        Intent intent =new Intent(Intent.ACTION_PICK);
+    /**
+     * Opens the image selector for uploading a poster.
+     */
+    public void openSelector() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         pickImageLauncher.launch(intent);
     }
 
-
-
-    private String SaveEventInfo(String EVENT_ID,Event event,Intent intent,View view){
-
-        Bitmap bmp=generateQRbitmap(EVENT_ID);
-        String compressedBMP=bmpCompression(bmp);
-
-        StorageReference imagesRef = ref.child("EventsPosters/"+EVENT_ID+".jpg");
-
+    /**
+     * Saves event information to Firestore, including QR code and optional poster image.
+     *
+     * @param EVENT_ID Unique identifier for the event.
+     * @param event Event object containing all event data.
+     * @param intent Intent to navigate to the ViewEvent activity.
+     * @param view Current view context.
+     * @return String EVENT_ID for the created event.
+     */
+    private String SaveEventInfo(String EVENT_ID, Event event, Intent intent, View view) {
+        Bitmap bmp = generateQRbitmap(EVENT_ID);
+        String compressedBMP = bmpCompression(bmp);
+        StorageReference imagesRef = ref.child("EventsPosters/" + EVENT_ID + ".jpg");
 
         Map<String, Object> Event_details = new HashMap<>();
-        Event_details.put("Poster",posterURI);
+        Event_details.put("Poster", posterURI);
         Event_details.put("Title", event.getTitle());
         Event_details.put("Date", event.getDate());
         Event_details.put("Time", event.getTime());
-        Event_details.put("Location",event.getLocation());
-        Event_details.put("Description",event.getDescription());
-        Event_details.put("Capacity",event.getCapacity());
+        Event_details.put("Location", event.getLocation());
+        Event_details.put("Description", event.getDescription());
+        Event_details.put("Capacity", event.getCapacity());
         Event_details.put("WaitlistLimit", event.getWaitlistLimit());
-        Event_details.put("bitmap",compressedBMP);
-        Event_details.put("OrganizerID",USER_ID);
+        Event_details.put("bitmap", compressedBMP);
+        Event_details.put("OrganizerID", USER_ID);
 
         if (isDefaultImage) {
             Event_details.put("Poster", "");
-            executeDBchange(Event_details,EVENT_ID,intent, view);
+            executeDBchange(Event_details, EVENT_ID, intent, view);
         } else {
             Bitmap bmpjpg = ((BitmapDrawable) posterPic.getDrawable()).getBitmap();
             File temp = new File(getCacheDir(), EVENT_ID + ".jpg");
@@ -235,74 +232,81 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
             }
 
             Uri returned = Uri.fromFile(temp);
-
             imagesRef.putFile(returned)
                     .addOnSuccessListener(v -> imagesRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         posterURI = uri.toString();
-                        Log.wtf("345", posterURI);
                         Event_details.put("Poster", posterURI);
-                        Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
                         temp.delete();
-                        // Now save to Firestore after the URI is set
-                        executeDBchange(Event_details, EVENT_ID,intent, view);
+                        executeDBchange(Event_details, EVENT_ID, intent, view);
                     }))
                     .addOnFailureListener(e -> Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
 
-
-
-
-        Log.wtf("23", Event_details.toString());
-
         DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);
         doc.get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    executeDBchange(Event_details,EVENT_ID,intent, view);
+                    executeDBchange(Event_details, EVENT_ID, intent, view);
                     intent.putExtra("Unique_id", EVENT_ID);
                     view.getContext().startActivity(intent);
-
-
-                }).addOnFailureListener(v->Toast.makeText(AddEvent.this, "Something Went Wrong with server upload", Toast.LENGTH_SHORT).show());
-
+                })
+                .addOnFailureListener(v -> Toast.makeText(AddEvent.this, "Server upload failed", Toast.LENGTH_SHORT).show());
 
         return EVENT_ID;
     }
 
-    public String generateRandomEventID(){
+    /**
+     * Generates a unique identifier for the event.
+     *
+     * @return UUID as a String.
+     */
+    private String generateRandomEventID() {
         return UUID.randomUUID().toString();
     }
 
-    public void executeDBchange(Map Event_details,String EVENT_ID,Intent intent,View view){
-
-
+    /**
+     * Executes changes in Firestore to save event details.
+     *
+     * @param Event_details Map containing event details.
+     * @param EVENT_ID Unique identifier for the event.
+     * @param intent Intent to navigate to the ViewEvent activity.
+     * @param view Current view context.
+     */
+    private void executeDBchange(Map<String, Object> Event_details, String EVENT_ID, Intent intent, View view) {
         db.collection("EVENT_PROFILES").document(EVENT_ID)
                 .set(Event_details, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> Toast.makeText(AddEvent.this, "Event saved successfully", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(AddEvent.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
     }
 
-    private Bitmap generateQRbitmap(String EVENT_ID){
-        BarcodeEncoder barcodeEncoder=new BarcodeEncoder();
-
-        Bitmap bitmap= null;
+    /**
+     * Generates a QR code bitmap for the event ID.
+     *
+     * @param EVENT_ID Unique identifier for the event.
+     * @return Bitmap QR code for the event.
+     */
+    private Bitmap generateQRbitmap(String EVENT_ID) {
+        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {
-            bitmap = barcodeEncoder.encodeBitmap(EVENT_ID, BarcodeFormat.QR_CODE,500,500);
+            return barcodeEncoder.encodeBitmap(EVENT_ID, BarcodeFormat.QR_CODE, 500, 500);
         } catch (WriterException e) {
             throw new RuntimeException(e);
         }
-
-        return bitmap;
     }
 
-    //ChatGPT prompt "Give me some secure hash function for storage on cloud"
+    /**
+     * Generates a SHA-256 hash for the input string.
+     *
+     * @param input Input string to hash.
+     * @return SHA-256 hash as a String.
+     */
     public String generateHash(String input) {
         try {
-            MessageDigest digest=MessageDigest.getInstance("SHA-256");
-            byte[] hash=digest.digest(input.getBytes(StandardCharsets.UTF_8));
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
             StringBuilder hexString = new StringBuilder();
             for (byte b : hash) {
                 String hex = Integer.toHexString(0xff & b);
-                if (hex.length()==1) hexString.append('0');
+                if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
             return hexString.toString();
@@ -312,13 +316,42 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         }
     }
 
-    //ChatGPT prompt "How to store bitmap as a string"
-    public String bmpCompression(Bitmap bmp){
-        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
-        byte[] byteArray=byteArrayOutputStream.toByteArray();
-        return Base64.encodeToString(byteArray,Base64.DEFAULT);
+    /**
+     * Compresses a bitmap image to a Base64 string format.
+     *
+     * @param bmp Bitmap image to compress.
+     * @return Compressed Base64 encoded string of the bitmap.
+     */
+    public String bmpCompression(Bitmap bmp) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    /**
+     * Sets the selected time on the TextView after time selection.
+     *
+     * @param hour Selected hour.
+     * @param min Selected minute.
+     */
+    @Override
+    public void onTimeSelected(int hour, int min) {
+        String time = String.format("%02d:%02d", hour, min);
+        Log.wtf(TAG, time);
+        eventTime.setText(time);
+    }
+
+    /**
+     * Sets the selected date on the TextView after date selection.
+     *
+     * @param year Selected year.
+     * @param month Selected month.
+     * @param date Selected date.
+     */
+    @Override
+    public void onDateSelected(int year, int month, int date) {
+        String date_str = String.format("%02d/%02d/%04d", date, month + 1, year);
+        eventDate.setText(date_str);
     }
 }
-
-
