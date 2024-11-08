@@ -8,7 +8,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,29 +24,40 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * EventDetailActivity displays the details of a selected event and allows users to join or withdraw
+ * from the event's waitlist. The activity interacts with Firebase Firestore to retrieve and update
+ * event information, including checking the waitlist limit.
+ *
+ * Outstanding issues: The sample event ID is hardcoded, which could affect functionality if not set
+ * dynamically. Some method calls such as `addToWaitList()` within the confirmation dialog are currently
+ * commented out, meaning that they might need to be implemented for full functionality.
+ */
 public class EventDetailActivity extends AppCompatActivity {
-    // sample user to add to waitlist
+
     private FirebaseFirestore db;
     private String Event_id = "sample_event_id";
-    //private static final String USER_ID = "unique_user_id";
     private String USER_ID;
+
+    /**
+     * Initializes the EventDetailActivity, sets up views, and retrieves event details from intent.
+     *
+     * @param savedInstanceState if the activity is being re-initialized, this contains the data it most recently supplied
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_event_details);
-        // get db
+
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        // Get views
+        // Retrieve views
         TextView titleTextView = findViewById(R.id.ViewEventTitle);
         TextView dateTextView = findViewById(R.id.ViewEventDate);
         TextView timeTextView = findViewById(R.id.ViewEventTime);
@@ -57,7 +67,7 @@ public class EventDetailActivity extends AppCompatActivity {
         ImageView backButton = findViewById(R.id.go_back_view_event);
         Button joinWaitlistButton = findViewById(R.id.join_waitlist_button);
 
-        // Get data from Intent
+        // Retrieve data from Intent
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
         String date = intent.getStringExtra("date");
@@ -72,18 +82,18 @@ public class EventDetailActivity extends AppCompatActivity {
         timeTextView.setText(time);
         locationTextView.setText(location);
 
-        // Back button listener
+        // Back button listener to close the activity
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();  // Closes EventDetailActivity and returns to MainActivity
+                finish();  // Closes EventDetailActivity and returns to previous activity
             }
         });
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(Event_id);
         DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
 
+        // Check if user is already on the waitlist and update button text accordingly
         eventRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot eventSnapshot) {
@@ -98,12 +108,11 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
 
-        // join waitlist
+        // Join or withdraw from waitlist when button is clicked
         joinWaitlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (joinWaitlistButton.getText().toString().equals("Withdraw")) {
-                    // Show dialog to confirm exiting the waitlist
                     withdrawDialog();
                 } else {
                     eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -112,21 +121,13 @@ public class EventDetailActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
-                                    // Retrieve the 'limit' field
                                     int limit = document.getLong("WaitlistLimit").intValue();
                                     List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
                                     if (limit == -1 || waitlist.size() < limit) {
-                                        confirmationDialog(); // Show confirmation dialog for registration
+                                        confirmationDialog();
                                     } else {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(EventDetailActivity.this, "Waitlist Full", Toast.LENGTH_SHORT).show();
-                                                // Optionally, handle the over-limit case
-                                            }
-                                        });                                                }
-                                } else {
-                                    System.out.println("No such document!");
+                                        Toast.makeText(EventDetailActivity.this, "Waitlist Full", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
                         }
@@ -134,17 +135,19 @@ public class EventDetailActivity extends AppCompatActivity {
                 }
             }
 
+            /**
+             * Displays a dialog to confirm the user wants to withdraw from the waitlist.
+             */
             private void withdrawDialog() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailActivity.this);
                 builder.setCancelable(true);
                 builder.setMessage("Confirm to withdraw from waitlist");
-                builder.setPositiveButton("Confirm",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                exitWaitlist();
-                            }
-                        });
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        exitWaitlist();
+                    }
+                });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -154,27 +157,32 @@ public class EventDetailActivity extends AppCompatActivity {
                 dialog.show();
             }
 
+            /**
+             * Removes the user from the waitlist in Firestore.
+             */
             private void exitWaitlist() {
                 eventRef.update("waitlist", FieldValue.arrayRemove(entrantRef))
                         .addOnSuccessListener(aVoid -> {
-                            Log.d("Firebase", "Entrant added to waitlist successfully");
+                            Log.d("Firebase", "Entrant removed from waitlist successfully");
                             joinWaitlistButton.setText("Join Waitlist");
-                        }).addOnFailureListener(e -> {
-                            Log.e("Firebase", "Error adding entrant to waitlist", e);
-                        });
+                        })
+                        .addOnFailureListener(e -> Log.e("Firebase", "Error removing entrant from waitlist", e));
             }
 
+            /**
+             * Displays a confirmation dialog for joining the waitlist.
+             */
             private void confirmationDialog() {
                 AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailActivity.this);
                 builder.setCancelable(true);
                 builder.setMessage("Confirm to join waitlist");
-                builder.setPositiveButton("Confirm",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //addToWaitList();
-                            }
-                        });
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Uncomment the following line to enable waitlist addition
+                        // addToWaitList();
+                    }
+                });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -184,11 +192,13 @@ public class EventDetailActivity extends AppCompatActivity {
                 dialog.show();
             }
 
+            /**
+             * Adds the user to the waitlist in Firestore if space is available.
+             */
             private void addToWaitList() {
                 db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot eventSnapshot = transaction.get(eventRef);
                     List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
-
 
                     if (waitlist == null) {
                         waitlist = new ArrayList<>();
@@ -199,11 +209,8 @@ public class EventDetailActivity extends AppCompatActivity {
                 }).addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "Entrant added to waitlist successfully");
                     joinWaitlistButton.setText("Withdraw");
-                }).addOnFailureListener(e -> {
-                    Log.e("Firebase", "Error adding entrant to waitlist", e);
-                });
+                }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
             }
         });
-
     }
 }
