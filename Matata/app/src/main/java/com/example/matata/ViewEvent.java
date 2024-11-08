@@ -151,7 +151,7 @@ public class ViewEvent extends AppCompatActivity {
     /**
      * Retrieves and updates the user's current status in the event (e.g., pending, accepted, waitlist).
      */
-    private void refreshEntrantStatus() {
+    public void refreshEntrantStatus() {
         eventRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
