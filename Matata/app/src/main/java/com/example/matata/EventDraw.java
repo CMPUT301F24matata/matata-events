@@ -54,14 +54,27 @@ public class EventDraw extends AppCompatActivity {
     private EditText waitlistLimit;
     private Button saveButton;
 
+    private static FirebaseFirestore injectedFirestore;
+    private static String injectedUid;
+    private AlertDialog currentDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_draw_activity);
-        db= FirebaseFirestore.getInstance();
+        if (injectedFirestore != null) {
+            db = injectedFirestore;
+        } else {
+            db= FirebaseFirestore.getInstance();
+        }
 
-        Intent intent=getIntent();
-        uid=intent.getStringExtra("Unique_id");
+        if (injectedUid != null) {
+            uid = injectedUid;
+        } else {
+            Intent intent=getIntent();
+            uid=intent.getStringExtra("Unique_id");
+        }
+
 
         title = findViewById(R.id.event_title_draw_event);
         totalEntrant = findViewById(R.id.total_entrant_text);
@@ -180,6 +193,14 @@ public class EventDraw extends AppCompatActivity {
 //
 //    }
 
+    public static void injectFirestore(FirebaseFirestore firestore) {
+        injectedFirestore = firestore;
+    }
+
+    public static void injectUid(String uid) {
+        injectedUid = uid;
+    }
+
     private void drawConfirmDialog() {
         if (entrantList.size() == 0){
             Toast.makeText(EventDraw.this, "No one entered waiting list", Toast.LENGTH_SHORT).show();
@@ -214,15 +235,18 @@ public class EventDraw extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         clearSelectedEntrant();
+                        dialog.dismiss();
                     }
-                });
+                }) ;
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
             }
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+        currentDialog = dialog;
     }
 
     private void setSelectedEntrant() {
@@ -353,6 +377,10 @@ public class EventDraw extends AppCompatActivity {
 
                 })
                 .addOnFailureListener(e -> Toast.makeText(EventDraw.this, "Failed to load limit", Toast.LENGTH_SHORT).show());
+    }
+
+    public AlertDialog getCurrentDialog () {
+        return currentDialog;
     }
 
 }
