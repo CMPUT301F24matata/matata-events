@@ -55,7 +55,9 @@ import java.util.UUID;
 public class AddEvent extends AppCompatActivity implements TimePickerListener,DatePickerListener {
 
     private ImageView backBtn;
-    private TextView eventTime, eventDate, location;
+    TextView eventTime;
+    TextView eventDate;
+    private TextView location;
     private LinearLayout dateGroup, timeGroup;
     private ImageView posterPic;
     private FloatingActionButton genrQR;
@@ -131,6 +133,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
      */
     private void openTimePicker() {
         DialogFragment timePicker = new TimePickerFragment();
+        timePicker.setCancelable(true);
         timePicker.show(getSupportFragmentManager(), "timePicker");
     }
 
@@ -139,6 +142,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
      */
     private void openDatePicker() {
         DialogFragment datePicker = new DatePickerFragment();
+        datePicker.setCancelable(true);
         datePicker.show(getSupportFragmentManager(), "datePicker");
     }
 
@@ -259,7 +263,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
      *
      * @return UUID as a String.
      */
-    private String generateRandomEventID() {
+    String generateRandomEventID() {
         return UUID.randomUUID().toString();
     }
 
@@ -284,7 +288,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
      * @param EVENT_ID Unique identifier for the event.
      * @return Bitmap QR code for the event.
      */
-    private Bitmap generateQRbitmap(String EVENT_ID) {
+    Bitmap generateQRbitmap(String EVENT_ID) {
         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {
             return barcodeEncoder.encodeBitmap(EVENT_ID, BarcodeFormat.QR_CODE, 500, 500);
