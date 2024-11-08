@@ -49,7 +49,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
     androidTestImplementation("androidx.test:rules:1.5.0")
-//    implementation(files("C:/Users/chiro/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
+    implementation(files("C:/Users/chiro/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
 
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.2.0")
     implementation("com.google.zxing:core:3.5.3")
