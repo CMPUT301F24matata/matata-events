@@ -113,7 +113,7 @@ public class Notification {
                     Log.d("NotificationTest", "Notification sent to: " + entrantId);
                 } else if (entrantId instanceof DocumentReference) {
                     DocumentReference ref = (DocumentReference) entrantId;
-                    String entrantIdString = ref.getId(); // Get the ID of the document
+                    String entrantIdString = ref.getId();// Get the ID of the document
                     sendWaitlistNotification(context, title, message, entrantIdString);
                     Log.d("NotificationTest", "Notification sent to DocumentReference: " + entrantIdString);
                 }
