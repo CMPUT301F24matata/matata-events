@@ -4,22 +4,36 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.test.core.app.ApplicationProvider;
 
-import com.example.matata.ViewEvent;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.*;
+
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowSystemClock;
+import org.robolectric.shadows.ShadowToast;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -38,9 +52,26 @@ public class ViewEventUnitTest {
     private TextView date;
     private TextView location;
     private String userId;
+    private Button drawBtn;
+
+    @Mock
+    FirebaseFirestore mockDb;
+    @Mock
+    DocumentReference mockEventRef;
+    @Mock
+    DocumentReference mockEntrantRef;
+    @Mock
+    DocumentSnapshot mockDocumentSnapshot;
 
     @Before
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
+        MockitoAnnotations.openMocks(this);
+        ActivityController<ViewEvent> controller = Robolectric.buildActivity(ViewEvent.class);
+        viewEvent = controller.create().get();
+
+        when(mockDb.collection("EVENT_PROFILES").document("testUid")).thenReturn(mockEventRef);
+        when(mockDb.collection("USER_PROFILES").document(userId)).thenReturn(mockEntrantRef);
+
         // Initialize ViewEvent instance and setup fields using reflection
         viewEvent = new ViewEvent();
 
@@ -56,6 +87,7 @@ public class ViewEventUnitTest {
         time = new TextView(ApplicationProvider.getApplicationContext());
         date = new TextView(ApplicationProvider.getApplicationContext());
         location = new TextView(ApplicationProvider.getApplicationContext());
+        drawBtn = new Button(ApplicationProvider.getApplicationContext());
 
         // Set the private fields in ViewEvent using reflection
         setPrivateField("waitlistBtn", waitlistBtn);
@@ -65,6 +97,8 @@ public class ViewEventUnitTest {
         setPrivateField("time", time);
         setPrivateField("date", date);
         setPrivateField("location", location);
+        setPrivateField("drawBtn", drawBtn);
+        setPrivateField("db", mockDb);
     }
 
     private void setPrivateField(String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
@@ -74,41 +108,53 @@ public class ViewEventUnitTest {
     }
 
     @Test
-    public void testRefreshEntrantStatus_PendingStatus() {
+    public void testUpdateWaitlistButtonText_PendingStatus() {
         // Mock data for "pending" status
-        List<String> pendingList = new ArrayList<>();
-        pendingList.add(userId);
+        List<DocumentReference> pendingList = new ArrayList<>();
+        pendingList.add(mockEntrantRef);
 
-        // Call refreshEntrantStatus directly
-        viewEvent.refreshEntrantStatus();
+        // Call updateWaitlistButtonText()
+        viewEvent.updateWaitlistButtonText(new ArrayList<>(), pendingList, new ArrayList<>());
 
         // Check that waitlistBtn text is "Pending"
         assertEquals("Pending", waitlistBtn.getText().toString());
     }
 
     @Test
-    public void testRefreshEntrantStatus_AcceptedStatus() {
+    public void testUpdateWaitlistButtonText_AcceptedStatus() {
         // Mock data for "accepted" status
-        List<String> acceptedList = new ArrayList<>();
-        acceptedList.add(userId);
+        List<DocumentReference> acceptedList = new ArrayList<>();
+        acceptedList.add(mockEntrantRef);
 
-        // Call refreshEntrantStatus directly
-        viewEvent.refreshEntrantStatus();
+        // Call updateWaitlistButtonText()
+        viewEvent.updateWaitlistButtonText(new ArrayList<>(),new ArrayList<>(),acceptedList);
 
         // Check that waitlistBtn text is "Accepted"
         assertEquals("Accepted", waitlistBtn.getText().toString());
     }
 
     @Test
-    public void testRefreshEntrantStatus_NotOnAnyList() {
+    public void testUpdateWaitlistButtonText_NotOnAnyList() {
         // Empty lists for all statuses
-        List<String> emptyList = new ArrayList<>();
 
-        // Call refreshEntrantStatus directly
-        viewEvent.refreshEntrantStatus();
+        // Call updateWaitlistButtonText()
+        viewEvent.updateWaitlistButtonText(new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
 
         // Check that waitlistBtn text is "Join Waitlist"
         assertEquals("Join Waitlist", waitlistBtn.getText().toString());
+    }
+
+    @Test
+    public void testUpdateWaitlistButtonText_InWaitList() {
+        // Empty lists for all statuses
+        List<DocumentReference> waitlist = new ArrayList<>();
+        waitlist.add(mockEntrantRef);
+
+        // Call refreshEntrantStatus directly
+        viewEvent.updateWaitlistButtonText(waitlist,new ArrayList<>(),new ArrayList<>());
+
+        // Check that waitlistBtn text is "Join Waitlist"
+        assertEquals("Withdraw", waitlistBtn.getText().toString());
     }
 
 //    @Test
@@ -157,4 +203,27 @@ public class ViewEventUnitTest {
         assertEquals(eventDate, date.getText().toString());
         assertEquals(eventLocation, location.getText().toString());
     }
+
+    @Test
+    public void testUpdateButtonVisibility_AsOrganizer() throws NoSuchFieldException, IllegalAccessException {
+        // Set the user as the organizer
+        setPrivateField("USER_ID", userId);
+        viewEvent.updateButtonVisibility(userId);
+
+        // Check that the draw button is visible, waitlist button is invisible
+        assertEquals(View.VISIBLE, drawBtn.getVisibility());
+        assertEquals(View.INVISIBLE, waitlistBtn.getVisibility());
+    }
+
+    @Test
+    public void testUpdateButtonVisibility_AsNonOrganizer() throws NoSuchFieldException, IllegalAccessException {
+        // Set the user as a non-organizer
+        setPrivateField("USER_ID", userId);
+        viewEvent.updateButtonVisibility("user2");
+
+        // Assert that the draw button is invisible
+        assertEquals(View.INVISIBLE, drawBtn.getVisibility());
+    }
+
+
 }

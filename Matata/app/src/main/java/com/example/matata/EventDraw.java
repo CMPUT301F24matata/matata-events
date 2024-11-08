@@ -220,6 +220,7 @@ public class EventDraw extends AppCompatActivity {
         builder.setPositiveButton("Confirm", (dialog, which) -> setSelectedEntrant());
         builder.setNegativeButton(android.R.string.cancel, null);
         AlertDialog dialog = builder.create();
+        currentDialog = dialog;
         dialog.show();
     }
 

@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
 
 import org.junit.Before;
@@ -31,6 +32,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class EventDrawTest {
@@ -61,28 +65,47 @@ public class EventDrawTest {
         when(mockDocumentSnapshot.exists()).thenReturn(true);
         when(mockDocumentSnapshot.getLong("WaitlistLimit")).thenReturn(10L);
 
-        //when(mockDocument.get()).thenReturn(Tasks.forResult(mockDocumentSnapshot)); //Assume task completes successfully, run code in OnSuccessListener
+        when(mockDocument.get()).thenReturn(Tasks.forResult(mockDocumentSnapshot)); //Assume task completes successfully, run code in OnSuccessListener
         //when(mockDocument.get()).thenReturn(Tasks.forException(mockDocumentSnapshot)); //Assume task failed, run codes in OnFailureListener
 
-        /*
-        when(mockDb.runTransaction(any(Transaction.Function.class))).thenAnswer(invocation -> {
-            // Simulate the transaction function and call the update
-            Transaction.Function<Void> function = invocation.getArgument(0);
-            function.apply(mockTransaction);
-            return Tasks.forResult(null); // Simulate success
-        });*/
-    }
-
-    @Test
-    public void testClearPendingList() {
         when(mockDb.runTransaction(any(Transaction.Function.class))).thenAnswer(invocation -> {
             // Simulate the transaction function and call the update
             Transaction.Function<Void> function = invocation.getArgument(0);
             function.apply(mockTransaction);
             return Tasks.forResult(null); // Simulate success
         });
-        when(mockDocument.get()).thenReturn(Tasks.forResult(mockDocumentSnapshot)); //Assume task completes successfully, run code in OnSuccessListener
+    }
 
+    @Test
+    public void testDraw() throws FirebaseFirestoreException {
+        //when(mockDocumentSnapshot.get("waitlist")).thenReturn(waitlist);
+        when(mockTransaction.get(mockDocument)).thenReturn(mockDocumentSnapshot);
+
+        List<DocumentReference> waitlist = new ArrayList<>();
+        waitlist.add(mockDocument);
+        when(mockDocumentSnapshot.get("waitlist")).thenReturn(waitlist);
+
+        ActivityScenario<EventDraw> scenario = ActivityScenario.launch(EventDraw.class);
+
+        scenario.onActivity(activity -> {
+            Button draw_button = activity.findViewById(R.id.draw_button);
+
+            draw_button.performClick();
+
+            AlertDialog dialog = activity.getCurrentDialog();
+            Button positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            positive.performClick();
+
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                verify(mockTransaction).update(eq(mockDocument), eq("pending"), anyList());
+                verify(mockTransaction).update(eq(mockDocument), eq("waitlist"), anyList());
+            }, 50);
+        });
+    }
+
+
+    @Test
+    public void testClearPendingList() {
         ActivityScenario<EventDraw> scenario = ActivityScenario.launch(EventDraw.class);
 
         scenario.onActivity(activity -> {
@@ -109,8 +132,6 @@ public class EventDrawTest {
 
     @Test
     public void testWaitlistLimit() {
-        when(mockDocument.get()).thenReturn(Tasks.forResult(mockDocumentSnapshot)); //Assume task completes successfully, run code in OnSuccessListener
-
         ActivityScenario<EventDraw> scenario = ActivityScenario.launch(EventDraw.class);
 
         scenario.onActivity(activity -> {
