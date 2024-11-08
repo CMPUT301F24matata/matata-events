@@ -138,12 +138,10 @@ public class ViewEvent extends AppCompatActivity {
 
                         String organizerId = document.getString("OrganizerID");
                         if (organizerId == null || !organizerId.equals(USER_ID)) {
-                            drawBtn.setClickable(false);
                             drawBtn.setVisibility(View.INVISIBLE);
                         }
 
                         if (organizerId != null && USER_ID.equals(organizerId)){
-                            drawBtn.setClickable(false);
                             waitlistBtn.setVisibility(View.INVISIBLE);
                         }
                         else if (pending != null && pending.contains(entrantRef)) {
