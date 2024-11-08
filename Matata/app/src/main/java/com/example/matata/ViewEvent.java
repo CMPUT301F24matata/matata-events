@@ -114,7 +114,7 @@ public class ViewEvent extends AppCompatActivity {
 
         loadEventDetails(uid);
 
-        refreshWaitlistStatus();
+        refreshEntrantStatus();
 
     }
 
@@ -122,9 +122,10 @@ public class ViewEvent extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        refreshWaitlistStatus();
+        refreshEntrantStatus();
     }
-    private void refreshWaitlistStatus() {
+
+    private void refreshEntrantStatus() {
         eventRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

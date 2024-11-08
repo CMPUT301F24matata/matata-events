@@ -171,9 +171,20 @@ public class EventDraw extends AppCompatActivity {
                     }
                 });
 
+        //checkDrawStatus();
+
         }
 
+//    private void checkDrawStatus() {
+//
+//    }
+
     private void drawConfirmDialog() {
+        if (entrantList.size() == 0){
+            Toast.makeText(EventDraw.this, "No one entered waiting list", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(EventDraw.this);
         builder.setCancelable(true);
         builder.setMessage("You are about to draw " + drawNum + " out of "+ entrantList.size() + " people.\nProceed?");
@@ -224,11 +235,12 @@ public class EventDraw extends AppCompatActivity {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
             List<DocumentReference> pending = (List<DocumentReference>) eventSnapshot.get("pending");
             List<DocumentReference> waitlist= (List<DocumentReference>) eventSnapshot.get("waitlist");
+            drawNum = Math.min(drawNum, tempList.size());
 
             if (pending == null) {
                 pending = new ArrayList<>();
             }
-            for (int i = 0; i < Math.min(drawNum, tempList.size()); i++) {
+            for (int i = 0; i < drawNum; i++) {
                 Map.Entry<Entrant, String> entry = tempList.get(i);
                 selectedList.add(entry.getKey());
                 selectedIdList.add(entry.getValue());
@@ -246,6 +258,8 @@ public class EventDraw extends AppCompatActivity {
             Log.d("Firebase", "Entrant added to pending list successfully");
             pendingAdapter.notifyDataSetChanged();
             waitlistAdapter.notifyDataSetChanged();
+            drawBtn.setClickable(false);  // set draw button not clickable after draw
+            Toast.makeText(EventDraw.this, "Successfully sampled" + drawNum + "entrants to pending list", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> {
             Log.e("Firebase", "Error adding entrant to pending list", e);
         });
@@ -294,6 +308,10 @@ public class EventDraw extends AppCompatActivity {
                     if (listType == "waitlist"){
                         entrantMap.put(entrant, snapshot.getId());
                         totalEntrant.setText("From: " + list.size());
+                    }
+                    // set draw button not clickable if there's a pending list
+                    if(listType == "pending" && (!list.isEmpty())){
+                        drawBtn.setClickable(false);
                     }
                 }
             }
