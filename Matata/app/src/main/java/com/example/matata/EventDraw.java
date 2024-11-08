@@ -64,19 +64,34 @@ public class EventDraw extends AppCompatActivity {
     private EditText waitlistLimit;
     private Button saveButton;
 
+    private static FirebaseFirestore injectedFirestore;
+    private static String injectedUid;
+    private AlertDialog currentDialog;
+
     /**
      * Initializes the EventDraw activity and sets up Firebase, RecyclerViews, and various controls.
      *
      * @param savedInstanceState if the activity is being re-initialized, this contains the data it most recently supplied
      */
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_draw_activity);
-        db = FirebaseFirestore.getInstance();
 
-        Intent intent = getIntent();
-        uid = intent.getStringExtra("Unique_id");
+        if (injectedFirestore != null) {
+            db = injectedFirestore;
+        } else {
+            db= FirebaseFirestore.getInstance();
+        }
+
+        if (injectedUid != null) {
+            uid = injectedUid;
+        } else {
+            Intent intent=getIntent();
+            uid=intent.getStringExtra("Unique_id");
+        }
+
 
         title = findViewById(R.id.event_title_draw_event);
         totalEntrant = findViewById(R.id.total_entrant_text);
@@ -172,6 +187,24 @@ public class EventDraw extends AppCompatActivity {
                 });
     }
 
+
+        //checkDrawStatus();
+
+
+
+//    private void checkDrawStatus() {
+//
+//    }
+
+    public static void injectFirestore(FirebaseFirestore firestore) {
+        injectedFirestore = firestore;
+    }
+
+    public static void injectUid(String uid) {
+        injectedUid = uid;
+    }
+
+
     /**
      * Opens a confirmation dialog for drawing entrants.
      */
@@ -201,6 +234,7 @@ public class EventDraw extends AppCompatActivity {
         builder.setNegativeButton(android.R.string.cancel, null);
         AlertDialog dialog = builder.create();
         dialog.show();
+        currentDialog = dialog;
     }
 
     /**
@@ -345,4 +379,11 @@ public class EventDraw extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Toast.makeText(EventDraw.this, "Failed to load limit", Toast.LENGTH_SHORT).show());
     }
+
+
+    public AlertDialog getCurrentDialog () {
+        return currentDialog;
+    }
+
+
 }

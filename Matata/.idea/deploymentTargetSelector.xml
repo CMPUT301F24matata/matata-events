@@ -13,13 +13,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="AddEventUITest">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="testDatePickerAndTimePicker_DisplaysCorrectly()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="testGenerateQRButton_NavigatesToViewEvent_WithValidInputs()">
+      <SelectionState runConfigName="testSaveEventInfo_withValidData()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
