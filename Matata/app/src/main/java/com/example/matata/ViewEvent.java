@@ -142,7 +142,11 @@ public class ViewEvent extends AppCompatActivity {
                             drawBtn.setVisibility(View.INVISIBLE);
                         }
 
-                        if (pending != null && pending.contains(entrantRef)) {
+                        if (organizerId != null && USER_ID.equals(organizerId)){
+                            drawBtn.setClickable(false);
+                            waitlistBtn.setVisibility(View.INVISIBLE);
+                        }
+                        else if (pending != null && pending.contains(entrantRef)) {
                             waitlistBtn.setText("Pending");
                         } else if (accepted != null && accepted.contains(entrantRef)) {
                             waitlistBtn.setText("Accepted");

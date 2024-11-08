@@ -107,6 +107,7 @@ public class EventDraw extends AppCompatActivity {
             }
         });
 
+        // for now organizer can only draw once for each event, if organizer already have a pending list, drawBtn is not clickable
         drawBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
