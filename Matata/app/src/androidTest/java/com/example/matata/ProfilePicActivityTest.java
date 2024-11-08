@@ -1,3 +1,17 @@
+/**
+ * ProfilePicActivityTest class contains instrumentation tests for ProfilePicActivity, verifying functionality such as
+ * image picker intent launching, back button handling, profile picture deletion, and button actions when no image is selected.
+ * These tests use the AndroidJUnit4 runner and Espresso for UI interaction.
+ *
+ * Purpose:
+ * - Validate the UI and functionality of ProfilePicActivity, including image uploading, deletion, and proper
+ *   handling of user interactions.
+ *
+ * Outstanding Issues:
+ * - Ensure consistent handling of intent results across various Android SDK versions.
+ * - Verify image picker functionality on different devices and configurations.
+ */
+
 package com.example.matata;
 
 import static org.junit.Assert.*;
@@ -11,10 +25,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.provider.Settings;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -24,10 +35,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-import com.example.matata.ProfilePicActivity;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.After;
@@ -36,76 +44,99 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Runs instrumentation tests for the ProfilePicActivity using AndroidJUnit4.
+ */
 @RunWith(AndroidJUnit4.class)
 public class ProfilePicActivityTest {
 
+    /**
+     * Firestore instance for storing or retrieving user profile image data.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * ID used for identifying the test user in Firestore based on the device's unique Android ID.
+     */
     private String testUserId;
 
+    /**
+     * Rule that provides an ActivityScenario for ProfilePicActivity, enabling test control over its lifecycle.
+     */
     @Rule
     public ActivityScenarioRule<ProfilePicActivity> activityScenarioRule = new ActivityScenarioRule<>(ProfilePicActivity.class);
 
+    /**
+     * Sets up necessary resources before each test, including Firestore and device ID for the test user.
+     * Initializes Espresso Intents for intent validation during tests.
+     */
     @Before
     public void setUp() {
         db = FirebaseFirestore.getInstance();
-        testUserId = Settings.Secure.getString(InstrumentationRegistry.getInstrumentation().getTargetContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        testUserId = Settings.Secure.getString(
+                InstrumentationRegistry.getInstrumentation().getTargetContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID
+        );
         Intents.init();
     }
 
+    /**
+     * Releases resources after each test, such as Espresso Intents to ensure proper cleanup.
+     */
     @After
     public void tearDown() {
         Intents.release();
     }
 
+    /**
+     * Verifies that clicking on the profile picture launches an image picker intent.
+     * Expected outcome: Image picker intent with action and MIME type for selecting images.
+     */
     @Test
     public void testOpenImagePicker() {
-        // Perform click on the profile picture ImageView
         onView(withId(R.id.ivProfilePicture)).perform(click());
 
-        // Pause to allow manual image selection
         try {
-            Thread.sleep(5000); // Wait for 5 seconds to allow manual image selection
+            Thread.sleep(5000); // Allow manual image selection
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // Verify that the image picker intent is launched
         intended(hasAction(Intent.ACTION_CHOOSER));
         intended(hasExtra(Intent.EXTRA_INTENT, hasAction(Intent.ACTION_GET_CONTENT)));
         intended(hasExtra(Intent.EXTRA_INTENT, hasType("image/*")));
     }
 
+    /**
+     * Tests the back button functionality by verifying that the activity finishes upon pressing the back button.
+     */
     @Test
     public void testBackButton() {
-        // Launch activity
         ActivityScenario<ProfilePicActivity> scenario = ActivityScenario.launch(ProfilePicActivity.class);
 
-        // Click on the back button
         onView(withId(R.id.btnBack)).perform(click());
 
-        // Verify that the activity is finished
         scenario.onActivity(activity -> assertTrue(activity.isFinishing()));
     }
 
+    /**
+     * Tests deleting the profile picture after an image is selected by resetting the profile picture to its default state.
+     * Expected outcome: Profile picture should be reset to the default icon.
+     */
     @Test
     public void testDeleteProfilePicture() {
-        // Click on the profile picture ImageView to select an image
         onView(withId(R.id.ivProfilePicture)).perform(click());
 
-        // Pause to allow manual image selection
         try {
-            Thread.sleep(5000); // Wait for 5 seconds to allow manual image selection
+            Thread.sleep(5000); // Allow manual image selection
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // Click on the delete button
         onView(withId(R.id.btnDeletePicture)).perform(click());
 
-        // Relaunch the profile activity to check if the image was deleted
         ActivityScenario<ProfilePicActivity> newScenario = ActivityScenario.launch(ProfilePicActivity.class);
 
-        // Verify profile picture is reset to default
         newScenario.onActivity(activity -> {
             ImageView profileIcon = activity.findViewById(R.id.ivProfilePicture);
             Drawable expectedDrawable = activity.getDrawable(R.drawable.ic_upload);
@@ -115,33 +146,36 @@ public class ProfilePicActivityTest {
         });
     }
 
+    /**
+     * Tests clicking the upload button without selecting an image, expecting a toast message.
+     * Expected outcome: Toast message indicating "No image selected to upload".
+     */
     @Test
     public void testUploadButton_withNoImageSelected() {
-        // Launch activity
         ActivityScenario<ProfilePicActivity> scenario = ActivityScenario.launch(ProfilePicActivity.class);
 
-        // Click on the upload button without selecting an image
         onView(withId(R.id.btnUploadPicture)).perform(click());
 
-        // Verify that the appropriate toast message is displayed
         scenario.onActivity(activity -> {
             Toast toast = Toast.makeText(activity, "No image selected to upload", Toast.LENGTH_SHORT);
             assertNotNull(toast);
         });
     }
 
+    /**
+     * Tests clicking the delete button without an image selected, ensuring the profile picture resets to default.
+     * Expected outcome: Profile picture drawable should match the default icon, with no saved image URI.
+     */
     @Test
     public void testDeleteButton_withNoImageSelected() {
-        // Launch activity
         ActivityScenario<ProfilePicActivity> scenario = ActivityScenario.launch(ProfilePicActivity.class);
 
-        // Click on the delete button without selecting an image
         onView(withId(R.id.btnDeletePicture)).perform(click());
 
-        // Verify that the profile picture is reset to default and no errors occur
         scenario.onActivity(activity -> {
             ImageView profileIcon = activity.findViewById(R.id.ivProfilePicture);
-            String savedUri = activity.getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE).getString("profile_image_uri", null);
+            String savedUri = activity.getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE)
+                    .getString("profile_image_uri", null);
             assertNull(savedUri);
             assertEquals(R.drawable.ic_upload, ((ImageView) profileIcon).getDrawable().getConstantState());
         });
