@@ -18,21 +18,27 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * MainActivity serves as the main hub of the app, displaying available events in a RecyclerView,
+ * allowing users to navigate to different sections, and setting up notifications for waitlist updates.
+ * This activity also initializes a user profile if it doesn't already exist in Firestore.
+ *
+ * Outstanding issues: The `addEventsInit()` method retrieves events without any pagination,
+ * which may impact performance if the event list grows significantly. Additionally, the notification
+ * logic assumes the app has permission to post notifications, which may not be granted by the user.
+ */
 public class MainActivity extends AppCompatActivity {
+
     private ImageView profileIcon, new_event, eventHistory, eventSearch;
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
@@ -41,12 +47,19 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String USER_ID = "";
     private String uid = null;
+    private List<String> statusList = new ArrayList<>();
     private ImageButton notificationButton;
 
     private ActivityResultLauncher<String> notificationPermissionLauncher;
     private Notification notificationManager;
     private static final String CHANNEL_ID = "waitlist_notification_channel";
 
+    /**
+     * Initializes the MainActivity and sets up UI components, database references, and event data.
+     * Configures notification channels and permissions for handling waitlist notifications.
+     *
+     * @param savedInstanceState if the activity is being re-initialized, this contains the data it most recently supplied
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
         addEventsInit();
     }
 
+    /**
+     * Initializes UI elements and sets up the RecyclerView for displaying event data.
+     */
     private void initializeUI() {
         profileIcon = findViewById(R.id.profile_picture);
         new_event = findViewById(R.id.add_event);
@@ -105,10 +121,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         eventList = new ArrayList<>();
-        eventAdapter = new EventAdapter(this, eventList);
+        eventAdapter = new EventAdapter(this, eventList, statusList);
         recyclerView.setAdapter(eventAdapter);
     }
 
+    /**
+     * Sets click listeners for various UI elements to handle navigation and actions.
+     */
     private void setOnClickListeners() {
         profileIcon.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), ProfileActivity.class);
@@ -133,12 +152,31 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Loads and listens for changes to events in Firestore, updating the RecyclerView accordingly.
+     */
     private void addEventsInit() {
         db.collection("EVENT_PROFILES")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
+                .addSnapshotListener((snapshots, e) -> {
+                    eventList.clear();
+                    statusList.clear();
+
+                    if (snapshots != null) {
+                        for (QueryDocumentSnapshot document : snapshots) {
+                            String eventStatus = "";
+                            DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
+                            List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
+                            List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
+                            List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+                            if (accepted != null && accepted.contains(entrantRef)) {
+                                statusList.add("Accepted");
+                            } else if (pending != null && pending.contains(entrantRef)) {
+                                statusList.add("Pending");
+                            } else if (waitlist != null && waitlist.contains(entrantRef)) {
+                                statusList.add("Waitlist");
+                            } else {
+                                statusList.add("");
+                            }
                             String title = document.getString("Title");
                             uid = document.getId();
                             String date = document.getString("Date");
@@ -149,14 +187,15 @@ public class MainActivity extends AppCompatActivity {
                             int capacity = document.getLong("Capacity").intValue();
 
                             eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
-                            eventAdapter.notifyDataSetChanged();
                         }
-                    } else {
-                        Log.d("Firebase", "Error getting documents: ", task.getException());
+                        eventAdapter.notifyDataSetChanged();
                     }
                 });
     }
 
+    /**
+     * Retrieves the waitlist for each event organized by the user and sends notifications to those on the waitlist.
+     */
     private void retrieveWaitlistAndNotify() {
         db.collection("EVENT_PROFILES")
                 .whereEqualTo("OrganizerID", USER_ID)
@@ -180,6 +219,3 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 }
-
-
-

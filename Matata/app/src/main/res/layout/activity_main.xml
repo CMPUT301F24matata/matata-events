@@ -89,7 +89,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_events"
             android:layout_width="match_parent"
-            android:layout_height="583dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="8dp"
             android:padding="8dp"
             app:layout_constraintBottom_toTopOf="@id/linearLayout"
