@@ -45,6 +45,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.activity:activity:1.9.2")
     testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.core)
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
@@ -68,6 +69,7 @@ dependencies {
     implementation(libs.play.services.mlkit.barcode.scanning)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     implementation("com.google.firebase:firebase-storage:20.1.0")
+    testImplementation("org.robolectric:robolectric:4.10.3")
 
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-firestore")
@@ -83,4 +85,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    androidTestImplementation("org.mockito:mockito-android:5.14.2")
 }
