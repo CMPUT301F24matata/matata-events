@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
@@ -31,12 +30,23 @@ import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * EventDraw activity manages the draw process for an event, allowing the organizer to randomly select
+ * entrants from a waitlist. It includes options to set a waitlist limit, draw a specified number of
+ * entrants, and clear pending entries. This activity interacts with Firebase Firestore to store
+ * and update event data.
+ *
+ * Outstanding issues: Some commented-out code indicates unfinished functionality or placeholder
+ * code (e.g., `loadEntrants()` is unused). The draw button can only be used once per event, as indicated
+ * by the hard-coded setup. Refactoring for clearer data handling and better modularity could enhance
+ * maintainability.
+ */
 public class EventDraw extends AppCompatActivity {
+
     private FirebaseFirestore db;
     private String uid;
     private List<Entrant> entrantList, selectedList, acceptedList, rejectedList;
@@ -58,10 +68,17 @@ public class EventDraw extends AppCompatActivity {
     private static String injectedUid;
     private AlertDialog currentDialog;
 
+    /**
+     * Initializes the EventDraw activity and sets up Firebase, RecyclerViews, and various controls.
+     *
+     * @param savedInstanceState if the activity is being re-initialized, this contains the data it most recently supplied
+     */
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_draw_activity);
+
         if (injectedFirestore != null) {
             db = injectedFirestore;
         } else {
@@ -87,84 +104,68 @@ public class EventDraw extends AppCompatActivity {
         rejectedRecyclerView = findViewById(R.id.rejected_recyclerView);
         waitlistRecyclerView = findViewById(R.id.waitlist_recyclerView);
 
-        entrantList = new ArrayList<Entrant>();
+        entrantList = new ArrayList<>();
         waitlistAdapter = new EntrantAdapter(this, entrantList);
         waitlistRecyclerView.setAdapter(waitlistAdapter);
         waitlistRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        selectedList = new ArrayList<Entrant>();
+        selectedList = new ArrayList<>();
         pendingAdapter = new EntrantAdapter(this, selectedList);
         pendingRecyclerView.setAdapter(pendingAdapter);
         pendingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        rejectedList = new ArrayList<Entrant>();
+        rejectedList = new ArrayList<>();
         rejectedAdapter = new EntrantAdapter(this, rejectedList);
         rejectedRecyclerView.setAdapter(rejectedAdapter);
         rejectedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        acceptedList = new ArrayList<Entrant>();
+        acceptedList = new ArrayList<>();
         acceptedAdapter = new EntrantAdapter(this, acceptedList);
         acceptedRecyclerView.setAdapter(acceptedAdapter);
         acceptedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         entrantMap = new LinkedHashMap<>();
-        selectedIdList = new ArrayList<String>();
+        selectedIdList = new ArrayList<>();
 
-        //loadEntrants();
         loadLimit(uid);
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        // Back button to close the activity
+        backBtn.setOnClickListener(v -> finish());
 
-        // for now organizer can only draw once for each event, if organizer already have a pending list, drawBtn is not clickable
-        drawBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawConfirmDialog();
-            }
-        });
+        // Draw button opens a confirmation dialog
+        drawBtn.setOnClickListener(view -> drawConfirmDialog());
 
         clearPendingList = findViewById(R.id.clearPendingList);
-        clearPendingList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearConfirmDialog();
-                Log.d("Selected List", "Selected List Cleared");
-                pendingAdapter.notifyDataSetChanged();
-            }
+        clearPendingList.setOnClickListener(v -> {
+            clearConfirmDialog();
+            Log.d("Selected List", "Selected List Cleared");
+            pendingAdapter.notifyDataSetChanged();
         });
 
         limitSwitch = findViewById(R.id.limitSwitch);
         waitlistLimit = findViewById(R.id.waitlistLimit);
         saveButton = findViewById(R.id.saveButton);
 
-        limitSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    waitlistLimit.setVisibility(View.VISIBLE);
-                    saveButton.setVisibility(View.VISIBLE);
-                } else {
-                    removeLimit(uid);
-                    waitlistLimit.setVisibility(View.GONE);
-                    saveButton.setVisibility(View.GONE);
-                }
+        // Handle toggling of waitlist limit visibility
+        limitSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                waitlistLimit.setVisibility(View.VISIBLE);
+                saveButton.setVisibility(View.VISIBLE);
+            } else {
+                removeLimit(uid);
+                waitlistLimit.setVisibility(View.GONE);
+                saveButton.setVisibility(View.GONE);
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (waitlistLimit != null) {
-                    setLimit(uid);
-                }
+        // Save button to set a waitlist limit
+        saveButton.setOnClickListener(v -> {
+            if (waitlistLimit != null) {
+                setLimit(uid);
             }
         });
 
+        // Load event data from Firestore
         db.collection("EVENT_PROFILES").document(uid).get()
                 .addOnCompleteListener(task -> {
                     DocumentSnapshot document = task.getResult();
@@ -177,17 +178,19 @@ public class EventDraw extends AppCompatActivity {
                         List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
                         List<DocumentReference> rejected = (List<DocumentReference>) document.get("rejected");
 
-                        // Load all entrants from waitlist and pending lists
+                        // Load entrants for each list
                         loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
                         loadList(pending, selectedList, pendingAdapter, "pending");
                         loadList(accepted, acceptedList, acceptedAdapter, "accepted");
                         loadList(rejected, rejectedList, rejectedAdapter, "rejected");
                     }
                 });
+    }
+
 
         //checkDrawStatus();
 
-        }
+
 
 //    private void checkDrawStatus() {
 //
@@ -201,54 +204,42 @@ public class EventDraw extends AppCompatActivity {
         injectedUid = uid;
     }
 
+
+    /**
+     * Opens a confirmation dialog for drawing entrants.
+     */
     private void drawConfirmDialog() {
-        if (entrantList.size() == 0){
+        if (entrantList.isEmpty()) {
             Toast.makeText(EventDraw.this, "No one entered waiting list", Toast.LENGTH_SHORT).show();
             return;
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(EventDraw.this);
         builder.setCancelable(true);
-        builder.setMessage("You are about to draw " + drawNum + " out of "+ entrantList.size() + " people.\nProceed?");
-        builder.setPositiveButton("Confirm",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        setSelectedEntrant();
-                    }
-                });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
+        builder.setMessage("You are about to draw " + drawNum + " out of " + entrantList.size() + " people.\nProceed?");
+        builder.setPositiveButton("Confirm", (dialog, which) -> setSelectedEntrant());
+        builder.setNegativeButton(android.R.string.cancel, null);
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
+    /**
+     * Opens a confirmation dialog to clear all pending entrants.
+     */
     private void clearConfirmDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(EventDraw.this);
         builder.setCancelable(true);
-        builder.setMessage("You are about remove all entrants that haven't accepted the invitation yet.\nProceed?");
-        builder.setPositiveButton("Confirm",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        clearSelectedEntrant();
-                        dialog.dismiss();
-                    }
-                }) ;
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setMessage("You are about to remove all entrants that haven't accepted the invitation yet.\nProceed?");
+        builder.setPositiveButton("Confirm", (dialog, which) -> clearSelectedEntrant());
+        builder.setNegativeButton(android.R.string.cancel, null);
         AlertDialog dialog = builder.create();
         dialog.show();
         currentDialog = dialog;
     }
 
+    /**
+     * Sets the selected entrants and updates Firestore accordingly.
+     */
     private void setSelectedEntrant() {
         List<Map.Entry<Entrant, String>> tempList = new ArrayList<>(entrantMap.entrySet());
         Collections.shuffle(entrantList);
@@ -259,7 +250,7 @@ public class EventDraw extends AppCompatActivity {
         db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
             List<DocumentReference> pending = (List<DocumentReference>) eventSnapshot.get("pending");
-            List<DocumentReference> waitlist= (List<DocumentReference>) eventSnapshot.get("waitlist");
+            List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
             drawNum = Math.min(drawNum, tempList.size());
 
             if (pending == null) {
@@ -269,7 +260,6 @@ public class EventDraw extends AppCompatActivity {
                 Map.Entry<Entrant, String> entry = tempList.get(i);
                 selectedList.add(entry.getKey());
                 selectedIdList.add(entry.getValue());
-                //pendingAdapter.notifyDataSetChanged();
 
                 DocumentReference entrantRef = db.collection("USER_PROFILES").document(entry.getValue());
                 pending.add(entrantRef);
@@ -277,20 +267,20 @@ public class EventDraw extends AppCompatActivity {
                 entrantList.remove(entry.getKey());
             }
             transaction.update(eventRef, "pending", pending);
-            transaction.update(eventRef, "waitlist",waitlist);
+            transaction.update(eventRef, "waitlist", waitlist);
             return null;
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Entrant added to pending list successfully");
             pendingAdapter.notifyDataSetChanged();
             waitlistAdapter.notifyDataSetChanged();
-            drawBtn.setClickable(false);  // set draw button not clickable after draw
-            Toast.makeText(EventDraw.this, "Successfully sampled" + drawNum + "entrants to pending list", Toast.LENGTH_SHORT).show();
-        }).addOnFailureListener(e -> {
-            Log.e("Firebase", "Error adding entrant to pending list", e);
-        });
-
+            drawBtn.setClickable(false);
+            Toast.makeText(EventDraw.this, "Successfully sampled " + drawNum + " entrants to pending list", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to pending list", e));
     }
 
+    /**
+     * Clears selected entrants from the pending list in Firestore.
+     */
     private void clearSelectedEntrant() {
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
 
@@ -298,20 +288,24 @@ public class EventDraw extends AppCompatActivity {
         selectedIdList.clear();
 
         db.runTransaction((Transaction.Function<Void>) transaction -> {
-
             transaction.update(eventRef, "pending", new ArrayList<>());
             return null;
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Clearing pending list successfully");
             pendingAdapter.notifyDataSetChanged();
-        }).addOnFailureListener(e -> {
-            Log.e("Firebase", "Error clearing pending list", e);
-        });
-
+        }).addOnFailureListener(e -> Log.e("Firebase", "Error clearing pending list", e));
     }
 
+    /**
+     * Loads entrants into the specified list from Firestore references.
+     *
+     * @param ref a list of DocumentReferences to load entrant data
+     * @param list the list to populate with Entrants
+     * @param adapter the adapter to notify of data changes
+     * @param listType the type of list being loaded ("waitlist", "pending", etc.)
+     */
     private void loadList(List<DocumentReference> ref, List<Entrant> list, EntrantAdapter adapter, String listType) {
-        if (ref == null || ref.isEmpty()){
+        if (ref == null || ref.isEmpty()) {
             return;
         }
 
@@ -330,12 +324,11 @@ public class EventDraw extends AppCompatActivity {
 
                     Entrant entrant = new Entrant(name, phone, email);
                     list.add(entrant);
-                    if (listType == "waitlist"){
+                    if ("waitlist".equals(listType)) {
                         entrantMap.put(entrant, snapshot.getId());
                         totalEntrant.setText("From: " + list.size());
                     }
-                    // set draw button not clickable if there's a pending list
-                    if(listType == "pending" && (!list.isEmpty())){
+                    if ("pending".equals(listType) && (!list.isEmpty())) {
                         drawBtn.setClickable(false);
                     }
                 }
@@ -344,26 +337,35 @@ public class EventDraw extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * Sets the waitlist limit in Firestore based on user input.
+     *
+     * @param uid the unique event ID
+     */
     private void setLimit(String uid) {
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
-
         eventRef.update("WaitlistLimit", Integer.valueOf(waitlistLimit.getText().toString().trim()));
         Toast.makeText(EventDraw.this, "Limit Saved", Toast.LENGTH_SHORT).show();
-
     }
 
+    /**
+     * Removes the waitlist limit in Firestore.
+     *
+     * @param uid the unique event ID
+     */
     private void removeLimit(String uid) {
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
-
         eventRef.update("WaitlistLimit", -1);
         Toast.makeText(EventDraw.this, "Limit Removed", Toast.LENGTH_SHORT).show();
-
     }
 
+    /**
+     * Loads the current waitlist limit from Firestore and updates the UI.
+     *
+     * @param uid the unique event ID
+     */
     private void loadLimit(String uid) {
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
-
         eventRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -374,13 +376,14 @@ public class EventDraw extends AppCompatActivity {
                             waitlistLimit.setText(stringLimit != null ? stringLimit : "");
                         }
                     }
-
                 })
                 .addOnFailureListener(e -> Toast.makeText(EventDraw.this, "Failed to load limit", Toast.LENGTH_SHORT).show());
     }
 
+
     public AlertDialog getCurrentDialog () {
         return currentDialog;
     }
+
 
 }

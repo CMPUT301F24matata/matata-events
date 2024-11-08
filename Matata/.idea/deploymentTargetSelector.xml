@@ -13,6 +13,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
+<<<<<<< HEAD
       <SelectionState runConfigName="testAdminViewStartsAdminActivity()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
@@ -20,6 +21,9 @@
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="testFacilityFieldsVisible_whenOrganizerSwitchIsChecked()">
+=======
+      <SelectionState runConfigName="testSaveEventInfo_withValidData()">
+>>>>>>> 2a63fde67c9bc1e92d6585d7a7457e832e3382b4
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

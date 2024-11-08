@@ -152,7 +152,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/dateGroup"
+                    android:id="@+id/timeGroup"
                     android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:layout_width="wrap_content"
@@ -178,7 +178,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/timeGroup"
+                    android:id="@+id/dateGroup"
                     android:layout_width="match_parent"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
