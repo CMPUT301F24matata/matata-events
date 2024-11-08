@@ -14,6 +14,8 @@ cameraLifecycle = "1.4.0"
 visionCommon = "17.3.0"
 playServicesMlkitBarcodeScanning = "18.3.1"
 core = "1.6.1"
+coreVersion = "1.46.0"
+rules = "1.5.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -30,6 +32,8 @@ camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", versi
 vision-common = { group = "com.google.mlkit", name = "vision-common", version.ref = "visionCommon" }
 play-services-mlkit-barcode-scanning = { group = "com.google.android.gms", name = "play-services-mlkit-barcode-scanning", version.ref = "playServicesMlkitBarcodeScanning" }
 core = { group = "androidx.test", name = "core", version.ref = "core" }
+ar-core = { group = "com.google.ar", name = "core", version.ref = "coreVersion" }
+rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

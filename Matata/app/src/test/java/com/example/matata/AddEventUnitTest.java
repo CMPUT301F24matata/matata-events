@@ -10,6 +10,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import androidx.test.core.app.ApplicationProvider;
 
+//import com.google.ar.core.Config;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +30,7 @@ public class AddEventUnitTest {
     public void testGenerateRandomEventID() {
         String eventId1 = addEvent.generateRandomEventID();
         String eventId2 = addEvent.generateRandomEventID();
-        assertNotEquals(eventId1, eventId2);  // Ensure unique ID generation
+        assertNotEquals(eventId1, eventId2);
     }
 
     @Test
@@ -36,7 +38,7 @@ public class AddEventUnitTest {
         String input = "TestString";
         String hash = addEvent.generateHash(input);
         assertNotNull(hash);
-        assertEquals(64, hash.length());  // SHA-256 hash length is 64 characters
+        assertEquals(64, hash.length());
     }
 
     @Test

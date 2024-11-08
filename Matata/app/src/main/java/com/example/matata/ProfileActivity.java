@@ -43,15 +43,17 @@ import java.util.Map;
  */
 public class ProfileActivity extends AppCompatActivity {
 
-    private EditText nameEditText, phoneEditText, emailEditText;
+    EditText nameEditText;
+    EditText phoneEditText;
+    EditText emailEditText;
     private EditText facilityName, facilityAddress, facilityCapacity, facilityContact, facilityEmail, facilityOwner;
-    private ImageView profileIcon;
+    ImageView profileIcon;
     private FirebaseFirestore db;
-    private Switch notifications;
+    Switch notifications;
     private String imageUriString;
     private String USER_ID = "";
     private CompoundButton adminView;
-    private Switch isOrganizer;
+    Switch isOrganizer;
     private View organizerField;
 
     // ActivityResultLauncher for profile picture selection
@@ -322,7 +324,7 @@ public class ProfileActivity extends AppCompatActivity {
      * @param name the full name of the user
      * @return the initials extracted from the name
      */
-    private String getUserInitials(String name) {
+    String getUserInitials(String name) {
         StringBuilder initials = new StringBuilder();
         String[] words = name.trim().split("\\s+");
         for (String word : words) {
