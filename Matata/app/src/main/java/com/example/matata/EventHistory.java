@@ -29,6 +29,7 @@ public class EventHistory extends AppCompatActivity {
     private String uid;
     private String USER_ID;
     private ImageView backBtn;
+    private List<String> statusList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class EventHistory extends AppCompatActivity {
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("EventHistory", "Device USER_ID: " + USER_ID);
 
-        eventAdapter = new EventAdapter(this, eventHistoryList);
+        eventAdapter = new EventAdapter(this, eventHistoryList, statusList);
         eventHistoryRecyclerView.setAdapter(eventAdapter);
 
         backBtn = findViewById(R.id.go_back_event_history);
@@ -72,6 +73,7 @@ public class EventHistory extends AppCompatActivity {
                                 return;
                             }
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                statusList.add("");
                                 Log.d("Firebase", "Document found: " + document.getId());
 
                                 String Title = document.getString("Title");

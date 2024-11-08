@@ -9,16 +9,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
+    private List<String> statusList;
     private Context context;
     private List<Event> eventList;
 
 
-    public EventAdapter(Context context, List<Event> eventList) {
+    public EventAdapter(Context context, List<Event> eventList, List<String> status) {
         this.context = context;
         this.eventList = eventList;
+        this.statusList = status;
     }
 
     @NonNull
@@ -35,7 +40,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.dateTextView.setText(event.getDate());
         holder.timeTextView.setText(event.getTime());
         holder.locationTextView.setText(event.getLocation());
-        holder.descriptionTextView.setText(event.getDescription());
+        String description = event.getDescription();
+        if (description.length() > 100){
+            description = description.substring(0, 100) + "...";
+        }
+        holder.descriptionTextView.setText(description);
+        holder.eventStatus.setText(statusList.get(position));
+
 
         // Set click listener on the entire event card
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -57,7 +68,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTextView, dateTextView, timeTextView, locationTextView, descriptionTextView;
+        TextView titleTextView, dateTextView, timeTextView, locationTextView, descriptionTextView, eventStatus;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -66,6 +77,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             timeTextView = itemView.findViewById(R.id.timeTextView);
             locationTextView = itemView.findViewById(R.id.locationTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
+            eventStatus = itemView.findViewById(R.id.status_event_card);
         }
     }
 }

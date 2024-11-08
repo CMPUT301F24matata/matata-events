@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String USER_ID = "";
     private String uid = null;
+    //private String status = "";
+    private List<String> statusList = new ArrayList<>();
     private ImageButton notificationButton;
 
     private ActivityResultLauncher<String> notificationPermissionLauncher;
@@ -105,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         eventList = new ArrayList<>();
-        eventAdapter = new EventAdapter(this, eventList);
+        eventAdapter = new EventAdapter(this, eventList, statusList);
         recyclerView.setAdapter(eventAdapter);
     }
 
@@ -133,12 +136,29 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void addEventsInit() {
         db.collection("EVENT_PROFILES")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
+                .addSnapshotListener((snapshots, e) -> {
+                    eventList.clear();
+                    statusList.clear();
+
+                    if (snapshots != null) {
+                        for (QueryDocumentSnapshot document : snapshots) {
+                            String eventStatus = "";
+                            DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
+                            List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
+                            List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
+                            List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+                            if (accepted != null && accepted.contains(entrantRef)) {
+                                statusList.add("Accepted");
+                            } else if (pending != null && pending.contains(entrantRef)) {
+                                statusList.add("Pending");
+                            } else if (waitlist != null && waitlist.contains(entrantRef)) {
+                                statusList.add("Waitlist");
+                            } else {
+                                statusList.add("");
+                            }
                             String title = document.getString("Title");
                             uid = document.getId();
                             String date = document.getString("Date");
@@ -149,10 +169,8 @@ public class MainActivity extends AppCompatActivity {
                             int capacity = document.getLong("Capacity").intValue();
 
                             eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
-                            eventAdapter.notifyDataSetChanged();
                         }
-                    } else {
-                        Log.d("Firebase", "Error getting documents: ", task.getException());
+                        eventAdapter.notifyDataSetChanged();
                     }
                 });
     }
