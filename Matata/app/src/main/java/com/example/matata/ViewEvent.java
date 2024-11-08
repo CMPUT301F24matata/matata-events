@@ -54,11 +54,11 @@ public class ViewEvent extends AppCompatActivity {
     private ImageView goBack;
     private ImageView poster;
     private TextView title;
-    private TextView capacity;
-    private TextView desc;
-    private TextView time;
-    private TextView date;
-    private TextView location;
+    TextView capacity;
+    TextView desc;
+    TextView time;
+    TextView date;
+    TextView location;
 
     // Firestore instance
     private FirebaseFirestore db;
@@ -67,7 +67,7 @@ public class ViewEvent extends AppCompatActivity {
     private FloatingActionButton showQR;
 
     // Button to join waitlist
-    private Button waitlistBtn;
+    Button waitlistBtn;
 
     // Unique device ID for identifying the user
     private String USER_ID;
@@ -81,6 +81,7 @@ public class ViewEvent extends AppCompatActivity {
 
     // Unique identifier for the event
     private String uid;
+
 
     /**
      * Called when the activity is first created.
@@ -400,8 +401,12 @@ public class ViewEvent extends AppCompatActivity {
      * @return The decoded Bitmap image.
      */
     public Bitmap decodeBase64toBmp(String bmp64) {
-        byte[] decodedBytes = Base64.decode(bmp64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        try {
+            byte[] decodedBytes = Base64.decode(bmp64, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        } catch (IllegalArgumentException e) {
+            return null;  // Return null if decoding fails
+        }
     }
 
     /**
