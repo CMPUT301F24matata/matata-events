@@ -6,13 +6,24 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 
-import android.content.Intent;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.LinearLayout;
+import android.widget.TimePicker;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -22,6 +33,7 @@ import androidx.test.rule.ActivityTestRule;
 import com.example.matata.AddEvent;
 import com.example.matata.ViewEvent;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -73,14 +85,33 @@ public class AddEventUITest {
 
     @Test
     public void testDatePickerAndTimePicker_DisplaysCorrectly() {
-        // Open the date picker
-        onView(withId(R.id.dateGroup)).perform(click());
-        onView(withId(R.id.locationGroup)).perform(click());
+        ActivityScenario<AddEvent> scenario = ActivityScenario.launch(AddEvent.class);
 
-        // Open the time picker
-        onView(withId(R.id.timeGroup)).perform(click());
-        onView(withId(R.id.locationGroup)).perform(click());
+        scenario.onActivity(activity -> {
+            // Open the date picker
+            LinearLayout dateGroup = activity.findViewById(R.id.dateGroup);
+            dateGroup.performClick();
 
+            // Check if the date picker is displayed
+            Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag("datePicker");
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                assertNotNull("Fragment should be added", fragment);
+                assertTrue("Fragment should be visible", fragment.isVisible());
+            }, 3000);
+        });
+
+        scenario.onActivity(activity -> {
+            // Open the time picker
+            LinearLayout dateGroup = activity.findViewById(R.id.timeGroup);
+            dateGroup.performClick();
+
+            // Check if the time picker is displayed
+            Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag("timePicker");
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                assertNotNull("Fragment should be added", fragment);
+                assertTrue("Fragment should be visible", fragment.isVisible());
+            }, 3000);
+        });
     }
 
     @Test
