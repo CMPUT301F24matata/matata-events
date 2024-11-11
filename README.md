@@ -8,4 +8,5 @@
 ### [Yuqi Tian](https://github.com/tracy8848)
 ## Content:
 ### [Object-Oriented Analysis](https://github.com/CMPUT301F24matata/matata-events/wiki/Object%E2%80%90Oriented-Analysis)
+### [Scrum Meetings](https://github.com/CMPUT301F24matata/matata-events/wiki/Scrum-Meetings)
 ### [User Interface Mockups and Storyboard Sequences](https://github.com/CMPUT301F24matata/matata-events/wiki/User-Interface-Mockups-and-Storyboard-Sequences)
