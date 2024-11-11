@@ -47,7 +47,8 @@
                 android:layout_marginStart="12dp"
                 android:textSize="22sp"
                 android:textColor="@color/white"
-                android:fontFamily="sans-serif-medium" />
+                android:fontFamily="@font/sansation_regular" />
+
         </LinearLayout>
 
         <ScrollView
@@ -112,6 +113,7 @@
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_edit"
                     android:enabled="true"
+                    android:fontFamily="@font/sansation_regular"
                     android:hint="@string/user_name"
                     android:background="@drawable/edit_text_background"
                     android:padding="12dp"
@@ -140,6 +142,7 @@
                     android:hint="@string/example_example_com"
                     android:background="@drawable/edit_text_background"
                     android:padding="12dp"
+                    android:fontFamily="@font/sansation_regular"
                     android:textColor="@color/black"
                     android:textColorHint="#CCCCCC"/>
 
@@ -166,6 +169,7 @@
                     android:background="@drawable/edit_text_background"
                     android:padding="12dp"
                     android:textColor="@color/black"
+                    android:fontFamily="@font/sansation_regular"
                     android:textColorHint="#CCCCCC"/>
 
                 <LinearLayout
@@ -352,12 +356,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="@string/save"
-                    android:backgroundTint="#4A90E2"
-                    android:textColor="#FFFFFF"
                     android:padding="14dp"
+                    android:text="@string/save"
+                    android:textColor="#F5F5F5"
                     android:textAllCaps="false"
-                    android:elevation="2dp" />
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    android:backgroundTint="#4A90E2"
+                    android:fontFamily="@font/sansation_regular"
+                    android:elevation="6dp"
+                    android:outlineProvider="background" />
 
                 <!-- Temporary buttons to switch view -->
                 <LinearLayout
@@ -370,7 +378,7 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="240dp"
+                        android:layout_marginStart="220dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/sansation_regular"
                         android:shadowColor="#000000"
