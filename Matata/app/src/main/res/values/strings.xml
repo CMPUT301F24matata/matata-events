@@ -98,5 +98,17 @@
     <string name="accessibility_needs_prompt">Select Accessibility Needs</string>
     <string name="optional">(Optional)</string>
     <string name="enter_contact_information">Enter contact information</string>
+    <string name="admin_view">Admin View</string>
+    <string name="enter_property_owner_name">Enter property owner name</string>
+    <string name="property_owner">Property Owner</string>
+    <string name="enter_facility_email">Enter facility email</string>
+    <string name="contact_information">Contact Information</string>
+    <string name="enter_facility_capacity">Enter facility capacity</string>
+    <string name="capacity">Capacity</string>
+    <string name="enter_facility_address">Enter facility address</string>
+    <string name="address">Address</string>
+    <string name="enter_facility_name">Enter facility name</string>
+    <string name="facility_name">Facility Name</string>
+    <string name="are_you_an_organizer">Are you an organizer?</string>
 
 </resources>
