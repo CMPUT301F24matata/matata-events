@@ -66,7 +66,8 @@
                     android:src="@drawable/ic_user_profile"
                     android:contentDescription="@string/profile_picture"
                     android:padding="8dp"
-                    android:alpha="0.9" />
+                    app:tint="@null"
+                    tools:ignore="UseAppTint" />
 
                 <TextView
                     android:id="@+id/initials"

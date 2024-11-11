@@ -66,7 +66,7 @@ public class ProfilePicActivity extends AppCompatActivity {
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         ivProfilePicture = findViewById(R.id.ivProfilePicture);
-        ImageButton btnBack = findViewById(R.id.btnBack);
+        ImageButton btnBack = (ImageButton) findViewById(R.id.btnBack);
         Button btnUploadPicture = findViewById(R.id.btnUploadPicture);
         Button btnDeletePicture = findViewById(R.id.btnDeletePicture);
 
@@ -124,6 +124,7 @@ public class ProfilePicActivity extends AppCompatActivity {
             Uri imageUri = Uri.parse(imageUriString);
             Glide.with(this)
                     .load(imageUri)
+                    .error(R.drawable.ic_user_profile)
                     .into(ivProfilePicture);
         } else {
             ivProfilePicture.setImageResource(R.drawable.ic_upload);
