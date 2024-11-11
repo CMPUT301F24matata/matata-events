@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/bg_matat_app">
+    android:background="@color/black">
 
     <LinearLayout
         android:id="@+id/headerLayout"
@@ -48,7 +48,6 @@
         android:scaleType="centerCrop"
         android:background="#E0E0E0"
         android:src="@drawable/ic_upload"
-        android:alpha="0.8"
         android:contentDescription="@string/profile_picture" />
 
     <LinearLayout
@@ -73,7 +72,6 @@
             android:textStyle="bold"
             android:padding="12dp"
             android:elevation="4dp"
-            android:alpha="0.9"
             app:cornerRadius="12dp" />
 
         <Button
@@ -89,7 +87,6 @@
             android:textStyle="bold"
             android:padding="12dp"
             android:elevation="4dp"
-            android:alpha="0.9"
             app:cornerRadius="12dp" />
 
     </LinearLayout>

@@ -66,7 +66,7 @@ public class ProfilePicActivity extends AppCompatActivity {
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         ivProfilePicture = findViewById(R.id.ivProfilePicture);
-        ImageButton btnBack = (ImageButton) findViewById(R.id.btnBack);
+        ImageView btnBack = findViewById(R.id.btnBack);
         Button btnUploadPicture = findViewById(R.id.btnUploadPicture);
         Button btnDeletePicture = findViewById(R.id.btnDeletePicture);
 
@@ -83,7 +83,6 @@ public class ProfilePicActivity extends AppCompatActivity {
                 saveProfilePictureUri(selectedImageUri);
                 Toast.makeText(this, "Profile picture uploaded successfully", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);
-                finish();
             } else {
                 Toast.makeText(this, "No image selected to upload", Toast.LENGTH_SHORT).show();
             }
@@ -124,7 +123,7 @@ public class ProfilePicActivity extends AppCompatActivity {
             Uri imageUri = Uri.parse(imageUriString);
             Glide.with(this)
                     .load(imageUri)
-                    .error(R.drawable.ic_user_profile)
+                    .error(R.drawable.ic_upload)
                     .into(ivProfilePicture);
         } else {
             ivProfilePicture.setImageResource(R.drawable.ic_upload);
@@ -148,7 +147,6 @@ public class ProfilePicActivity extends AppCompatActivity {
                 .apply();
 
         setResult(RESULT_OK);
-        finish();
         Toast.makeText(this, "Profile picture deleted", Toast.LENGTH_SHORT).show();
     }
 }

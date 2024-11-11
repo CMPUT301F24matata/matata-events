@@ -85,6 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
         phoneEditText = findViewById(R.id.phoneEditText);
         emailEditText = findViewById(R.id.emailEditText);
         Button saveButton = findViewById(R.id.saveButton);
+        Button clearAllButton = findViewById(R.id.clearAllButton);
         ImageView back = findViewById(R.id.btnBackProfile);
         notifications = findViewById(R.id.switch_notification);
         isOrganizer = findViewById(R.id.switch_organizer);
@@ -142,6 +143,24 @@ public class ProfileActivity extends AppCompatActivity {
                     addToOrganizer(name, phoneNumber, email, notificationsChecked, imageUriString);
                 }
             }
+        });
+
+        clearAllButton.setOnClickListener(v -> {
+            nameEditText.setText("");
+            emailEditText.setText("");
+            phoneEditText.setText("");
+            notifications.setChecked(false);
+            isOrganizer.setChecked(false);
+
+            String name = nameEditText.getText().toString().trim();
+            String email = emailEditText.getText().toString().trim();
+            String phoneNumber = phoneEditText.getText().toString().trim();
+            boolean notificationsChecked = notifications.isChecked();
+            boolean organizerChecked = isOrganizer.isChecked();
+            imageUriString = "";
+
+            saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString);
+
         });
 
         adminView.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -235,11 +254,17 @@ public class ProfileActivity extends AppCompatActivity {
         docRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        nameEditText.setText(documentSnapshot.getString("username"));
-                        phoneEditText.setText(documentSnapshot.getString("phone"));
-                        emailEditText.setText(documentSnapshot.getString("email"));
-                        notifications.setChecked(Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications")));
-                        loadProfilePicture(documentSnapshot.getString("profileUri"));
+                        String name = documentSnapshot.getString("username");
+                        String phone = documentSnapshot.getString("phone");
+                        String email = documentSnapshot.getString("email");
+                        boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
+                        String sImageUri = documentSnapshot.getString("profileUri");
+
+                        nameEditText.setText(name != null ? name : "");
+                        phoneEditText.setText(phone != null ? phone : "");
+                        emailEditText.setText(email != null ? email : "");
+                        notifications.setChecked(notificationsChecked);
+                        loadProfilePicture(sImageUri);
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
@@ -278,13 +303,28 @@ public class ProfileActivity extends AppCompatActivity {
      * @param imageUriString the URI of the profile image as a String
      */
     void loadProfilePicture(String imageUriString) {
-        if (imageUriString != null) {
+        if (imageUriString != null && !imageUriString.isEmpty()) {
             Uri imageUri = Uri.parse(imageUriString);
-            Glide.with(this).load(imageUri).into(profileIcon);
+            Glide.with(this)
+                    .load(imageUri)
+                    .error(R.drawable.ic_user_profile)
+                    .into(profileIcon);
         } else {
-            String initials = getUserInitials(nameEditText.getText().toString().trim());
-            Uri generatedUri = createImageFromString(this, initials);
-            Glide.with(this).load(generatedUri).into(profileIcon);
+            String un = nameEditText.getText().toString().trim();
+            if (un.isEmpty()) {
+                profileIcon.setImageResource(R.drawable.ic_user_profile);
+            } else {
+                StringBuilder initials = new StringBuilder();
+                String[] words = un.trim().split("\\s+");
+                for (String word : words) {
+                    if (!word.isEmpty()) {
+                        initials.append(Character.toUpperCase(word.charAt(0)));
+                    }
+                }
+                String initial = initials.toString();
+                Uri cimageUri = createImageFromString(this, initial);
+                Glide.with(this).load(cimageUri).into(profileIcon);
+            }
         }
     }
 
