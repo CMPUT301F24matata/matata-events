@@ -9,37 +9,57 @@
     android:background="@color/black"
     tools:context=".ProfileActivity">
 
-    <LinearLayout
-            android:id="@+id/headerLayout"
-            android:gravity="center_vertical"
-            android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#232323"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/btnBackProfile"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back_arrow"
+            android:contentDescription="@string/back_button"
+            app:tint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/headerText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="#232323"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="9dp"
-            android:paddingBottom="16dp"
-            tools:ignore="MissingConstraints">
+            android:text="@string/edit_profile"
+            android:textSize="22sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/sansation_regular"
+            app:layout_constraintStart_toEndOf="@id/btnBackProfile"
+            app:layout_constraintEnd_toStartOf="@id/btnSwitchToFacilityProfile"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:maxWidth="300dp" />
 
-            <ImageView
-                android:id="@+id/btnBackProfile"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_back_arrow"
-                android:contentDescription="@string/back_button"
-                app:tint="@color/white" />
+        <ImageView
+            android:id="@+id/btnSwitchToFacilityProfile"
+            android:layout_width="38dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/switch_to_user_profile"
+            android:src="@drawable/ic_facility_profile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/edit_profile"
-                android:layout_marginStart="12dp"
-                android:textSize="22sp"
-                android:textColor="@color/white"
-                android:fontFamily="@font/sansation_regular" />
-
-        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ScrollView
             android:id="@+id/scrollView"
@@ -160,6 +180,57 @@
                     android:fontFamily="@font/sansation_regular"
                     android:textColorHint="#CCCCCC"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sansation_regular"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="@string/gender"
+                    android:textSize="16sp"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/white" />
+
+                <Spinner
+                    android:id="@+id/genderSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_background"
+                    android:padding="12dp"
+                    android:spinnerMode="dropdown"
+                    android:dropDownWidth="match_parent"
+                    android:popupBackground="@drawable/dropdown_background" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sansation_regular"
+                    android:shadowColor="#000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="@string/date_of_birth"
+                    android:textSize="16sp"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/white" />
+
+                <EditText
+                    android:id="@+id/dobEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/ic_calendar"
+                    android:enabled="true"
+                    android:fontFamily="@font/sansation_regular"
+                    android:hint="@string/mm_dd_yyyy"
+                    android:background="@drawable/edit_text_background"
+                    android:padding="12dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#CCCCCC"
+                    android:focusable="false"
+                    android:inputType="none" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -188,155 +259,6 @@
                         android:thumbTint="@color/white"
                         android:trackTint="#B3FFFFFF"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
-                </LinearLayout>
-
-                <!-- Organizer Switch -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp"
-                    android:gravity="left"
-                    tools:ignore="RtlHardcoded">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/are_you_an_organizer"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/sansation_regular"
-                        android:shadowColor="#000000"
-                        android:shadowDx="1"
-                        android:shadowDy="1"
-                        android:shadowRadius="2"
-                        android:textSize="16sp"
-                        android:layout_weight="1" />
-
-                    <Switch
-                        android:id="@+id/switch_organizer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:thumbTint="@color/white"
-                        android:trackTint="#B3FFFFFF"
-                        tools:ignore="UseSwitchCompatOrMaterialXml" />
-                </LinearLayout>
-
-                <!-- Organizer Fields (Initially Hidden) -->
-                <LinearLayout
-                    android:id="@+id/organizerFields"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    android:paddingTop="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/facility_name"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
-
-                    <EditText
-                        android:id="@+id/facilityName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/enter_facility_name"
-                        android:background="@drawable/edit_text_background"
-                        android:padding="12dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="#CCCCCC"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/address"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:layout_marginTop="12dp" />
-
-                    <EditText
-                        android:id="@+id/facilityAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/enter_facility_address"
-                        android:background="@drawable/edit_text_background"
-                        android:padding="12dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="#CCCCCC"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/capacity"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:layout_marginTop="12dp" />
-
-                    <EditText
-                        android:id="@+id/facilityCapacity"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/enter_facility_capacity"
-                        android:background="@drawable/edit_text_background"
-                        android:padding="12dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="#CCCCCC"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/contact_information"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:layout_marginTop="12dp" />
-
-                    <EditText
-                        android:id="@+id/facilityContact"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/enter_contact_information"
-                        android:background="@drawable/edit_text_background"
-                        android:padding="12dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="#CCCCCC"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/email"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:layout_marginTop="12dp" />
-
-                    <EditText
-                        android:id="@+id/facilityEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/enter_facility_email"
-                        android:background="@drawable/edit_text_background"
-                        android:padding="12dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="#CCCCCC"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/property_owner"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:layout_marginTop="12dp" />
-
-                    <EditText
-                        android:id="@+id/facilityOwner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/enter_property_owner_name"
-                        android:background="@drawable/edit_text_background"
-                        android:padding="12dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="#CCCCCC"/>
-
                 </LinearLayout>
 
                 <Button

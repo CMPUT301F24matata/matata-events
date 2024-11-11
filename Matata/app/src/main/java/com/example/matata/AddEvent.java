@@ -91,7 +91,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         timeGroup.setOnClickListener(v -> openTimePicker());
         dateGroup.setOnClickListener(v -> openDatePicker());
         posterPic.setOnClickListener(v -> openSelector());
-        genrQR.setOnClickListener(view -> handleGenerateQR(EVENT_ID, view));
+        genrQR.setOnClickListener(view -> handleGenerateQR(EVENT_ID, USER_ID, view));
     }
 
     /**
@@ -152,7 +152,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
      * @param EVENT_ID Unique identifier for the event.
      * @param view Current view context.
      */
-    private void handleGenerateQR(String EVENT_ID, View view) {
+    private void handleGenerateQR(String EVENT_ID, String USER_ID, View view) {
+
         if (!eveTitle.getText().toString().isEmpty() &&
                 !descriptionBox.getText().toString().isEmpty() &&
                 !eventDate.getText().toString().isEmpty() &&

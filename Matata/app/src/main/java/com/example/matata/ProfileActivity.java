@@ -1,6 +1,6 @@
 package com.example.matata;
 
-import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,12 +12,14 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -29,6 +31,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +58,8 @@ public class ProfileActivity extends AppCompatActivity {
     private CompoundButton adminView;
     Switch isOrganizer;
     private View organizerField;
+    private Spinner genderSpinner;
+    private EditText dobEditText;
 
     // ActivityResultLauncher for profile picture selection
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
@@ -88,15 +93,43 @@ public class ProfileActivity extends AppCompatActivity {
         Button clearAllButton = findViewById(R.id.clearAllButton);
         ImageView back = findViewById(R.id.btnBackProfile);
         notifications = findViewById(R.id.switch_notification);
-        isOrganizer = findViewById(R.id.switch_organizer);
         adminView = findViewById(R.id.adminView);
-        organizerField = findViewById(R.id.organizerFields);
-        facilityName = findViewById(R.id.facilityName);
-        facilityAddress = findViewById(R.id.facilityAddress);
-        facilityCapacity = findViewById(R.id.facilityCapacity);
-        facilityContact = findViewById(R.id.facilityContact);
-        facilityEmail = findViewById(R.id.facilityEmail);
-        facilityOwner = findViewById(R.id.facilityOwner);
+        genderSpinner = findViewById(R.id.genderSpinner);
+        dobEditText = findViewById(R.id.dobEditText);
+        ImageView btnSwitchToFacilityProfile = findViewById(R.id.btnSwitchToFacilityProfile);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_options, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genderSpinner.setAdapter(adapter);
+
+        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedGender = parent.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(ProfileActivity.this, "Please select one of the options", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dobEditText.setOnClickListener(v -> {
+            final Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                    (view, selectedYear, selectedMonth, selectedDay) -> {
+                        String date = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                        dobEditText.setText(date);
+                    }, year, month, day);
+
+            datePickerDialog.show();
+        });
+
 
         imageUriString = getSharedPreferences("ProfilePrefs", MODE_PRIVATE)
                 .getString("profile_image_uri", null);
@@ -106,42 +139,31 @@ public class ProfileActivity extends AppCompatActivity {
 
         back.setOnClickListener(v -> finish());
 
+        btnSwitchToFacilityProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, FacilityActivity.class);
+            startActivity(intent);
+        });
+
         profileIcon.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, ProfilePicActivity.class);
             profilePicLauncher.launch(intent);
         });
 
-        isOrganizer.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            organizerField.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            if (isChecked) {
-                loadFacilityData();
-            }
-        });
 
         saveButton.setOnClickListener(v -> {
             String name = nameEditText.getText().toString().trim();
             String email = emailEditText.getText().toString().trim();
             String phoneNumber = phoneEditText.getText().toString().trim();
             boolean notificationsChecked = notifications.isChecked();
-            boolean organizerChecked = isOrganizer.isChecked();
-
-            String fName = facilityName.getText().toString().trim();
-            String fAddress = facilityAddress.getText().toString().trim();
-            String fCapacity = facilityCapacity.getText().toString().trim();
-            String fContact = facilityContact.getText().toString().trim();
-            String fEmail = facilityEmail.getText().toString().trim();
-            String fOwner = facilityOwner.getText().toString().trim();
+            String dobText = dobEditText.getText().toString();
+            String selectedGender = genderSpinner.getSelectedItem().toString();
 
             if (name.isEmpty()) {
                 Toast.makeText(this, "No UserName Found", Toast.LENGTH_SHORT).show();
             } else if (email.isEmpty()) {
                 Toast.makeText(this, "No Email Found", Toast.LENGTH_SHORT).show();
             } else {
-                saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString);
-                if (organizerChecked) {
-                    saveFacilityData(fName, fAddress, fCapacity, fContact, fEmail, fOwner);
-                    addToOrganizer(name, phoneNumber, email, notificationsChecked, imageUriString);
-                }
+                saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString, selectedGender, dobText);
             }
         });
 
@@ -150,32 +172,34 @@ public class ProfileActivity extends AppCompatActivity {
             emailEditText.setText("");
             phoneEditText.setText("");
             notifications.setChecked(false);
-            isOrganizer.setChecked(false);
+            genderSpinner.setSelection(0);
+            dobEditText.setText("");
 
             String name = nameEditText.getText().toString().trim();
             String email = emailEditText.getText().toString().trim();
             String phoneNumber = phoneEditText.getText().toString().trim();
             boolean notificationsChecked = notifications.isChecked();
-            boolean organizerChecked = isOrganizer.isChecked();
             imageUriString = "";
+            String gender = genderSpinner.toString().trim();
+            String dobText = dobEditText.getText().toString().trim();
 
-            if (!organizerChecked) {
-                facilityName.setText("");
-                facilityAddress.setText("");
-                facilityCapacity.setText("");
-                facilityContact.setText("");
-                facilityOwner.setText("");
-                facilityEmail.setText("");
-                String fName = facilityName.getText().toString().trim();
-                String fAddress = facilityAddress.getText().toString().trim();
-                String fCapacity = facilityCapacity.getText().toString().trim();
-                String fContact = facilityContact.getText().toString().trim();
-                String fEmail = facilityEmail.getText().toString().trim();
-                String fOwner = facilityOwner.getText().toString().trim();
-                saveFacilityData(fName, fAddress, fCapacity, fContact, fEmail, fOwner);
-            }
+//            if (!organizerChecked) {
+//                facilityName.setText("");
+//                facilityAddress.setText("");
+//                facilityCapacity.setText("");
+//                facilityContact.setText("");
+//                facilityOwner.setText("");
+//                facilityEmail.setText("");
+//                String fName = facilityName.getText().toString().trim();
+//                String fAddress = facilityAddress.getText().toString().trim();
+//                String fCapacity = facilityCapacity.getText().toString().trim();
+//                String fContact = facilityContact.getText().toString().trim();
+//                String fEmail = facilityEmail.getText().toString().trim();
+//                String fOwner = facilityOwner.getText().toString().trim();
+//                saveFacilityData(fName, fAddress, fCapacity, fContact, fEmail, fOwner);
+//            }
 
-            saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString);
+            saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString, gender, dobText);
 
         });
 
@@ -183,82 +207,6 @@ public class ProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(buttonView.getContext(), isChecked ? AdminView.class : MainActivity.class);
             buttonView.getContext().startActivity(intent);
         });
-    }
-
-    /**
-     * Saves user profile data to Firestore.
-     *
-     * @param name               the name of the user
-     * @param phone              the phone number of the user
-     * @param email              the email address of the user
-     * @param notificationsChecked if notifications are enabled
-     * @param imageUriString     the URI of the profile image
-     */
-    private void saveProfileData(String name, String phone, String email, boolean notificationsChecked, String imageUriString) {
-        loadProfilePicture(imageUriString);
-
-        Map<String, Object> userProfile = new HashMap<>();
-        userProfile.put("username", name);
-        userProfile.put("phone", phone);
-        userProfile.put("email", email);
-        userProfile.put("notifications", notificationsChecked);
-        userProfile.put("profileUri", imageUriString);
-
-        db.collection("USER_PROFILES").document(USER_ID)
-                .set(userProfile)
-                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
-    }
-
-    /**
-     * Saves facility data to Firestore for an organizer user.
-     *
-     * @param name        the name of the facility
-     * @param address     the address of the facility
-     * @param capacity    the capacity of the facility
-     * @param contactInfo the contact information for the facility
-     * @param email       the email address associated with the facility
-     * @param owner       the owner of the facility
-     */
-    private void saveFacilityData(String name, String address, String capacity, String contactInfo, String email, String owner) {
-
-        Map<String, Object> facilityProfile = new HashMap<>();
-        facilityProfile.put("facility name", name);
-        facilityProfile.put("address", address);
-        facilityProfile.put("capacity", capacity);
-        facilityProfile.put("contact information", contactInfo);
-        facilityProfile.put("email", email);
-        facilityProfile.put("owner", owner);
-
-        db.collection("FACILITY_PROFILES").document(USER_ID)
-                .set(facilityProfile)
-                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Facility saved successfully", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save facility", Toast.LENGTH_SHORT).show());
-    }
-
-    /**
-     * Adds the user to the organizer profile collection in Firestore.
-     *
-     * @param name               the name of the organizer
-     * @param phone              the phone number of the organizer
-     * @param email              the email address of the organizer
-     * @param notificationsChecked if notifications are enabled
-     * @param imageUriString     the URI of the organizer's profile image
-     */
-    private void addToOrganizer(String name, String phone, String email, boolean notificationsChecked, String imageUriString) {
-        loadProfilePicture(imageUriString);
-
-        Map<String, Object> userProfile = new HashMap<>();
-        userProfile.put("username", name);
-        userProfile.put("phone", phone);
-        userProfile.put("email", email);
-        userProfile.put("notifications", notificationsChecked);
-        userProfile.put("profileUri", imageUriString);
-
-        db.collection("ORGANIZER_PROFILES").document(USER_ID)
-                .set(userProfile)
-                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Organizer profile saved successfully", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save organizer profile", Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -274,11 +222,20 @@ public class ProfileActivity extends AppCompatActivity {
                         String email = documentSnapshot.getString("email");
                         boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
                         String sImageUri = documentSnapshot.getString("profileUri");
+                        String sGender = documentSnapshot.getString("gender");
+                        String sDOB = documentSnapshot.getString("DOB");
 
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                                R.array.gender_options, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                        genderSpinner.setSelection(adapter.getPosition(sGender));
                         nameEditText.setText(name != null ? name : "");
                         phoneEditText.setText(phone != null ? phone : "");
                         emailEditText.setText(email != null ? email : "");
                         notifications.setChecked(notificationsChecked);
+                        dobEditText.setText(sDOB != null ? sDOB : "");
+
                         loadProfilePicture(sImageUri);
                     }
                 })
@@ -286,30 +243,30 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads facility data from Firestore for an organizer and populates the facility fields.
+     * Saves user profile data to Firestore.
+     *
+     * @param name               the name of the user
+     * @param phone              the phone number of the user
+     * @param email              the email address of the user
+     * @param notificationsChecked if notifications are enabled
+     * @param imageUriString     the URI of the profile image
      */
-    private void loadFacilityData() {
-        DocumentReference docRef = db.collection("FACILITY_PROFILES").document(USER_ID);
+    private void saveProfileData(String name, String phone, String email, boolean notificationsChecked, String imageUriString, String selectedGender, String dobText) {
+        loadProfilePicture(imageUriString);
 
-        docRef.get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("facility name");
-                        String address = documentSnapshot.getString("address");
-                        String capacity = documentSnapshot.getString("capacity");
-                        String contactInfo = documentSnapshot.getString("contact information");
-                        String email = documentSnapshot.getString("email");
-                        String owner = documentSnapshot.getString("owner");
+        Map<String, Object> userProfile = new HashMap<>();
+        userProfile.put("username", name);
+        userProfile.put("phone", phone);
+        userProfile.put("email", email);
+        userProfile.put("notifications", notificationsChecked);
+        userProfile.put("profileUri", imageUriString);
+        userProfile.put("gender", selectedGender);
+        userProfile.put("DOB", dobText);
 
-                        facilityName.setText(name != null ? name : "");
-                        facilityAddress.setText(address != null ? address : "");
-                        facilityCapacity.setText(capacity != null ? capacity : "");
-                        facilityContact.setText(contactInfo != null ? contactInfo : "");
-                        facilityEmail.setText(email != null ? email : "");
-                        facilityOwner.setText(owner != null ? owner : "");
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to load facility data", Toast.LENGTH_SHORT).show());
+        db.collection("USER_PROFILES").document(USER_ID)
+                .set(userProfile)
+                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -388,4 +345,90 @@ public class ProfileActivity extends AppCompatActivity {
         }
         return initials.toString();
     }
+
+
+
+
+
+
+    /**
+     * Saves facility data to Firestore for an organizer user.
+     *
+     * @param name        the name of the facility
+     * @param address     the address of the facility
+     * @param capacity    the capacity of the facility
+     * @param contactInfo the contact information for the facility
+     * @param email       the email address associated with the facility
+     * @param owner       the owner of the facility
+     */
+    private void saveFacilityData(String name, String address, String capacity, String contactInfo, String email, String owner) {
+
+        Map<String, Object> facilityProfile = new HashMap<>();
+        facilityProfile.put("facility name", name);
+        facilityProfile.put("address", address);
+        facilityProfile.put("capacity", capacity);
+        facilityProfile.put("contact information", contactInfo);
+        facilityProfile.put("email", email);
+        facilityProfile.put("owner", owner);
+
+        db.collection("FACILITY_PROFILES").document(USER_ID)
+                .set(facilityProfile)
+                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Facility saved successfully", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save facility", Toast.LENGTH_SHORT).show());
+    }
+
+    /**
+     * Adds the user to the organizer profile collection in Firestore.
+     *
+     * @param name               the name of the organizer
+     * @param phone              the phone number of the organizer
+     * @param email              the email address of the organizer
+     * @param notificationsChecked if notifications are enabled
+     * @param imageUriString     the URI of the organizer's profile image
+     */
+    private void addToOrganizer(String name, String phone, String email, boolean notificationsChecked, String imageUriString) {
+        loadProfilePicture(imageUriString);
+
+        Map<String, Object> userProfile = new HashMap<>();
+        userProfile.put("username", name);
+        userProfile.put("phone", phone);
+        userProfile.put("email", email);
+        userProfile.put("notifications", notificationsChecked);
+        userProfile.put("profileUri", imageUriString);
+
+        db.collection("ORGANIZER_PROFILES").document(USER_ID)
+                .set(userProfile)
+                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Organizer profile saved successfully", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save organizer profile", Toast.LENGTH_SHORT).show());
+    }
+
+
+    /**
+     * Loads facility data from Firestore for an organizer and populates the facility fields.
+     */
+    private void loadFacilityData() {
+        DocumentReference docRef = db.collection("FACILITY_PROFILES").document(USER_ID);
+
+        docRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("facility name");
+                        String address = documentSnapshot.getString("address");
+                        String capacity = documentSnapshot.getString("capacity");
+                        String contactInfo = documentSnapshot.getString("contact information");
+                        String email = documentSnapshot.getString("email");
+                        String owner = documentSnapshot.getString("owner");
+
+                        facilityName.setText(name != null ? name : "");
+                        facilityAddress.setText(address != null ? address : "");
+                        facilityCapacity.setText(capacity != null ? capacity : "");
+                        facilityContact.setText(contactInfo != null ? contactInfo : "");
+                        facilityEmail.setText(email != null ? email : "");
+                        facilityOwner.setText(owner != null ? owner : "");
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to load facility data", Toast.LENGTH_SHORT).show());
+    }
+
+
 }
