@@ -45,7 +45,7 @@
     <string name="Bottom_app_nav">bottom_app_nav</string>
     <string name="notifications">Notifications</string>
     <string name="_99797979799">99797979799</string>
-    <string name="phone">Phone(optional)</string>
+    <string name="phone">Phone</string>
     <string name="example_example_com">Example@example.com</string>
     <string name="email">Email</string>
     <string name="user_name">USER NAME</string>
@@ -96,5 +96,7 @@
     <string name="qr_code">QR CODE</string>
     <string name="dietary_preferences_prompt">Select Dietary Preferences</string>
     <string name="accessibility_needs_prompt">Select Accessibility Needs</string>
+    <string name="optional">(Optional)</string>
+    <string name="enter_contact_information">Enter contact information</string>
 
 </resources>
