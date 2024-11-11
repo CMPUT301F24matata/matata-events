@@ -159,6 +159,22 @@ public class ProfileActivity extends AppCompatActivity {
             boolean organizerChecked = isOrganizer.isChecked();
             imageUriString = "";
 
+            if (!organizerChecked) {
+                facilityName.setText("");
+                facilityAddress.setText("");
+                facilityCapacity.setText("");
+                facilityContact.setText("");
+                facilityOwner.setText("");
+                facilityEmail.setText("");
+                String fName = facilityName.getText().toString().trim();
+                String fAddress = facilityAddress.getText().toString().trim();
+                String fCapacity = facilityCapacity.getText().toString().trim();
+                String fContact = facilityContact.getText().toString().trim();
+                String fEmail = facilityEmail.getText().toString().trim();
+                String fOwner = facilityOwner.getText().toString().trim();
+                saveFacilityData(fName, fAddress, fCapacity, fContact, fEmail, fOwner);
+            }
+
             saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString);
 
         });
@@ -205,7 +221,6 @@ public class ProfileActivity extends AppCompatActivity {
      * @param owner       the owner of the facility
      */
     private void saveFacilityData(String name, String address, String capacity, String contactInfo, String email, String owner) {
-        loadFacilityData();
 
         Map<String, Object> facilityProfile = new HashMap<>();
         facilityProfile.put("facility name", name);
@@ -307,7 +322,6 @@ public class ProfileActivity extends AppCompatActivity {
             Uri imageUri = Uri.parse(imageUriString);
             Glide.with(this)
                     .load(imageUri)
-                    .error(R.drawable.ic_user_profile)
                     .into(profileIcon);
         } else {
             String un = nameEditText.getText().toString().trim();
