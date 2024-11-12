@@ -210,7 +210,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
 
     void showFacilityDialog(String name, String address, String capacity, String contact, String email, String owner, boolean notificationsEnabled, String imageUriString) {
         AlertDialog.Builder builder = new AlertDialog.Builder(AddEvent.this);
-        builder.setTitle("FacilityInformation");
+        builder.setTitle("Facility Information");
         builder.setMessage("Do you want to use the same facility as before?");
 
         builder.setPositiveButton("Yes", (dialog, which) -> {
