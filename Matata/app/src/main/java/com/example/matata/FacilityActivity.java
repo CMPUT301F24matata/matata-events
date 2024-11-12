@@ -34,17 +34,89 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * FacilityActivity allows users to enter and save facility information,
+ * such as name, address, capacity, contact, and more.
+ * This activity handles data retrieval from Firebase Firestore,
+ * image handling, and saving data.
+ */
 public class FacilityActivity extends AppCompatActivity {
 
-    private EditText facilityName, facilityAddress, facilityCapacity, facilityContact, facilityEmail, facilityOwner;
+    /**
+     * EditText for entering the facility name.
+     */
+    private EditText facilityName;
+
+    /**
+     * EditText for entering the facility address.
+     */
+    private EditText facilityAddress;
+
+    /**
+     * EditText for entering the facility capacity.
+     */
+    private EditText facilityCapacity;
+
+    /**
+     * EditText for entering the facility contact information.
+     */
+    private EditText facilityContact;
+
+    /**
+     * EditText for entering the facility email.
+     */
+    private EditText facilityEmail;
+
+    /**
+     * EditText for entering the facility owner’s name.
+     */
+    private EditText facilityOwner;
+
+    /**
+     * Switch for enabling or disabling notifications.
+     */
     private Switch switchNotification;
+
+    /**
+     * CheckBox for enabling or disabling admin view.
+     */
     private CheckBox adminView;
+
+    /**
+     * String representing the URI of the selected profile image.
+     */
     private String imageUriString;
+
+    /**
+     * String representing the unique user ID, initialized as an empty string.
+     */
     private String USER_ID = "";
+
+    /**
+     * Instance of FirebaseFirestore for database operations.
+     */
     private FirebaseFirestore db;
-    ImageView profileIcon;
-    private Button saveButton, clearAllButton;
+
+    /**
+     * ImageView for displaying the facility profile icon.
+     */
+    private ImageView profileIcon;
+
+    /**
+     * Button for saving facility data.
+     */
+    private Button saveButton;
+
+    /**
+     * Button for clearing all entered facility information.
+     */
+    private Button clearAllButton;
+
+    /**
+     * ImageView for handling the back button functionality.
+     */
     private ImageView btnBackProfile;
+
 
     // ActivityResultLauncher for facility profile picture selection
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
@@ -56,6 +128,12 @@ public class FacilityActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * Called when the activity is first created. Sets up Firebase, initializes UI elements,
+     * and loads existing facility data if available.
+     *
+     * @param savedInstanceState Bundle containing the activity's previous state if it exists.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,7 +221,18 @@ public class FacilityActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * Saves facility data to Firebase Firestore with the provided details.
+     *
+     * @param name               Facility name.
+     * @param address            Facility address.
+     * @param capacity           Facility capacity.
+     * @param contact            Facility contact information.
+     * @param email              Facility email address.
+     * @param owner              Facility owner name.
+     * @param notificationsEnabled Notifications switch state.
+     * @param imageUriString     URI string of the facility image.
+     */
     private void saveFacilityData(String name, String address, String capacity, String contact, String email, String owner, boolean notificationsEnabled, String imageUriString) {
         loadFacilityPicture(imageUriString);
 
@@ -163,6 +252,11 @@ public class FacilityActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(FacilityActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * Loads facility image from the provided URI or generates an image using initials.
+     *
+     * @param imageUriString URI of the facility profile image.
+     */
     void loadFacilityPicture(String imageUriString) {
         if (imageUriString != null && !imageUriString.isEmpty()) {
             Uri imageUri = Uri.parse(imageUriString);
@@ -188,6 +282,9 @@ public class FacilityActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loads facility data from Firebase Firestore and populates the fields.
+     */
     private void loadFacilityData() {
         DocumentReference docRef = db.collection("FACILITY_PROFILES").document(USER_ID);
         docRef.get()
@@ -216,7 +313,13 @@ public class FacilityActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(FacilityActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
     }
 
-
+    /**
+     * Creates an image from a string of initials and returns a URI for display.
+     *
+     * @param context The context in which the image is created.
+     * @param text    The initials text to display in the image.
+     * @return URI of the generated image.
+     */
     public static Uri createImageFromString(Context context, String text) {
         int bitmapWidth = 400;
         int bitmapHeight = 400;

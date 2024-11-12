@@ -30,10 +30,26 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class ProfilePicActivity extends AppCompatActivity {
 
+    /**
+     * ImageView for displaying the selected profile picture.
+     */
     private ImageView ivProfilePicture;
+
+    /**
+     * URI for the currently selected image.
+     */
     private Uri selectedImageUri;
+
+    /**
+     * FirebaseFirestore instance for interacting with Firestore.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * Unique identifier for the user, set to the device ID.
+     */
     private String USER_ID;
+
 
     /**
      * Launcher to handle image picking from the gallery.

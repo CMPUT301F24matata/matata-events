@@ -39,42 +39,98 @@ import java.util.List;
  */
 public class ViewEvent extends AppCompatActivity {
 
-    // Event details encoded in Base64
+    /**
+     * Event details encoded as a Base64 string.
+     */
     private String argbase64;
 
-    // Base64 string for event poster image
+    /**
+     * Base64 encoded string representing the event poster image.
+     */
     private String posterBase64;
 
-    // UI elements
-    private ImageView goBack;
-    private ImageView poster;
-    private TextView title;
-    TextView capacity;
-    TextView desc;
-    TextView time;
-    TextView date;
-    TextView location;
+// UI elements
 
-    // Firestore instance
+    /**
+     * ImageView for navigating back from the event details screen.
+     */
+    private ImageView goBack;
+
+    /**
+     * ImageView for displaying the event poster image.
+     */
+    private ImageView poster;
+
+    /**
+     * TextView for displaying the event title.
+     */
+    private TextView title;
+
+    /**
+     * TextView for displaying the event capacity.
+     */
+    private TextView capacity;
+
+    /**
+     * TextView for displaying the event description.
+     */
+    private TextView desc;
+
+    /**
+     * TextView for displaying the event time.
+     */
+    private TextView time;
+
+    /**
+     * TextView for displaying the event date.
+     */
+    private TextView date;
+
+    /**
+     * TextView for displaying the event location.
+     */
+    private TextView location;
+
+// Firebase Firestore
+
+    /**
+     * Firestore instance used for database operations.
+     */
     private FirebaseFirestore db;
 
-    // Floating action button for showing QR code
+    /**
+     * Floating action button to display the QR code for the event.
+     */
     private FloatingActionButton showQR;
 
-    // Button to join waitlist
-    Button waitlistBtn;
+    /**
+     * Button to join the waitlist for the event.
+     */
+    private Button waitlistBtn;
 
-    // Unique device ID for identifying the user
+    /**
+     * Unique device ID used to identify the user in the system.
+     */
     private String USER_ID;
 
-    // Firestore references to event and entrant documents
+    /**
+     * Firestore reference to the event document.
+     */
     private DocumentReference eventRef;
+
+    /**
+     * Firestore reference to the entrant document.
+     */
     private DocumentReference entrantRef;
 
-    // Button for draw event management
+    /**
+     * Button for managing event draw operations.
+     */
     private Button drawBtn;
 
-    // Unique identifier for the event
+    /**
+     * Unique identifier for the event.
+     */
     private String uid;
 
 

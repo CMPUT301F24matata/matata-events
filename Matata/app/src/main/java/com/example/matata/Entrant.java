@@ -10,9 +10,21 @@ package com.example.matata;
  */
 public class Entrant {
 
+    /**
+     * String representing the name of the user.
+     */
     private String name;
+
+    /**
+     * String representing the phone number of the user.
+     */
     private String phoneNumber;
+
+    /**
+     * String representing the email address of the user.
+     */
     private String email;
+
 
     /**
      * Constructs an Entrant object with the specified name, phone number, and email.

@@ -22,8 +22,16 @@ import java.util.List;
  */
 public class EntrantAdapter extends RecyclerView.Adapter<EntrantAdapter.EntrantViewHolder> {
 
+    /**
+     * List of Entrant objects representing users in the event or application.
+     */
     private List<Entrant> userList;
+
+    /**
+     * Context of the current state of the application, used to access resources and other application-specific data.
+     */
     private Context context;
+
 
     /**
      * Constructs an EntrantAdapter with a specified context and list of Entrant objects.

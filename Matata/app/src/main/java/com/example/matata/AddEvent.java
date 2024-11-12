@@ -54,21 +54,93 @@ import java.util.UUID;
  * in Firebase Firestore and the image in Firebase Storage.
  * Implements TimePickerListener and DatePickerListener for selecting event date and time.
  */
-public class AddEvent extends AppCompatActivity implements TimePickerListener,DatePickerListener {
+public class AddEvent extends AppCompatActivity implements TimePickerListener, DatePickerListener {
 
+    /**
+     * ImageView for the back button in the event creation screen.
+     */
     private ImageView backBtn;
+
+    /**
+     * TextView displaying the selected time of the event.
+     */
     TextView eventTime;
+
+    /**
+     * TextView displaying the selected date of the event.
+     */
     TextView eventDate;
+
+    /**
+     * TextView displaying the location of the event.
+     */
     private TextView location;
-    private LinearLayout dateGroup, timeGroup;
+
+    /**
+     * LinearLayout container for the date selection group.
+     */
+    private LinearLayout dateGroup;
+
+    /**
+     * LinearLayout container for the time selection group.
+     */
+    private LinearLayout timeGroup;
+
+    /**
+     * ImageView for uploading or displaying the event poster image.
+     */
     private ImageView posterPic;
+
+    /**
+     * FloatingActionButton for generating a QR code for the event.
+     */
     private FloatingActionButton genrQR;
-    private EditText eveTitle, descriptionBox, capacity;
+
+    /**
+     * EditText for entering the title of the event.
+     */
+    private EditText eveTitle;
+
+    /**
+     * EditText for entering a description of the event.
+     */
+    private EditText descriptionBox;
+
+    /**
+     * EditText for specifying the capacity of the event.
+     */
+    private EditText capacity;
+
+    /**
+     * FirebaseFirestore instance for accessing Firestore database.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * StorageReference instance for accessing Firebase Storage.
+     */
     private StorageReference ref;
-    private String USER_ID, posterURI;
+
+    /**
+     * String representing the unique ID of the user.
+     */
+    private String USER_ID;
+
+    /**
+     * String containing the URI of the uploaded poster image.
+     */
+    private String posterURI;
+
+    /**
+     * Boolean indicating if the default image is used for the poster.
+     */
     private boolean isDefaultImage = true;
+
+    /**
+     * Request code for the image picker intent.
+     */
     private static final int PICK_IMAGE_REQUEST = 1;
+
 
     /**
      * Initializes the activity, sets up the Firebase instances, and assigns view elements.
@@ -208,6 +280,18 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         }
     }
 
+    /**
+     * Shows a dialog to confirm using existing facility data or editing it.
+     *
+     * @param name Facility name.
+     * @param address Facility address.
+     * @param capacity Facility capacity.
+     * @param contact Facility contact information.
+     * @param email Facility email address.
+     * @param owner Facility owner.
+     * @param notificationsEnabled Notifications enabled status.
+     * @param imageUriString Image URI as a String.
+     */
     void showFacilityDialog(String name, String address, String capacity, String contact, String email, String owner, boolean notificationsEnabled, String imageUriString) {
         AlertDialog.Builder builder = new AlertDialog.Builder(AddEvent.this);
         builder.setTitle("Facility Information");

@@ -30,14 +30,46 @@ import java.util.List;
  */
 public class EventHistory extends AppCompatActivity {
 
+    /**
+     * RecyclerView to display the event history.
+     */
     private RecyclerView eventHistoryRecyclerView;
+
+    /**
+     * Adapter for managing the display of events in the event history.
+     */
     private EventAdapter eventAdapter;
+
+    /**
+     * List of past events in the event history.
+     */
     private List<Event> eventHistoryList = new ArrayList<>();
+
+    /**
+     * Firebase Firestore instance for database interactions.
+     */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    /**
+     * Unique identifier for the user in the Firestore database.
+     */
     private String uid;
+
+    /**
+     * Unique user identifier obtained from device settings or other sources.
+     */
     private String USER_ID;
+
+    /**
+     * ImageView for back navigation in the activity.
+     */
     private ImageView backBtn;
+
+    /**
+     * List to store the status of each event in the event history.
+     */
     private List<String> statusList = new ArrayList<>();
+
 
     /**
      * Initializes the EventHistory activity, setting up the RecyclerView and loading event data from Firestore.

@@ -30,8 +30,16 @@ import java.util.List;
  */
 public class Notification {
 
+    /**
+     * Constant string representing the channel ID for waitlist notifications.
+     */
     private static final String CHANNEL_ID = "waitlist_notification_channel";
+
+    /**
+     * Launcher for requesting notification permissions from the user.
+     */
     private ActivityResultLauncher<String> notificationPermissionLauncher;
+
 
     /**
      * Initializes the notification channel for waitlist notifications if the device's Android version

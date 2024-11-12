@@ -46,15 +46,66 @@ import java.util.Map;
  */
 public class ProfileActivity extends AppCompatActivity {
 
+    /**
+     * ImageView to display the user's profile picture.
+     */
     ImageView profileIcon;
+
+    /**
+     * FirebaseFirestore instance for accessing Firestore database.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * Switch to enable or disable notifications for the user.
+     */
     Switch notifications;
+
+    /**
+     * String containing the URI of the user's profile image.
+     */
     private String imageUriString;
+
+    /**
+     * Unique identifier for the user, set to the device ID.
+     */
     private String USER_ID = "";
+
+    /**
+     * CompoundButton (used as a toggle) to indicate admin view access.
+     */
     private CompoundButton adminView;
+
+    /**
+     * View that contains additional fields specifically for organizers.
+     */
     private View organizerField;
+
+    /**
+     * Spinner for selecting the user's gender.
+     */
     private Spinner genderSpinner;
-    private EditText dobEditText, emailEditText, phoneEditText, nameEditText;
+
+    /**
+     * EditText for entering the user's date of birth.
+     */
+    private EditText dobEditText;
+
+    /**
+     * EditText for entering the user's email address.
+     */
+    private EditText emailEditText;
+
+    /**
+     * EditText for entering the user's phone number.
+     */
+    private EditText phoneEditText;
+
+    /**
+     * EditText for entering the user's name.
+     */
+    private EditText nameEditText;
+
 
     // ActivityResultLauncher for user profile picture selection
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
@@ -305,6 +356,5 @@ public class ProfileActivity extends AppCompatActivity {
         String base64String = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
         return Uri.parse("data:image/png;base64," + base64String);
     }
-
 
 }

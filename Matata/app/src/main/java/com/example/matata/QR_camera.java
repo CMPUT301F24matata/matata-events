@@ -40,10 +40,26 @@ import java.util.concurrent.ExecutionException;
  */
 public class QR_camera extends AppCompatActivity {
 
+    /**
+     * Request code for camera permission request, set to 1001.
+     */
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1001;
+
+    /**
+     * PreviewView for displaying the camera preview to the user.
+     */
     private PreviewView previewView;
+
+    /**
+     * ImageView for the back button to return to the previous screen.
+     */
     private ImageView goBack;
+
+    /**
+     * Boolean flag indicating whether the activity has been started.
+     */
     private boolean isActivityStarted = false;
+
 
     /**
      * Initializes the QR_camera activity, checks camera permissions, and starts the camera if permission is granted.

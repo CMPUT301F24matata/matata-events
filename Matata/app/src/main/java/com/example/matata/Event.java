@@ -13,15 +13,51 @@ import java.io.Serializable;
  */
 public class Event implements Serializable {
 
+    /**
+     * The title of the event.
+     */
     private String title;
+
+    /**
+     * The date of the event.
+     */
     private String date;
+
+    /**
+     * The maximum capacity of attendees for the event.
+     */
     private int capacity;
+
+    /**
+     * The time the event is scheduled to start.
+     */
     private String time;
+
+    /**
+     * The location where the event will be held.
+     */
     private String location;
+
+    /**
+     * A brief description of the event.
+     */
     private String description;
+
+    /**
+     * The unique identifier for the event.
+     */
     private String Eventid;
+
+    /**
+     * The unique identifier for the organizer of the event.
+     */
     private String Organizerid;
+
+    /**
+     * The maximum number of people allowed on the waitlist for the event.
+     */
     private int waitlistLimit;
+
 
     /**
      * Constructs an Event object with the specified details.

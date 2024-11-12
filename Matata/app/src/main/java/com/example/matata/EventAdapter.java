@@ -22,9 +22,21 @@ import java.util.List;
  */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
+    /**
+     * A list of status strings representing the current status of each event.
+     */
     private List<String> statusList;
+
+    /**
+     * The context in which the adapter or activity is operating.
+     */
     private Context context;
+
+    /**
+     * A list of events containing details of each event.
+     */
     private List<Event> eventList;
+
 
     /**
      * Constructs an EventAdapter with a specified context, list of events, and list of statuses.

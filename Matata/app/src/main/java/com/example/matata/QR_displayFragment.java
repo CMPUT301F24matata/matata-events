@@ -34,11 +34,31 @@ import java.io.OutputStream;
  */
 public class QR_displayFragment extends DialogFragment {
 
+    /**
+     * Base64 encoded string representing the QR code image.
+     */
     private String base64encoded;
+
+    /**
+     * ImageView to display the QR code on the screen.
+     */
     private ImageView displayQR;
+
+    /**
+     * ImageView for the download button to save the QR code locally.
+     */
     private ImageView downloadQR;
+
+    /**
+     * Bitmap object representing the generated QR code.
+     */
     private Bitmap QR;
+
+    /**
+     * Request code for write permission, set to 100.
+     */
     private static final int REQUEST_WRITE_PERMISSION = 100;
+
 
     /**
      * Creates a new instance of QR_displayFragment with the base64-encoded QR code as an argument.

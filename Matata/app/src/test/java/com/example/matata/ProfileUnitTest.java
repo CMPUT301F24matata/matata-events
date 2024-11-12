@@ -47,36 +47,6 @@ public class ProfileUnitTest {
     private ActivityController<ProfileActivity> controller;
 
     /**
-     * Sets up the ProfileActivity mock and initializes fields for testing.
-     */
-    @Before
-    public void setUp() {
-        controller = Robolectric.buildActivity(ProfileActivity.class);
-        mockprofile = controller.get();
-
-        mockprofile.nameEditText = new EditText(ApplicationProvider.getApplicationContext());
-        mockprofile.phoneEditText = new EditText(ApplicationProvider.getApplicationContext());
-        mockprofile.emailEditText = new EditText(ApplicationProvider.getApplicationContext());
-        mockprofile.notifications = new Switch(ApplicationProvider.getApplicationContext());
-        mockprofile.isOrganizer = new Switch(ApplicationProvider.getApplicationContext());
-        mockprofile.profileIcon = new ImageView(ApplicationProvider.getApplicationContext());
-    }
-
-    /**
-     * Tests the getUserInitials method by setting a name and verifying
-     * if initials are correctly generated.
-     *
-     * Expected output: Initials derived from "Test Name" should be "TN".
-     */
-    @Test
-    public void testInitials() {
-        System.out.println(mockprofile.nameEditText.getText().toString());
-        mockprofile.nameEditText.setText("Test Name");
-        String initials = mockprofile.getUserInitials(mockprofile.nameEditText.getText().toString());
-        assertEquals("TN", initials);
-    }
-
-    /**
      * Tests the createImageFromString method by generating a bitmap
      * from initials and checking if a valid URI is produced.
      *

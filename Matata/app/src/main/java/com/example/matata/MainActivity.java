@@ -39,20 +39,86 @@ import java.util.Map;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView profileIcon, new_event, eventHistory, eventSearch;
+    /**
+     * ImageView for displaying the profile icon.
+     */
+    private ImageView profileIcon;
+
+    /**
+     * ImageView for navigating to the new event creation screen.
+     */
+    private ImageView new_event;
+
+    /**
+     * ImageView for accessing event history.
+     */
+    private ImageView eventHistory;
+
+    /**
+     * ImageView for searching events.
+     */
+    private ImageView eventSearch;
+
+    /**
+     * RecyclerView for displaying a list of events.
+     */
     private RecyclerView recyclerView;
+
+    /**
+     * Adapter for managing the display and interaction with event items in the RecyclerView.
+     */
     private EventAdapter eventAdapter;
+
+    /**
+     * List of events to be displayed in the RecyclerView.
+     */
     private List<Event> eventList;
+
+    /**
+     * FloatingActionButton for initiating a QR scanner.
+     */
     private FloatingActionButton QR_scanner;
+
+    /**
+     * Instance of FirebaseFirestore used for database access.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * User ID string for accessing user-specific data.
+     */
     private String USER_ID = "";
+
+    /**
+     * UID string for uniquely identifying the user.
+     */
     private String uid = null;
+
+    /**
+     * List of statuses related to events.
+     */
     private List<String> statusList = new ArrayList<>();
+
+    /**
+     * ImageButton for accessing notifications.
+     */
     private ImageButton notificationButton;
 
+    /**
+     * Launcher for requesting notification permissions.
+     */
     private ActivityResultLauncher<String> notificationPermissionLauncher;
+
+    /**
+     * Manager for handling notifications.
+     */
     private Notification notificationManager;
+
+    /**
+     * Channel ID used for waitlist notifications.
+     */
     private static final String CHANNEL_ID = "waitlist_notification_channel";
+
 
     /**
      * Initializes the MainActivity and sets up UI components, database references, and event data.

@@ -10,8 +10,16 @@ package com.example.matata;
  */
 public class Facility {
 
+    /**
+     * Name of the entity, typically representing a user, event, or facility.
+     */
     private String name;
+
+    /**
+     * Description or details associated with the entity.
+     */
     private String description;
+
 
     /**
      * Constructs a Facility object with the specified name and description.

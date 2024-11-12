@@ -15,8 +15,16 @@ import java.util.List;
  */
 public class Organizer extends User {
 
+    /**
+     * The unique identifier for the organizer of the event.
+     */
     private String organizerID;
+
+    /**
+     * The Facility object containing details about the facility associated with the event.
+     */
     private Facility facility;
+
 
     /**
      * Constructs an Organizer with the specified details.

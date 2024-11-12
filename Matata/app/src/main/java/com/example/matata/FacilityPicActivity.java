@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -21,20 +20,33 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * ProfilePicActivity allows the user to view, select, upload, and delete a profile picture.
+ * FacilityPicActivity allows the user to view, select, upload, and delete a profile picture.
  * It utilizes Firestore to save the image URI and SharedPreferences to persist it locally.
- * The activity also includes options for handling the back button and notifying other activities
+ * The activity includes options for handling the back button and notifying other activities
  * about profile picture changes.
- *
- * Outstanding issues: The activity currently does not handle large image sizes or provide resizing.
- * It also does not explicitly handle storage quotas or Firebase Storage configurations.
  */
 public class FacilityPicActivity extends AppCompatActivity {
 
+    /**
+     * ImageView for displaying the profile picture.
+     */
     private ImageView ivProfilePicture;
+
+    /**
+     * URI for storing the selected image from the gallery.
+     */
     private Uri selectedImageUri;
+
+    /**
+     * Instance of FirebaseFirestore used for accessing the database.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * String representing the unique user ID for accessing user-specific data.
+     */
     private String USER_ID;
+
 
     /**
      * Launcher to handle image picking from the gallery.
@@ -53,12 +65,11 @@ public class FacilityPicActivity extends AppCompatActivity {
             });
 
     /**
-     * Initializes ProfilePicActivity, sets up Firebase, loads current profile picture,
+     * Initializes FacilityPicActivity, sets up Firebase, loads the current profile picture,
      * and configures button listeners for uploading, deleting, and returning to the previous screen.
      *
-     * @param savedInstanceState if the activity is being re-initialized, this contains the data it most recently supplied
+     * @param savedInstanceState If the activity is being re-initialized, this contains the data it most recently supplied.
      */
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,21 +87,8 @@ public class FacilityPicActivity extends AppCompatActivity {
         loadProfilePicture();
 
         btnBack.setOnClickListener(v -> finish());
-
         ivProfilePicture.setOnClickListener(v -> openImagePicker());
-
-        btnUploadPicture.setOnClickListener(v -> {
-            if (selectedImageUri != null) {
-                DocumentReference userRef = db.collection("FACILITY_PROFILES").document(USER_ID);
-                userRef.update("profileUri", selectedImageUri);
-                saveProfilePictureUri(selectedImageUri);
-                Toast.makeText(this, "Profile picture uploaded successfully", Toast.LENGTH_SHORT).show();
-                setResult(RESULT_OK);
-            } else {
-                Toast.makeText(this, "No image selected to upload", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        btnUploadPicture.setOnClickListener(v -> uploadProfilePicture());
         btnDeletePicture.setOnClickListener(v -> deleteProfilePicture());
     }
 
@@ -106,7 +104,7 @@ public class FacilityPicActivity extends AppCompatActivity {
     /**
      * Saves the selected profile picture URI to SharedPreferences.
      *
-     * @param uri the URI of the selected profile picture
+     * @param uri The URI of the selected profile picture.
      */
     private void saveProfilePictureUri(Uri uri) {
         getSharedPreferences("FacilityPrefs", Context.MODE_PRIVATE)
@@ -130,6 +128,22 @@ public class FacilityPicActivity extends AppCompatActivity {
                     .into(ivProfilePicture);
         } else {
             ivProfilePicture.setImageResource(R.drawable.ic_upload);
+        }
+    }
+
+    /**
+     * Uploads the selected profile picture to Firestore if an image has been chosen,
+     * and displays a success message. Saves the URI to SharedPreferences and sets the result to OK.
+     */
+    private void uploadProfilePicture() {
+        if (selectedImageUri != null) {
+            DocumentReference userRef = db.collection("FACILITY_PROFILES").document(USER_ID);
+            userRef.update("profileUri", selectedImageUri);
+            saveProfilePictureUri(selectedImageUri);
+            Toast.makeText(this, "Profile picture uploaded successfully", Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK);
+        } else {
+            Toast.makeText(this, "No image selected to upload", Toast.LENGTH_SHORT).show();
         }
     }
 

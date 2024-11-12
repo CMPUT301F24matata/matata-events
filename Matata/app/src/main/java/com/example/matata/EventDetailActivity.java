@@ -40,9 +40,21 @@ import java.util.List;
  */
 public class EventDetailActivity extends AppCompatActivity {
 
+    /**
+     * Instance of FirebaseFirestore used for database operations.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * The unique identifier for the event. Default value is "sample_event_id".
+     */
     private String Event_id = "sample_event_id";
+
+    /**
+     * The unique identifier for the user.
+     */
     private String USER_ID;
+
 
     /**
      * Initializes the EventDetailActivity, sets up views, and retrieves event details from intent.

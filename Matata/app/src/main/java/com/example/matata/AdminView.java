@@ -28,9 +28,26 @@ import java.util.Map;
  */
 public class AdminView extends AppCompatActivity {
 
-    private ImageView profileIcon, newEvent;
+    /**
+     * ImageView for displaying the user's profile icon.
+     */
+    private ImageView profileIcon;
+
+    /**
+     * ImageView for creating a new event.
+     */
+    private ImageView newEvent;
+
+    /**
+     * FirebaseFirestore instance for accessing Firestore database.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * String representing the unique ID of the user.
+     */
     private String USER_ID;
+
 
     /**
      * Initializes the activity, sets up the user interface, configures layout for edge-to-edge display,

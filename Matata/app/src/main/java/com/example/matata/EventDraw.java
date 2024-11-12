@@ -47,26 +47,151 @@ import java.util.Map;
  */
 public class EventDraw extends AppCompatActivity {
 
+    /**
+     * Firebase Firestore instance used for database operations.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * Unique identifier for the user.
+     */
     private String uid;
-    private List<Entrant> entrantList, selectedList, acceptedList, rejectedList;
-    private EntrantAdapter pendingAdapter, waitlistAdapter, acceptedAdapter, rejectedAdapter;
-    private RecyclerView waitlistRecyclerView, acceptedRecyclerView, pendingRecyclerView, rejectedRecyclerView;
-    private TextView totalEntrant, remainingPosition;
+
+    /**
+     * List of all entrants for the event.
+     */
+    private List<Entrant> entrantList;
+
+    /**
+     * List of selected entrants.
+     */
+    private List<Entrant> selectedList;
+
+    /**
+     * List of accepted entrants.
+     */
+    private List<Entrant> acceptedList;
+
+    /**
+     * List of rejected entrants.
+     */
+    private List<Entrant> rejectedList;
+
+    /**
+     * Adapter for displaying pending entrants.
+     */
+    private EntrantAdapter pendingAdapter;
+
+    /**
+     * Adapter for displaying waitlisted entrants.
+     */
+    private EntrantAdapter waitlistAdapter;
+
+    /**
+     * Adapter for displaying accepted entrants.
+     */
+    private EntrantAdapter acceptedAdapter;
+
+    /**
+     * Adapter for displaying rejected entrants.
+     */
+    private EntrantAdapter rejectedAdapter;
+
+    /**
+     * RecyclerView for displaying the waitlist.
+     */
+    private RecyclerView waitlistRecyclerView;
+
+    /**
+     * RecyclerView for displaying accepted entrants.
+     */
+    private RecyclerView acceptedRecyclerView;
+
+    /**
+     * RecyclerView for displaying pending entrants.
+     */
+    private RecyclerView pendingRecyclerView;
+
+    /**
+     * RecyclerView for displaying rejected entrants.
+     */
+    private RecyclerView rejectedRecyclerView;
+
+    /**
+     * TextView showing the total number of entrants.
+     */
+    private TextView totalEntrant;
+
+    /**
+     * TextView showing the remaining positions available.
+     */
+    private TextView remainingPosition;
+
+    /**
+     * Map linking each entrant to their status (e.g., accepted, rejected).
+     */
     private Map<Entrant, String> entrantMap;
+
+    /**
+     * List of selected entrant IDs.
+     */
     private List<String> selectedIdList;
+
+    /**
+     * The number of draws to be performed.
+     */
     private int drawNum;
+
+    /**
+     * Title TextView for displaying the event title.
+     */
     private TextView title;
+
+    /**
+     * ImageView for back navigation.
+     */
     private ImageView backBtn;
+
+    /**
+     * Button to perform the draw action.
+     */
     private Button drawBtn;
+
+    /**
+     * Button to clear the pending list of entrants.
+     */
     private Button clearPendingList;
+
+    /**
+     * Switch to toggle the waitlist limit.
+     */
     private Switch limitSwitch;
+
+    /**
+     * EditText field for entering the waitlist limit.
+     */
     private EditText waitlistLimit;
+
+    /**
+     * Button to save changes.
+     */
     private Button saveButton;
 
+    /**
+     * Static Firestore instance for dependency injection, primarily for testing.
+     */
     private static FirebaseFirestore injectedFirestore;
+
+    /**
+     * Static UID for dependency injection, primarily for testing.
+     */
     private static String injectedUid;
+
+    /**
+     * Current AlertDialog instance, used for displaying dialogs within the activity.
+     */
     private AlertDialog currentDialog;
+
 
     /**
      * Initializes the EventDraw activity and sets up Firebase, RecyclerViews, and various controls.
