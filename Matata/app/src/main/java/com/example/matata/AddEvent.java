@@ -2,6 +2,7 @@ package com.example.matata;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +38,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,30 +65,13 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      */
     private ImageView backBtn;
 
-    /**
-     * TextView displaying the selected time of the event.
-     */
-    TextView eventTime;
-
-    /**
-     * TextView displaying the selected date of the event.
-     */
-    TextView eventDate;
+    private TextView eventTime;
+    private TextView eventDate;
 
     /**
      * TextView displaying the location of the event.
      */
     private TextView location;
-
-    /**
-     * LinearLayout container for the date selection group.
-     */
-    private LinearLayout dateGroup;
-
-    /**
-     * LinearLayout container for the time selection group.
-     */
-    private LinearLayout timeGroup;
 
     /**
      * ImageView for uploading or displaying the event poster image.
@@ -94,7 +81,11 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
     /**
      * FloatingActionButton for generating a QR code for the event.
      */
-    private FloatingActionButton genrQR;
+    private Button genrQR;
+    private Button clearAllButton;
+
+    private boolean shouldRefreshOnResume = false;
+
 
     /**
      * EditText for entering the title of the event.
@@ -162,10 +153,19 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         initializeViews();
 
         backBtn.setOnClickListener(view -> handleBackPress());
-        timeGroup.setOnClickListener(v -> openTimePicker());
-        dateGroup.setOnClickListener(v -> openDatePicker());
+        eventTime.setOnClickListener(v -> openTimePicker());
+        eventDate.setOnClickListener(v -> openDatePicker());
         posterPic.setOnClickListener(v -> openSelector());
         genrQR.setOnClickListener(view -> handleGenerateQR(EVENT_ID, USER_ID, view));
+        clearAllButton.setOnClickListener(v -> {
+            eveTitle.setText("");
+            descriptionBox.setText("");
+            eventTime.setText("");
+            eventDate.setText("");
+            capacity.setText("");
+            posterPic.setImageURI(null);
+            Toast.makeText(AddEvent.this, "All Fields Cleared", Toast.LENGTH_SHORT).show();
+        });
 
         DocumentReference docRef = db.collection("FACILITY_PROFILES").document(USER_ID);
         docRef.get()
@@ -186,16 +186,28 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                                 !capacity.isEmpty() &&
                                 !email.isEmpty() &&
                                 !owner.isEmpty()) {
+                            location.setText(address);
                             showFacilityDialog(name, address, capacity, contact, email, owner, notificationsChecked, sImageUri);
                         }
                         else {
                             Toast.makeText(AddEvent.this, "Please Provide Facility Information First", Toast.LENGTH_SHORT).show();
+                            shouldRefreshOnResume = true;
                             Intent intent = new Intent(AddEvent.this, FacilityActivity.class);
                             startActivity(intent);
                         }
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(AddEvent.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (shouldRefreshOnResume) {
+            shouldRefreshOnResume = false;
+            recreate();
+        }
     }
 
     /**
@@ -203,16 +215,15 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      */
     private void initializeViews() {
         backBtn = findViewById(R.id.btnBackCreateEvent);
-        eventTime = findViewById(R.id.dateField);
-        dateGroup = findViewById(R.id.dateGroup);
-        timeGroup = findViewById(R.id.timeGroup);
         eventDate = findViewById(R.id.editTextDate);
+        eventTime = findViewById(R.id.editTextTime);
         posterPic = findViewById(R.id.posterPicUpload);
         genrQR = findViewById(R.id.genQR);
         eveTitle = findViewById(R.id.eventTitle);
         descriptionBox = findViewById(R.id.desc_box);
         capacity = findViewById(R.id.number_of_people_event);
         location = findViewById(R.id.editTextLocation);
+        clearAllButton = findViewById(R.id.clearAllButton);
     }
 
     /**
@@ -310,6 +321,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         });
 
         builder.setNegativeButton("No", (dialog, which) -> {
+            shouldRefreshOnResume = true;
             Intent intent = new Intent(AddEvent.this, FacilityActivity.class);
             startActivity(intent);
         });

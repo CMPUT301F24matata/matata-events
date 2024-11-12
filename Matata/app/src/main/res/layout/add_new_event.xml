@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F1F2F4">
-
+    android:background="@color/black">
 
     <LinearLayout
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/bg_matat_app">
 
+        <!-- Header Section -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/headerLayout"
             android:layout_width="match_parent"
@@ -22,7 +22,6 @@
             android:paddingEnd="16dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:orientation="horizontal"
             tools:ignore="MissingConstraints">
 
             <ImageView
@@ -50,24 +49,23 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="12dp"
                 android:maxWidth="300dp" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- Poster Upload Image -->
         <ImageView
             android:id="@+id/posterPicUpload"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_centerInParent="true"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
-            android:layout_weight="1"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:alpha="0.8"
-            android:background="#E0E0E0"
-            android:contentDescription="Poster Picture"
+            android:background="@drawable/ic_upload"
+            android:contentDescription="@string/poster_picture"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_upload" />
+            android:src="@drawable/ic_upload"
+            app:tint="@color/white" />
 
+        <!-- Event Title and Capacity Input Section -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,13 +78,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_edit"
-                android:fontFamily="@font/sansation_regular"
                 android:hint="@string/enter_event_title"
                 android:background="@drawable/edit_text_background"
-                android:tint="@color/white"
                 android:padding="12dp"
                 android:textColor="@color/black"
                 android:textColorHint="#CCCCCC"
+                android:fontFamily="@font/sansation_regular"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/number_of_people_event"
@@ -99,19 +96,17 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/edit_text_background"
                 android:drawableStart="@drawable/person"
-                android:fontFamily="@font/sansation_regular"
                 android:hint="@string/capacity"
                 android:padding="12dp"
                 android:textColor="@color/black"
                 android:textColorHint="#CCCCCC"
-                android:tint="@color/white"
+                android:layout_marginStart="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+        <!-- Event Description Box -->
         <EditText
             android:id="@+id/desc_box"
             android:layout_width="match_parent"
@@ -119,124 +114,112 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
+            android:background="@drawable/edit_text_background"
+            android:padding="12dp"
+            android:hint="@string/enter_event_description"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:gravity="top|left"
             android:fontFamily="@font/sansation_regular"
+            tools:ignore="RtlHardcoded" />
+
+        <!-- Date, Time, Location Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            tools:ignore="NestedWeights">
+
+            <TextView
+                android:id="@+id/editTextTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/ic_clock"
+                android:drawablePadding="8dp"
+                android:hint="@string/click_to_select_time"
+                android:background="@drawable/edit_text_background"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="#CCCCCC"
+                android:fontFamily="@font/sansation_regular"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/editTextDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="8dp"
+                android:hint="@string/click_to_select_date"
+                android:background="@drawable/edit_text_background"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="#CCCCCC"
+                android:gravity="center_vertical"
+                android:fontFamily="@font/sansation_regular"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- Location Input Section -->
+        <EditText
+            android:id="@+id/editTextLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:drawableStart="@drawable/ic_location"
+            android:drawablePadding="8dp"
+            android:hint="@string/click_to_enter_location"
             android:background="@drawable/edit_text_background"
             android:padding="12dp"
             android:textColor="@color/black"
             android:textColorHint="#CCCCCC"
-            android:hint="@string/enter_event_description"
-            android:gravity="top|left"
-            android:textSize="15sp"
-            android:allowUndo="true"
-            tools:ignore="RtlHardcoded" />
+            android:gravity="center_vertical"
+            android:fontFamily="@font/sansation_regular" />
 
-        <LinearLayout
+        <Button
+            android:id="@+id/genQR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:padding="14dp"
+            android:text="@string/create_event"
+            android:textColor="#F5F5F5"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            android:backgroundTint="#4A90E2"
+            android:fontFamily="@font/sansation_regular"
+            android:elevation="6dp"
+            android:outlineProvider="background"
+            android:drawablePadding="8dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/timeGroup"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:src="@drawable/ic_clock"
-                        android:alpha="0.8"
-                        android:layout_gravity="center"
-                        app:tint="@color/black" />
-                    <TextView
-                        android:id="@+id/dateField"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:text=""
-                        android:layout_marginLeft="5dp"
-                        android:hint="Click to select time"
-                         />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/dateGroup"
-                    android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_margin="5dp">
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_calendar"
-                        android:alpha="0.8"
-                        app:tint="@color/black" />
-
-                    <TextView
-                        android:id="@+id/editTextDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:layout_marginLeft="5dp"
-                        android:hint="Click to select date" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/locationGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_location"
-                        android:alpha="0.8"
-                        app:tint="@color/black" />
-
-                    <TextView
-                        android:id="@+id/editTextLocation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:layout_marginLeft="5dp"
-                        android:hint="Click to enter location" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/genQR"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/qr_button_border"
-                android:backgroundTint="#DC4949"
-                android:enabled="true"
-                android:clickable="true"
-                android:padding="12dp"
-                android:text="View Event"
-                android:textColor="@android:color/white"
-                app:elevation="5dp" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/clearAllButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:padding="14dp"
+            android:text="@string/clear_all"
+            android:textColor="#F5F5F5"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            android:backgroundTint="#FF5252"
+            android:fontFamily="@font/sansation_regular"
+            android:elevation="6dp"
+            android:outlineProvider="background"
+            android:drawablePadding="8dp" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

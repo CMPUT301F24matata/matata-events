@@ -101,5 +101,10 @@
     <string name="facility_information_colon">Facility Information</string>
     <string name="enter_event_title">Enter Event Title</string>
     <string name="enter_event_description">Enter event description...</string>
+    <string name="click_to_select_time">Select Time</string>
+    <string name="click_to_select_date">Select Date</string>
+    <string name="click_to_enter_location"> Click to enter location</string>
+    <string name="poster_picture">Poster Picture</string>
+    <string name="create_event">Create Event</string>
 
 </resources>
