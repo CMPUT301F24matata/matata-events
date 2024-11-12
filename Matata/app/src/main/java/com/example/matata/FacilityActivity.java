@@ -78,11 +78,6 @@ public class FacilityActivity extends AppCompatActivity {
     private Switch switchNotification;
 
     /**
-     * CheckBox for enabling or disabling admin view.
-     */
-    private CheckBox adminView;
-
-    /**
      * String representing the URI of the selected profile image.
      */
     private String imageUriString;
@@ -149,7 +144,6 @@ public class FacilityActivity extends AppCompatActivity {
         facilityEmail = findViewById(R.id.facilityEmail);
         facilityOwner = findViewById(R.id.facilityOwner);
         switchNotification = findViewById(R.id.switch_notification);
-        adminView = findViewById(R.id.adminView);
         saveButton = findViewById(R.id.saveButton);
         clearAllButton = findViewById(R.id.clearAllButton);
         btnBackProfile = findViewById(R.id.btnBackProfile);
@@ -215,10 +209,6 @@ public class FacilityActivity extends AppCompatActivity {
             saveFacilityData(name, address, capacity, contact, email, owner, notificationsEnabled, imageUriString);
         });
 
-        adminView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Intent intent = new Intent(buttonView.getContext(), isChecked ? AdminView.class : MainActivity.class);
-            buttonView.getContext().startActivity(intent);
-        });
     }
 
     /**

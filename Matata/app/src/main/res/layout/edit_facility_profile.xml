@@ -258,40 +258,6 @@
                 android:elevation="6dp"
                 android:outlineProvider="background" />
 
-            <!-- Temporary buttons to switch view -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="left"
-                tools:ignore="RtlHardcoded">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="220dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/sansation_regular"
-                    android:shadowColor="#000000"
-                    android:shadowDx="1"
-                    android:shadowDy="1"
-                    android:shadowRadius="2"
-                    android:text="@string/admin_view"
-                    android:textColor="@color/white" />
-
-                <CheckBox
-                    android:id="@+id/adminView"
-                    android:layout_width="wrap_content"
-                    android:thumbTint="@color/white"
-                    android:trackTint="#B3FFFFFF"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.55"
-                android:background="@color/black" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

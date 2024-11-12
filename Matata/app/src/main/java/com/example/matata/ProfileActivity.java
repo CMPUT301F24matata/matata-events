@@ -72,11 +72,6 @@ public class ProfileActivity extends AppCompatActivity {
     private String USER_ID = "";
 
     /**
-     * CompoundButton (used as a toggle) to indicate admin view access.
-     */
-    private CompoundButton adminView;
-
-    /**
      * View that contains additional fields specifically for organizers.
      */
     private View organizerField;
@@ -139,7 +134,6 @@ public class ProfileActivity extends AppCompatActivity {
         Button clearAllButton = findViewById(R.id.clearAllButton);
         ImageView back = findViewById(R.id.btnBackProfile);
         notifications = findViewById(R.id.switch_notification);
-        adminView = findViewById(R.id.adminView);
         genderSpinner = findViewById(R.id.genderSpinner);
         dobEditText = findViewById(R.id.dobEditText);
 
@@ -225,10 +219,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         });
 
-        adminView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Intent intent = new Intent(buttonView.getContext(), isChecked ? AdminView.class : MainActivity.class);
-            buttonView.getContext().startActivity(intent);
-        });
     }
 
     /**
