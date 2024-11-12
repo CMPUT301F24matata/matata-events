@@ -12,7 +12,6 @@
 
     <application
 
-
         android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -50,6 +49,13 @@
             android:name=".ProfilePicActivity"
             android:exported="false"
             android:parentActivityName=".ProfileActivity" />
+        <activity
+            android:name=".FacilityActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FacilityPicActivity"
+            android:exported="false"
+            android:parentActivityName=".FacilityActivity" />
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />

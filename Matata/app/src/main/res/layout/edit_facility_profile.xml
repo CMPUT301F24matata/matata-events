@@ -41,22 +41,9 @@
             android:textColor="@color/white"
             android:textSize="22sp"
             app:layout_constraintStart_toEndOf="@id/btnBackProfile"
-            app:layout_constraintEnd_toStartOf="@id/btnSwitchToUserProfile"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:maxWidth="300dp" />
-
-        <ImageView
-            android:id="@+id/btnSwitchToUserProfile"
-            android:layout_width="38dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackground"
-            android:contentDescription="@string/switch_to_user_profile"
-            android:padding="2dp"
-            android:src="@drawable/ic_user_profile"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
