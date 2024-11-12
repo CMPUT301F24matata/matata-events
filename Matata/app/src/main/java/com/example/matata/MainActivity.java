@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -120,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private static final String CHANNEL_ID = "waitlist_notification_channel";
 
+    private ImageView FacilityProfile;
+
 
     /**
      * Initializes the MainActivity and sets up UI components, database references, and event data.
@@ -183,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
         eventHistory = findViewById(R.id.event_history);
         eventSearch = findViewById(R.id.event_search);
         notificationButton = findViewById(R.id.notifiy_button);
+        FacilityProfile = findViewById(R.id.FacilityProfile);
 
         recyclerView = findViewById(R.id.recycler_view_events);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -216,6 +220,11 @@ public class MainActivity extends AppCompatActivity {
 
         eventSearch.setOnClickListener(v -> {
             // Add event search logic here
+        });
+
+        FacilityProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, FacilityActivity.class);
+            startActivity(intent);
         });
     }
 

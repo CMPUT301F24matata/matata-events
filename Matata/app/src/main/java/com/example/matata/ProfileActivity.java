@@ -142,7 +142,6 @@ public class ProfileActivity extends AppCompatActivity {
         adminView = findViewById(R.id.adminView);
         genderSpinner = findViewById(R.id.genderSpinner);
         dobEditText = findViewById(R.id.dobEditText);
-        ImageView btnSwitchToFacilityProfile = findViewById(R.id.btnSwitchToFacilityProfile);
 
         imageUriString = getSharedPreferences("ProfilePrefs", MODE_PRIVATE)
                 .getString("profile_image_uri", null);
@@ -151,11 +150,6 @@ public class ProfileActivity extends AppCompatActivity {
         loadProfileData();
 
         back.setOnClickListener(v -> finish());
-
-        btnSwitchToFacilityProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, FacilityActivity.class);
-            startActivity(intent);
-        });
 
         profileIcon.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, ProfilePicActivity.class);
