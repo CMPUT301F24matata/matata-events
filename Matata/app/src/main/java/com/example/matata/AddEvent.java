@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -85,7 +86,6 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
     private Button clearAllButton;
 
     private boolean shouldRefreshOnResume = false;
-
 
     /**
      * EditText for entering the title of the event.
@@ -268,6 +268,35 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      * @param view Current view context.
      */
     private void handleGenerateQR(String EVENT_ID, String USER_ID, View view) {
+        CollectionReference userProfilesRef = db.collection("USER_PROFILES");
+        CollectionReference facilityProfilesRef = db.collection("FACILITY_PROFILES");
+        CollectionReference organizerProfilesRef = db.collection("ORGANIZER_PROFILES");
+        CollectionReference eventProfilesRef = db.collection("EVENT_PROFILES");
+
+        DocumentReference userRef = userProfilesRef.document(USER_ID);
+        DocumentReference facilityRef = facilityProfilesRef.document(USER_ID);
+        DocumentReference organizerRef = organizerProfilesRef.document(USER_ID);
+        DocumentReference eventRef = eventProfilesRef.document(EVENT_ID);
+
+        organizerRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Log.d("Firestore", "Organizer profile already exists.");
+                    } else {
+                        Map<String, Object> organizerData = new HashMap<>();
+                        organizerData.put("userReference", userRef);
+                        organizerData.put("facilityReference", facilityRef);
+
+                        organizerRef.set(organizerData, SetOptions.merge())
+                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "User and Facility references added to organizer successfully"))
+                                .addOnFailureListener(e -> Log.w("Firestore", "Error adding references", e));
+                    }
+                    organizerRef.update("organizedEvents", FieldValue.arrayUnion(eventRef))
+                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event added to organizer's event list"))
+                            .addOnFailureListener(e -> Log.w("Firestore", "Error adding event to organizer's event list", e));
+                })
+                .addOnFailureListener(e -> Log.w("Firestore", "Error checking if organizer exists", e));
+
         if (!eveTitle.getText().toString().isEmpty() &&
                 !descriptionBox.getText().toString().isEmpty() &&
                 !eventDate.getText().toString().isEmpty() &&
