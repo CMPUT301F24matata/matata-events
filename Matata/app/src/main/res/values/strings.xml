@@ -99,5 +99,7 @@
     <string name="address_colon">Address:</string>
     <string name="facility_name_colon">Facility Name:</string>
     <string name="facility_information_colon">Facility Information</string>
+    <string name="enter_event_title">Enter Event Title</string>
+    <string name="enter_event_description">Enter event description...</string>
 
 </resources>

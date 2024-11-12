@@ -70,88 +70,66 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
             <EditText
                 android:id="@+id/eventTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:allowUndo="true"
-                android:ems="10"
+                android:drawableEnd="@drawable/ic_edit"
                 android:fontFamily="@font/sansation_regular"
-                android:hint="Enter Event Title"
-                android:inputType="text"
+                android:hint="@string/enter_event_title"
+                android:background="@drawable/edit_text_background"
+                android:tint="@color/white"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="#CCCCCC"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/number_of_people_event"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints" />
-
-            <ImageView
-                android:id="@+id/edit_event_title"
-                android:layout_width="24dp"
-                android:visibility="invisible"
-                android:layout_height="24dp"
-                android:layout_marginTop="10dp"
-                android:alpha="0.9"
-                android:contentDescription="@string/back_button"
-                android:src="@drawable/ic_edit"
-                app:layout_constraintStart_toEndOf="@+id/eventTitle"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="5dp"
-                android:alpha="0.8"
-                android:src="@drawable/person"
-                app:layout_constraintStart_toEndOf="@+id/edit_event_title"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints" />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <EditText
-
                 android:id="@+id/number_of_people_event"
-                android:layout_width="50dp"
-
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:allowUndo="true"
-                android:inputType="number"
-                android:text=""
-                app:layout_constraintStart_toEndOf="@+id/imageView"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteY="0dp" />
+                android:background="@drawable/edit_text_background"
+                android:drawableStart="@drawable/person"
+                android:fontFamily="@font/sansation_regular"
+                android:hint="@string/capacity"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="#CCCCCC"
+                android:tint="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:alpha="0.8"
-            android:fontFamily="@font/sansation_bold"
-            android:text="Event Description" />
 
         <EditText
             android:id="@+id/desc_box"
             android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:fontFamily="@font/sansation_regular"
             android:layout_height="150dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="4dp"
-            android:allowUndo="true"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/textbox"
-            android:backgroundTint="@color/white"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/sansation_regular"
+            android:background="@drawable/edit_text_background"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#CCCCCC"
+            android:hint="@string/enter_event_description"
             android:gravity="top|left"
-            android:hint="Enter event description..."
-            android:textSize="15dp" />
+            android:textSize="15sp"
+            android:allowUndo="true"
+            tools:ignore="RtlHardcoded" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
