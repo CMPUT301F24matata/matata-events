@@ -13,30 +13,45 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_weight="1"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/headerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#232323"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:orientation="horizontal"
-            android:paddingLeft="20dp"
-            android:paddingTop="20dp">
+            tools:ignore="MissingConstraints">
 
             <ImageView
                 android:id="@+id/btnBackCreateEvent"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:alpha="0.8"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_back_arrow"
                 android:contentDescription="@string/back_button"
-                android:src="@drawable/fancy_back" />
+                app:tint="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/headerText"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:alpha="0.9"
-                android:fontFamily="@font/sansation_regular"
                 android:text="Add Event"
-                android:textSize="40dp" />
-        </LinearLayout>
+                android:textSize="22sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/sansation_regular"
+                app:layout_constraintStart_toEndOf="@id/btnBackCreateEvent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:maxWidth="300dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/posterPicUpload"
