@@ -3,6 +3,7 @@ package com.example.matata;
 import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.Settings;
@@ -27,6 +28,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
@@ -92,6 +94,36 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         dateGroup.setOnClickListener(v -> openDatePicker());
         posterPic.setOnClickListener(v -> openSelector());
         genrQR.setOnClickListener(view -> handleGenerateQR(EVENT_ID, USER_ID, view));
+
+        DocumentReference docRef = db.collection("FACILITY_PROFILES").document(USER_ID);
+        docRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("name");
+                        String address = documentSnapshot.getString("address");
+                        String email = documentSnapshot.getString("email");
+                        boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
+                        String sImageUri = documentSnapshot.getString("profileUri");
+                        String capacity = documentSnapshot.getString("capacity");
+                        String contact = documentSnapshot.getString("contact");
+                        String owner = documentSnapshot.getString("owner");
+
+                        if (!name.isEmpty() &&
+                                !address.isEmpty() &&
+                                !contact.isEmpty() &&
+                                !capacity.isEmpty() &&
+                                !email.isEmpty() &&
+                                !owner.isEmpty()) {
+                            showFacilityDialog(name, address, capacity, contact, email, owner, notificationsChecked, sImageUri);
+                        }
+                        else {
+                            Toast.makeText(AddEvent.this, "Please Provide Facility Information First", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(AddEvent.this, FacilityActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(AddEvent.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -153,7 +185,6 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
      * @param view Current view context.
      */
     private void handleGenerateQR(String EVENT_ID, String USER_ID, View view) {
-
         if (!eveTitle.getText().toString().isEmpty() &&
                 !descriptionBox.getText().toString().isEmpty() &&
                 !eventDate.getText().toString().isEmpty() &&
@@ -175,6 +206,32 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener,Da
         } else {
             Toast.makeText(AddEvent.this, "Please fill in all the details", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    void showFacilityDialog(String name, String address, String capacity, String contact, String email, String owner, boolean notificationsEnabled, String imageUriString) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddEvent.this);
+        builder.setTitle("FacilityInformation");
+        builder.setMessage("Do you want to use the same facility as before?");
+
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+
+            Toast.makeText(AddEvent.this, "Using previous facility", Toast.LENGTH_SHORT).show();
+
+            FacilityInfoDialogFragment facilityDialog = FacilityInfoDialogFragment.newInstance(
+                    name, address, capacity, contact, email, owner, notificationsEnabled
+            );
+
+            facilityDialog.show(getSupportFragmentManager(), "FacilityInfoDialogFragment");
+
+        });
+
+        builder.setNegativeButton("No", (dialog, which) -> {
+            Intent intent = new Intent(AddEvent.this, FacilityActivity.class);
+            startActivity(intent);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(

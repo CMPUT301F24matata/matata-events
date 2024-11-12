@@ -90,5 +90,14 @@
     <string name="gender">Gender</string>
     <string name="date_of_birth">Date Of Birth</string>
     <string name="mm_dd_yyyy">MM/DD/YYYY</string>
+    <string name="confirm">Confirm</string>
+    <string name="notifications_colon">Notifications:</string>
+    <string name="owner_colon">Owner:</string>
+    <string name="email_colon">Email:</string>
+    <string name="contact_colon">Contact:</string>
+    <string name="capacity_colon">Capacity:</string>
+    <string name="address_colon">Address:</string>
+    <string name="facility_name_colon">Facility Name:</string>
+    <string name="facility_information_colon">Facility Information</string>
 
 </resources>

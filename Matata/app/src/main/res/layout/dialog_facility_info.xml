@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/facility_information_colon"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_gravity="center"
+        android:fontFamily="@font/sansation_regular"
+        android:paddingBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/facility_name_colon"
+        android:textStyle="bold"
+        android:fontFamily="@font/sansation_regular"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/facilityName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#CCCCCC"
+        android:fontFamily="@font/sansation_regular"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/address_colon"
+        android:textStyle="bold"
+        android:fontFamily="@font/sansation_regular"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/facilityAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sansation_regular"
+        android:textColor="#CCCCCC"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/capacity_colon"
+        android:textStyle="bold"
+        android:fontFamily="@font/sansation_regular"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/facilityCapacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#CCCCCC"
+        android:fontFamily="@font/sansation_regular"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/contact_colon"
+        android:textStyle="bold"
+        android:fontFamily="@font/sansation_regular"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/facilityContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#CCCCCC"
+        android:fontFamily="@font/sansation_regular"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email_colon"
+        android:textStyle="bold"
+        android:fontFamily="@font/sansation_regular"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/facilityEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#CCCCCC"
+        android:fontFamily="@font/sansation_regular"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/owner_colon"
+        android:textStyle="bold"
+        android:fontFamily="@font/sansation_regular"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/facilityOwner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#CCCCCC"
+        android:fontFamily="@font/sansation_regular"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notifications_colon"
+        android:textStyle="bold"
+        android:fontFamily="@font/sansation_regular"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/notificationsStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#CCCCCC"
+        android:fontFamily="@font/sansation_regular"
+        android:paddingBottom="16dp" />
+
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#4CAF50"
+        android:text="@string/confirm"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:fontFamily="@font/sansation_regular"
+        android:padding="12dp"
+        android:textStyle="bold" />
+
+</LinearLayout>
