@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -55,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageView eventHistory;
 
     /**
-     * ImageView for searching events.
+     * EditText for searching events.
      */
-    private ImageView eventSearch;
+    private EditText eventSearch;
 
     /**
      * RecyclerView for displaying a list of events.

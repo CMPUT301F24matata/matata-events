@@ -108,5 +108,6 @@
     <string name="create_event">Create Event</string>
     <string name="my_events">My Events</string>
     <string name="add_event">Add Event</string>
+    <string name="search_events">Search Events</string>
 
 </resources>
