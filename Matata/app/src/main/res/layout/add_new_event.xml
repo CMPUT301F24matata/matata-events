@@ -39,7 +39,7 @@
                 android:id="@+id/headerText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Add Event"
+                android:text="@string/add_event"
                 android:textSize="22sp"
                 android:textColor="@color/white"
                 android:fontFamily="@font/sansation_regular"

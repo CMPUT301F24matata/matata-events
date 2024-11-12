@@ -106,5 +106,7 @@
     <string name="click_to_enter_location"> Click to enter location</string>
     <string name="poster_picture">Poster Picture</string>
     <string name="create_event">Create Event</string>
+    <string name="my_events">My Events</string>
+    <string name="add_event">Add Event</string>
 
 </resources>
