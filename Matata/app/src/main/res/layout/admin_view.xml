@@ -117,9 +117,10 @@
                 android:id="@+id/events_dropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#33333333"
-                android:background="@drawable/edit_text_background"
+                android:backgroundTint="#444444"
                 android:orientation="vertical"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 android:visibility="gone"
                 android:paddingTop="8dp">
 
@@ -130,12 +131,14 @@
                     android:fontFamily="@font/sansation_bold"
                     android:text="@string/event_1"
                     android:textColor="#FFFFFF"
+                    android:background="@drawable/dropdown_item_border"
                     android:padding="8dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/event_2"
                     android:textColor="#FFFFFF"
+                    android:background="@drawable/dropdown_item_border"
                     android:fontFamily="@font/sansation_bold"
                     android:padding="8dp" />
                 <!-- Add more items dynamically if needed -->
@@ -192,9 +195,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="#444444"
                 android:visibility="gone"
-                android:backgroundTint="#33333333"
-                android:background="@drawable/edit_text_background"
                 android:paddingTop="8dp">
 
                 <!-- Example items in dropdown -->
@@ -204,12 +208,14 @@
                     android:text="@string/organizer_1"
                     android:fontFamily="@font/sansation_bold"
                     android:textColor="#FFFFFF"
+                    android:background="@drawable/dropdown_item_border"
                     android:padding="8dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/organizer_2"
                     android:fontFamily="@font/sansation_bold"
+                    android:background="@drawable/dropdown_item_border"
                     android:textColor="#FFFFFF"
                     android:padding="8dp" />
             </LinearLayout>
@@ -265,8 +271,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:backgroundTint="#33333333"
-                android:background="@drawable/edit_text_background"
+                android:backgroundTint="#444444"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 android:visibility="gone"
                 android:paddingTop="8dp">
 
@@ -275,6 +282,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/user_1"
                     android:fontFamily="@font/sansation_bold"
+                    android:background="@drawable/dropdown_item_border"
                     android:textColor="#FFFFFF"
                     android:padding="8dp" />
                 <TextView
@@ -282,6 +290,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/user_2"
                     android:fontFamily="@font/sansation_bold"
+                    android:background="@drawable/dropdown_item_border"
                     android:textColor="#FFFFFF"
                     android:padding="8dp" />
             </LinearLayout>
@@ -337,9 +346,10 @@
                 android:id="@+id/facilities_dropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#33333333"
-                android:background="@drawable/edit_text_background"
+                android:backgroundTint="#444444"
                 android:orientation="vertical"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 android:visibility="gone"
                 android:paddingTop="8dp">
 
@@ -349,12 +359,14 @@
                     android:text="@string/facility_1"
                     android:fontFamily="@font/sansation_bold"
                     android:textColor="#FFFFFF"
+                    android:background="@drawable/dropdown_item_border"
                     android:padding="8dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/facility_2"
                     android:fontFamily="@font/sansation_bold"
+                    android:background="@drawable/dropdown_item_border"
                     android:textColor="#FFFFFF"
                     android:padding="8dp" />
             </LinearLayout>

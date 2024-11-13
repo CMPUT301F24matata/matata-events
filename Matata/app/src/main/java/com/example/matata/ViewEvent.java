@@ -134,6 +134,8 @@ public class ViewEvent extends AppCompatActivity {
      */
     private String uid;
 
+    private boolean admin_view;
+
 
 
     /**
@@ -167,11 +169,15 @@ public class ViewEvent extends AppCompatActivity {
         drawBtn = findViewById(R.id.draw_button);
         editEvent= findViewById(R.id.EditEvent);
 
-        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
         Intent intent = getIntent();
-        uid = intent.getStringExtra("Unique_id");
-        Log.wtf(TAG, uid);
+        admin_view = intent.getBooleanExtra("IS_ADMIN_VIEW", false);
+        if (admin_view) {
+            uid = intent.getStringExtra("EVENT_ID");
+            USER_ID = intent.getStringExtra("ORG_ID");
+        } else {
+            uid = intent.getStringExtra("Unique_id");
+            USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
 
         eventRef = db.collection("EVENT_PROFILES").document(uid);
         entrantRef = db.collection("USER_PROFILES").document(USER_ID);

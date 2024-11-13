@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         userRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null && !task.getResult().exists()) {
                 Map<String, Object> userProfile = new HashMap<>();
-                userProfile.put("username", "");
+                userProfile.put("username", USER_ID);
                 userProfile.put("phone", "");
                 userProfile.put("email", "");
                 userProfile.put("notifications", false);

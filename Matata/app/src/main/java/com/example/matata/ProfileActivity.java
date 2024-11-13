@@ -101,6 +101,8 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private EditText nameEditText;
 
+    private String userId;
+
 
     // ActivityResultLauncher for user profile picture selection
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
@@ -124,7 +126,13 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.edit_profile);
 
         db = FirebaseFirestore.getInstance();
-        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        userId = getIntent().getStringExtra("USER_ID");
+        if (userId != null) {
+            USER_ID = userId;
+        } else {
+            USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
 
         profileIcon = findViewById(R.id.profileIcon);
         nameEditText = findViewById(R.id.nameEditText);

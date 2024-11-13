@@ -87,6 +87,8 @@ public class FacilityActivity extends AppCompatActivity {
      */
     private String USER_ID = "";
 
+    private String facilityId;
+
     /**
      * Instance of FirebaseFirestore for database operations.
      */
@@ -135,7 +137,13 @@ public class FacilityActivity extends AppCompatActivity {
         setContentView(R.layout.edit_facility_profile);
 
         db = FirebaseFirestore.getInstance();
-        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        facilityId = getIntent().getStringExtra("FACILITY_ID");
+        if (facilityId != null) {
+            USER_ID = facilityId;
+        } else {
+            USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
 
         facilityName = findViewById(R.id.facilityName);
         facilityAddress = findViewById(R.id.facilityAddress);

@@ -1,12 +1,15 @@
 package com.example.matata;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,6 +43,7 @@ public class AdminView extends AppCompatActivity {
     private TextView viewAllFacilities;
     private FirebaseFirestore db;
     private Typeface sansationBoldTypeface;
+    private Drawable dropdown_item_border;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -55,6 +59,7 @@ public class AdminView extends AppCompatActivity {
     }
 
     private void fetchFromFirestore() {
+        // Fetch events
         eventsDropdown.removeAllViews();
         db.collection("EVENT_PROFILES")
                 .get()
@@ -63,13 +68,24 @@ public class AdminView extends AppCompatActivity {
                         QuerySnapshot querySnapshot = task.getResult();
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             String eventTitle = document.getString("Title");
-                            if (eventTitle != null) addTextViewToDropdown(eventsDropdown, eventTitle);
+                            String eventId = document.getId();
+                            String orgId = document.getString("OrganizerID");
+                            if (eventTitle != null) {
+                                addTextViewToDropdown(eventsDropdown, eventTitle, v -> {
+                                    Intent intent = new Intent(this, ViewEvent.class);
+                                    intent.putExtra("EVENT_ID", eventId);
+                                    intent.putExtra("ORG_ID", orgId);
+                                    intent.putExtra("IS_ADMIN_VIEW", true);
+                                    startActivity(intent);
+                                });
+                            }
                         }
                     } else {
                         showToast("Failed to load events");
                     }
                 });
 
+        // Fetch organizers
         organizersDropdown.removeAllViews();
         db.collection("ORGANIZER_PROFILES")
                 .get()
@@ -77,42 +93,54 @@ public class AdminView extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot organizerDoc : task.getResult()) {
                             DocumentReference userProfileRef = organizerDoc.getDocumentReference("userReference");
-                            assert userProfileRef != null;
-                            userProfileRef.get()
-                                    .addOnCompleteListener(userTask -> {
-                                        if (userTask.isSuccessful() && userTask.getResult().exists()) {
-                                            String username = userTask.getResult().getString("username");
-                                            if (!Objects.equals(username, "")) {
-                                                new Handler(Looper.getMainLooper()).post(() ->
-                                                        addTextViewToDropdown(organizersDropdown, username)
-                                                );
+                            if (userProfileRef != null) {
+                                userProfileRef.get()
+                                        .addOnCompleteListener(userTask -> {
+                                            if (userTask.isSuccessful() && userTask.getResult().exists()) {
+                                                String username = userTask.getResult().getString("username");
+                                                String userId = userProfileRef.getId();
+                                                if (username != null && !username.isEmpty()) {
+                                                    addTextViewToDropdown(organizersDropdown, username, v -> {
+                                                        Intent intent = new Intent(this, ProfileActivity.class);
+                                                        intent.putExtra("USER_ID", userId);
+                                                        startActivity(intent);
+                                                    });
+                                                }
+                                            } else {
+                                                showToast("User profile not found for organizer");
                                             }
-                                        } else {
-                                            showToast("User profile not found for organizer");
-                                        }
-                                    })
-                                    .addOnFailureListener(e -> showToast("Failed to fetch user profile"));
-
+                                        })
+                                        .addOnFailureListener(e -> showToast("Failed to fetch user profile"));
+                            }
                         }
                     } else {
                         showToast("Failed to load organizers");
                     }
                 });
 
+        // Fetch users
         usersDropdown.removeAllViews();
         db.collection("USER_PROFILES")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String userName = document.getString("username");
-                            if (!Objects.equals(userName, "")) addTextViewToDropdown(usersDropdown, userName);
+                            String username = document.getString("username");
+                            String userId = document.getId();
+                            if (username != null && !username.isEmpty()) {
+                                addTextViewToDropdown(usersDropdown, username, v -> {
+                                    Intent intent = new Intent(this, ProfileActivity.class);
+                                    intent.putExtra("USER_ID", userId);
+                                    startActivity(intent);
+                                });
+                            }
                         }
                     } else {
                         showToast("Failed to load users");
                     }
                 });
 
+        // Fetch facilities
         facilitiesDropdown.removeAllViews();
         db.collection("FACILITY_PROFILES")
                 .get()
@@ -120,7 +148,15 @@ public class AdminView extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String facilityName = document.getString("name");
-                            if (facilityName != null) addTextViewToDropdown(facilitiesDropdown, facilityName);
+                            String facilityId = document.getId();
+
+                            if (facilityName != null) {
+                                addTextViewToDropdown(facilitiesDropdown, facilityName, v -> {
+                                    Intent intent = new Intent(this, FacilityActivity.class);
+                                    intent.putExtra("FACILITY_ID", facilityId);
+                                    startActivity(intent);
+                                });
+                            }
                         }
                     } else {
                         showToast("Failed to load facilities");
@@ -128,17 +164,25 @@ public class AdminView extends AppCompatActivity {
                 });
     }
 
+
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void addTextViewToDropdown(LinearLayout dropdown, String text) {
+    private void addTextViewToDropdown(LinearLayout dropdown, String text, View.OnClickListener clickListener) {
         TextView textView = new TextView(this);
         textView.setText(text);
         textView.setTextColor(ContextCompat.getColor(this, R.color.white));
         textView.setPadding(8, 8, 8, 8);
         textView.setTextSize(16);
         textView.setTypeface(sansationBoldTypeface);
+        textView.setBackground(dropdown_item_border);
+        textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
+        textView.setCompoundDrawablePadding(8);
+
+        if (clickListener != null) {
+            textView.setOnClickListener(clickListener);
+        }
 
         dropdown.addView(textView);
     }
@@ -149,10 +193,16 @@ public class AdminView extends AppCompatActivity {
         organizersDropdownButton.setOnClickListener(v -> toggleDropdown(organizersDropdown, organizersDropdownButton));
         usersDropdownButton.setOnClickListener(v -> toggleDropdown(usersDropdown, usersDropdownButton));
         facilitiesDropdownButton.setOnClickListener(v -> toggleDropdown(facilitiesDropdown, facilitiesDropdownButton));
+        // navigation bar click listeners
+        iconDashboard.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminView.this, AdminView.class);
+            startActivity(intent);
+        });
     }
 
     private void initialise() {
         sansationBoldTypeface = ResourcesCompat.getFont(this, R.font.sansation_bold);
+        dropdown_item_border = ContextCompat.getDrawable(this, R.drawable.dropdown_item_border);
         db = FirebaseFirestore.getInstance();
         backBtn = findViewById(R.id.btnBack);
         eventsDropdown = findViewById(R.id.events_dropdown);
