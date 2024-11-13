@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -54,12 +55,12 @@ public class MainActivity extends AppCompatActivity {
     /**
      * ImageView for accessing event history.
      */
-    private ImageView eventHistory;
+    private LinearLayout eventHistory;
 
     /**
      * EditText for searching events.
      */
-    private EditText eventSearch;
+    private LinearLayout explore;
 
     /**
      * RecyclerView for displaying a list of events.
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         new_event = findViewById(R.id.add_event);
         QR_scanner = findViewById(R.id.qr_scanner);
         eventHistory = findViewById(R.id.event_history);
-        eventSearch = findViewById(R.id.event_search);
+        explore = findViewById(R.id.event_map);
         notificationButton = findViewById(R.id.notifiy_button);
         FacilityProfile = findViewById(R.id.FacilityProfile);
 
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
             retrieveWaitlistAndNotify();
         });
 
-        eventSearch.setOnClickListener(v -> {
+        explore.setOnClickListener(v -> {
             // Add event search logic here
         });
 
