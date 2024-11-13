@@ -157,6 +157,7 @@
         android:layout_height="65dp"
         android:background="#232323"
         android:gravity="center"
+        android:alpha="0.9"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

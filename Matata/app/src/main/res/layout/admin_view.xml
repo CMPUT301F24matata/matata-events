@@ -59,14 +59,35 @@
             android:padding="16dp">
 
             <!-- Event Management Section -->
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/manage_events"
-                android:textColor="#FFFFFF"
-                android:fontFamily="@font/sansation_bold"
-                android:textSize="18sp"
-                android:paddingBottom="8dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/manage_events"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/view_all_events"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/view_all"
+                    android:textColor="@color/sky_blue"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/sansation_bold"
+                    android:paddingStart="8dp"
+                    android:gravity="center_vertical"
+                    android:onClick="viewAllEvents"
+                    tools:ignore="RtlSymmetry" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/events_dropdown_button"
@@ -87,6 +108,8 @@
                 android:id="@+id/events_dropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#33333333"
+                android:background="@drawable/edit_text_background"
                 android:orientation="vertical"
                 android:visibility="gone"
                 android:paddingTop="8dp">
@@ -110,15 +133,35 @@
             </LinearLayout>
 
             <!-- Organizer Management Section -->
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/manage_organizers"
-                android:textColor="#FFFFFF"
-                android:fontFamily="@font/sansation_bold"
-                android:textSize="18sp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:paddingTop="16dp"
-                android:paddingBottom="8dp" />
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/manage_organizers"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/view_all_organizers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/view_all"
+                    android:textColor="@color/sky_blue"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/sansation_bold"
+                    android:paddingStart="8dp"
+                    android:gravity="center_vertical"
+                    android:onClick="viewAllOrganizers" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/organizers_dropdown_button"
@@ -141,6 +184,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
+                android:backgroundTint="#33333333"
+                android:background="@drawable/edit_text_background"
                 android:paddingTop="8dp">
 
                 <!-- Example items in dropdown -->
@@ -161,15 +206,35 @@
             </LinearLayout>
 
             <!-- User Management Section -->
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/manage_users"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:paddingTop="16dp"
-                android:fontFamily="@font/sansation_bold"
-                android:paddingBottom="8dp" />
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/manage_users"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/view_all_users"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/view_all"
+                    android:textColor="@color/sky_blue"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/sansation_bold"
+                    android:paddingStart="8dp"
+                    android:gravity="center_vertical"
+                    android:onClick="viewAllUsers" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/users_dropdown_button"
@@ -191,6 +256,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:backgroundTint="#33333333"
+                android:background="@drawable/edit_text_background"
                 android:visibility="gone"
                 android:paddingTop="8dp">
 
@@ -211,15 +278,36 @@
             </LinearLayout>
 
             <!-- Facility Management Section -->
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/manage_facilities"
-                android:textColor="#FFFFFF"
-                android:fontFamily="@font/sansation_bold"
-                android:textSize="18sp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:paddingTop="16dp"
-                android:paddingBottom="8dp" />
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/manage_facilities"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/view_all_facilities"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/view_all"
+                    android:textColor="@color/sky_blue"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/sansation_bold"
+                    android:paddingStart="8dp"
+                    android:gravity="center_vertical"
+                    android:onClick="viewAllFacilities"
+                    tools:ignore="RtlSymmetry" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/facilities_dropdown_button"
@@ -240,6 +328,8 @@
                 android:id="@+id/facilities_dropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#33333333"
+                android:background="@drawable/edit_text_background"
                 android:orientation="vertical"
                 android:visibility="gone"
                 android:paddingTop="8dp">
@@ -273,5 +363,64 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Dashboard Icon -->
+        <ImageView
+            android:id="@+id/icon_dashboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/dashboard"
+            android:src="@drawable/ic_dashboard"
+            android:padding="10dp"
+            android:layout_gravity="center" />
+
+        <!-- Users Icon -->
+        <ImageView
+            android:id="@+id/icon_users"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/users"
+            android:src="@drawable/ic_users"
+            android:padding="10dp"
+            android:layout_gravity="center" />
+
+        <!-- Reports Icon -->
+        <ImageView
+            android:id="@+id/icon_reports"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/reports"
+            android:src="@drawable/ic_reports"
+            android:padding="10dp"
+            android:layout_gravity="center" />
+
+        <!-- Notifications Icon -->
+        <ImageView
+            android:id="@+id/icon_notifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/notifications"
+            android:src="@drawable/ic_notifications"
+            android:padding="10dp"
+            app:tint="@color/white"
+            android:layout_gravity="center" />
+
+        <!-- Settings Icon -->
+        <ImageView
+            android:id="@+id/icon_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/settings"
+            android:src="@drawable/ic_settings"
+            android:padding="10dp"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
