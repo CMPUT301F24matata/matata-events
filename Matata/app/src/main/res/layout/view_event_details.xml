@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_matat_app">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,278 +15,287 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:background="#232323"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
 
+            <!-- Back Button -->
             <ImageView
                 android:id="@+id/go_back_view_event"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:alpha="0.8"
-                android:layout_marginLeft="5dp"
-                android:src="@drawable/fancy_back"/>
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="10dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_back_arrow"
+                android:contentDescription="@string/back_button"
+                app:tint="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
+            <!-- Title Text -->
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/view_details_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="View Details"
-                android:layout_weight="1"
-                android:gravity="center"
                 android:alpha="0.8"
-                android:textSize="20dp"/>
+                android:gravity="center"
+                android:text="@string/view_details"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toEndOf="@id/go_back_view_event"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:maxWidth="300dp" />
 
+            <!-- Edit Event Button with Icon and Text -->
             <LinearLayout
                 android:id="@+id/EditEvent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintEnd_toStartOf="@id/draw_button"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="12dp"
+                android:gravity="center">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:alpha="0.7"
-                    android:layout_gravity="center"
-                    android:padding="5dp"
-                    android:src="@drawable/ic_edit"
-                    app:tint="@color/black" />
-                <TextView
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Edit Event"/>
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:background="#232323"
+                    app:tint="@color/white"
+                    android:elevation="10dp"
+                    android:src="@drawable/ic_edit" />
+
             </LinearLayout>
 
-
+            <!-- Entrants Button with Icon and Text -->
             <LinearLayout
                 android:id="@+id/draw_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:gravity="center">
 
                 <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:background="#232323"
+                    app:tint="@color/white"
+                    android:elevation="10dp"
+                    android:src="@drawable/baseline_people_alt_24" />
 
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:alpha="0.7"
-                    android:layout_gravity="center"
-                    android:padding="5dp"
-                    android:src="@drawable/baseline_people_alt_24"
-                    android:text="Entrant list" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content"
-                    android:text="Entrants"/>
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- Event Poster -->
         <ImageView
-
-            android:layout_gravity="center"
             android:id="@+id/poster_pic_Display"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_weight="1"
-            />
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_weight="1"
-            android:layout_height="50dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
-            android:src="@drawable/baseline_share_24"
-            android:alpha="0.8"/>
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="centerCrop"
+            android:background="@color/white" />
 
-        <LinearLayout
+        <!-- Event Title -->
+        <TextView
+            android:id="@+id/ViewEventTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:padding="12dp"
+            android:background="@drawable/view_text_background"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Event Title" />
 
-            <TextView
-                android:id="@+id/ViewEventTitle"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/sansation_bold"
-                android:text="Event Title"
-                android:textSize="30dp" />
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" />
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/person"
-                android:layout_gravity="center"
-               />
+        <!-- Event Capacity -->
+        <TextView
+            android:id="@+id/ViewEventCapacity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:drawableStart="@drawable/person"
+            android:drawablePadding="8dp"
+            android:padding="12dp"
+            android:background="@drawable/view_text_background"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            tools:text="Capacity: 100" />
 
-            <TextView
-                android:id="@+id/ViewEventCapacity"
-                android:layout_width="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:text=""
-                android:layout_marginRight="16dp"
-                android:textSize="15sp"
-                android:layout_height="wrap_content"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" />
 
-        </LinearLayout>
-
+        <!-- Event Description -->
         <TextView
             android:id="@+id/ViewEventDesc"
-            android:layout_width="350dp"
-            android:layout_weight="1"
-            android:layout_height="100dp"
-            android:text="Lorem ipsum dolor sit amet, consectetur
-adipiscing elit. Donec vehicula, dui vel viverra
-mollis, mi nulla sodales lorem, nec tincidunt lacus
-libero non nisi. Nullam a augue nibh. Vestibulum
-eu ipsum in tortor placerat finibus. Curabitur
- bibendum nec eros sit amet mattis. Aliquam
-ornare leo felis, vel molestie felis placerat vitae"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:padding="12dp"
+            android:background="@drawable/view_text_background"
+            android:gravity="top|left"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:maxLines="5"
+            tools:text="Event Description: This is a sample description for the event." />
 
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Event Date and Time -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center_vertical">
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <LinearLayout
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="16dp"
-                        android:alpha="0.8"
-                        android:src="@drawable/ic_clock"
-                        app:tint="@color/black" />
-
-                    <TextView
-                        android:id="@+id/ViewEventTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:ems="10"
-                        android:hint="Click to select time"
-                        android:text="" />
-                </LinearLayout>
-
-                <LinearLayout
-
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginLeft="16dp"
-                        android:alpha="0.8"
-                        android:src="@drawable/ic_calendar"
-                        app:tint="@color/black" />
-
-                    <TextView
-                        android:id="@+id/ViewEventDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:ems="10"
-                        android:hint="Click to select date" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginLeft="16dp"
-                        android:alpha="0.8"
-                        android:src="@drawable/ic_location"
-                        app:tint="@color/black" />
-
-                    <TextView
-                        android:id="@+id/ViewEventLoc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:ems="10"
-                        android:hint="Click to enter location" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/ViewEventTime"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:drawablePadding="8dp"
+                android:padding="12dp"
+                android:background="@drawable/view_text_background"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                app:drawableStartCompat="@drawable/ic_clock"
+                tools:text="Time: 7:00 PM" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/show_QR"
-                    android:layout_width="109dp"
-                    android:layout_height="56dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="15dp"
-                    android:clickable="true"
-                    android:contentDescription="@string/qr_code"
-                    android:enabled="true"
-                    android:focusable="true"
-                    android:foreground="@drawable/baseline_qr_code_scanner_24"
-                    android:foregroundGravity="center"
-                    android:foregroundTint="@color/black" />
-
-                <Button
-                    android:id="@+id/join_waitlist_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Pending"
-                    android:layout_marginStart="16dp"
-                    android:padding="10dp"
-                    android:textSize="16sp"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@android:color/white" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/ViewEventDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="8dp"
+                android:padding="12dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/view_text_background"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                app:drawableStartCompat="@drawable/ic_calendar"
+                tools:text="Date: 12/12/2023" />
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Event Location -->
+        <TextView
+            android:id="@+id/ViewEventLoc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:drawablePadding="8dp"
+            android:padding="12dp"
+            android:background="@drawable/view_text_background"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            app:drawableStartCompat="@drawable/ic_location"
+            tools:text="Location: University Hall" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Share and QR Button Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/share_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/baseline_share_24"
+                app:tint="@color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/show_QR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/qr_code"
+                android:enabled="true"
+                android:focusable="true"
+                android:foreground="@drawable/baseline_qr_code_scanner_24"
+                android:foregroundGravity="center"
+                android:foregroundTint="@color/black" />
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/join_waitlist_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:text="@string/pending"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

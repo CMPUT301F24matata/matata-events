@@ -238,7 +238,6 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                 Log.wtf(TAG,"task successful");
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-
                     finish();
                 } else {
                     if (!eveTitle.getText().toString().isEmpty() ||
@@ -252,7 +251,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                     }
                 }
             }
-            else{
+            else {
                 finish();
             }
         });

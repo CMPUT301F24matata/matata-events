@@ -43,9 +43,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="16dp"
                 android:background="#232323"
-                android:contentDescription="@string/admin_view"
-                android:elevation="10dp"
                 app:tint="@color/sky_blue"
+                android:elevation="10dp"
+                android:contentDescription="@string/admin_view"
                 android:src="@drawable/baseline_admin_panel_settings_24" />
 
             <ImageButton

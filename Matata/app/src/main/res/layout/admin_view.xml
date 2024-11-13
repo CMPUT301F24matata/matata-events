@@ -392,7 +392,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/users"
-            android:src="@drawable/ic_users"
+            android:src="@drawable/baseline_people_alt_24"
+            app:tint="@color/white"
             android:padding="10dp"
             android:layout_gravity="center" />
 
