@@ -24,7 +24,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:alpha="0.8"
-                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
                 android:src="@drawable/fancy_back"/>
 
             <TextView
@@ -34,14 +34,58 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:alpha="0.8"
-                android:textSize="30dp"/>
+                android:textSize="20dp"/>
 
-            <Button
+            <LinearLayout
+                android:id="@+id/EditEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:alpha="0.7"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_edit"
+                    app:tint="@color/black" />
+                <TextView
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Event"/>
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:id="@+id/draw_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Entrant list" />
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:alpha="0.7"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    android:src="@drawable/baseline_people_alt_24"
+                    android:text="Entrant list" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:text="Entrants"/>
+            </LinearLayout>
 
         </LinearLayout>
 

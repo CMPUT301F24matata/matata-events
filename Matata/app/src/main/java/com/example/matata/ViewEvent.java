@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -126,12 +127,13 @@ public class ViewEvent extends AppCompatActivity {
     /**
      * Button for managing event draw operations.
      */
-    private Button drawBtn;
-
+    private LinearLayout drawBtn;
+    private LinearLayout editEvent;
     /**
      * Unique identifier for the event.
      */
     private String uid;
+
 
 
     /**
@@ -163,6 +165,7 @@ public class ViewEvent extends AppCompatActivity {
         showQR = findViewById(R.id.show_QR);
         waitlistBtn = findViewById(R.id.join_waitlist_button);
         drawBtn = findViewById(R.id.draw_button);
+        editEvent= findViewById(R.id.EditEvent);
 
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -269,8 +272,10 @@ public class ViewEvent extends AppCompatActivity {
     void updateButtonVisibility(String organizerId) {
         if (organizerId == null || !organizerId.equals(USER_ID)) {
             drawBtn.setVisibility(View.INVISIBLE);
+            editEvent.setVisibility(View.INVISIBLE);
         }else {
             waitlistBtn.setVisibility(View.INVISIBLE);
+            editEvent.setVisibility(View.VISIBLE);
         }
     }
 
