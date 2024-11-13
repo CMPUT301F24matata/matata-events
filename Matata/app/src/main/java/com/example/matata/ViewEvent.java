@@ -205,6 +205,15 @@ public class ViewEvent extends AppCompatActivity {
             view.getContext().startActivity(intent1);
         });
 
+        editEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(view.getContext(),EditEvent.class);
+                intent.putExtra("Unique_id",uid);
+                view.getContext().startActivity(intent);
+            }
+        });
+
         loadEventDetails(uid);
         refreshEntrantStatus();
     }

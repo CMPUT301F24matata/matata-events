@@ -252,6 +252,9 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                     }
                 }
             }
+            else{
+                finish();
+            }
         });
     }
 
