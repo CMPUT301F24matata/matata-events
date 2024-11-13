@@ -173,7 +173,23 @@ public class ViewEvent extends AppCompatActivity {
         eventRef = db.collection("EVENT_PROFILES").document(uid);
         entrantRef = db.collection("USER_PROFILES").document(USER_ID);
 
-        goBack.setOnClickListener(v -> finish());
+        goBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String parentActivity = getCallingActivity() != null ? getCallingActivity().getClassName() : "";
+                if (parentActivity.equals(AddEvent.class.getName())) {
+                    Intent intent = new Intent(ViewEvent.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+                else{
+                    finish();
+                }
+
+            }
+        });
 
         showQR.setOnClickListener(view -> {
             QR_displayFragment qrDisplayFragment = QR_displayFragment.newInstance(argbase64);

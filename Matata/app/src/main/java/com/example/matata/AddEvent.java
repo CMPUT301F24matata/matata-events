@@ -31,6 +31,7 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -117,6 +118,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      */
     private String USER_ID;
 
+    private String EVENT_ID;
     /**
      * String containing the URI of the uploaded poster image.
      */
@@ -144,7 +146,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         db = FirebaseFirestore.getInstance();
         ref = FirebaseStorage.getInstance("gs://matata-d53da.firebasestorage.app").getReference();
 
-        String EVENT_ID = generateRandomEventID();
+        EVENT_ID = generateRandomEventID();
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         super.onCreate(savedInstanceState);
@@ -230,17 +232,27 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      * Handles back button press, showing a confirmation dialog if fields are filled.
      */
     private void handleBackPress() {
-        if (!eveTitle.getText().toString().isEmpty() ||
-                !descriptionBox.getText().toString().isEmpty() ||
-                !eventDate.getText().toString().isEmpty() ||
-                !eventTime.getText().toString().isEmpty() ||
-                !capacity.getText().toString().isEmpty()) {
+        DocumentReference docRef=db.collection("EVENT_PROFILES").document(EVENT_ID);
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.wtf(TAG,"task successful");
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
 
-            ConfirmationFragment backpress = new ConfirmationFragment();
-            backpress.show(getSupportFragmentManager(), "BackPressFragment");
-        } else {
-            finish();
-        }
+                    finish();
+                } else {
+                    if (!eveTitle.getText().toString().isEmpty() ||
+                            !descriptionBox.getText().toString().isEmpty() ||
+                            !eventDate.getText().toString().isEmpty() ||
+                            !eventTime.getText().toString().isEmpty() ||
+                            !capacity.getText().toString().isEmpty()) {
+
+                        ConfirmationFragment backpress = new ConfirmationFragment();
+                        backpress.show(getSupportFragmentManager(), "BackPressFragment");
+                    }
+                }
+            }
+        });
     }
 
     /**

@@ -99,6 +99,7 @@ public class ProfilePicActivity extends AppCompatActivity {
                 saveProfilePictureUri(selectedImageUri);
                 Toast.makeText(this, "Profile picture uploaded successfully", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);
+
             } else {
                 Toast.makeText(this, "No image selected to upload", Toast.LENGTH_SHORT).show();
             }

@@ -277,7 +277,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         db.collection("USER_PROFILES").document(USER_ID)
                 .set(userProfile)
-                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(ProfileActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
                 .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
     }
 
