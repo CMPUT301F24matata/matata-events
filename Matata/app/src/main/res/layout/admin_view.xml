@@ -4,146 +4,274 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:background="@color/black"
     android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".AdminView">
 
-    tools:context=".MainActivity">
-
+    <!-- Header Section -->
     <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_matat_app"
+        android:layout_height="wrap_content"
+        android:background="#232323"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="9dp"
+        android:paddingBottom="16dp"
+        tools:ignore="MissingConstraints">
 
-        android:orientation="vertical">
+        <ImageButton
+            android:id="@+id/admin"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:background="#232323"
+            android:contentDescription="@string/admin_view"
+            android:elevation="10dp"
+            app:tint="@color/sky_blue"
+            android:src="@drawable/baseline_admin_panel_settings_24" />
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:alpha="0.8"
+            android:fontFamily="@font/sansation_bold"
+            android:text="@string/matata_admin_view"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
+    </LinearLayout>
+
+    <!-- Content Section for Admin Controls -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#765A90"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:paddingRight="9dp"
-            android:paddingBottom="16dp">
-
+            <!-- Event Management Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/manage_events"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/sansation_bold"
+                android:textSize="18sp"
+                android:paddingBottom="8dp" />
 
             <TextView
-                android:layout_width="316dp"
-
+                android:id="@+id/events_dropdown_button"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:alpha="0.8"
-                android:fontFamily="@font/sansation_bold"
-                android:text="@string/matata"
+                android:text="@string/browse_events"
                 android:textColor="#FFFFFF"
-                android:textSize="25sp" />
+                android:backgroundTint="#444444"
+                android:background="@drawable/edit_text_background"
+                android:fontFamily="@font/sansation_bold"
+                android:padding="12dp"
+                android:gravity="center_vertical"
+                android:onClick="toggleEventsDropdown"
+                app:drawableEndCompat="@drawable/ic_expand_more" />
 
-            <ImageView
-                android:id="@+id/event_search"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:layout_marginRight="20dp"
-                android:alpha="0.8"
-                android:elevation="10dp"
-                android:src="@drawable/search" />
+            <!-- Events Dropdown Content -->
+            <LinearLayout
+                android:id="@+id/events_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:paddingTop="8dp">
 
-            <ImageView
-                android:id="@+id/add_event"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_marginRight="16dp"
-                android:alpha="1"
-                android:elevation="10dp"
-                android:src="@drawable/add_event"
-                android:visibility="visible" />
+                <!-- Example items in dropdown -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sansation_bold"
+                    android:text="@string/event_1"
+                    android:textColor="#FFFFFF"
+                    android:padding="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/event_2"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/sansation_bold"
+                    android:padding="8dp" />
+                <!-- Add more items dynamically if needed -->
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/profile_picture"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+            <!-- Organizer Management Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/manage_organizers"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/sansation_bold"
+                android:textSize="18sp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
 
-                android:layout_gravity="center"
-                android:layout_marginEnd="0dp"
-                android:alpha="0.9"
-                android:contentDescription="@string/profile_picture"
-                android:elevation="10dp"
-                android:src="@drawable/profile_pic" />
+            <TextView
+                android:id="@+id/organizers_dropdown_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/browse_organizers"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/sansation_bold"
+                android:background="@drawable/edit_text_background"
+                android:backgroundTint="#444444"
+                android:padding="12dp"
+                android:gravity="center_vertical"
+                android:onClick="toggleOrganizersDropdown"
+                app:drawableEndCompat="@drawable/ic_expand_more" />
+
+            <!-- Organizers Dropdown Content -->
+            <LinearLayout
+                android:id="@+id/organizers_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:paddingTop="8dp">
+
+                <!-- Example items in dropdown -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/organizer_1"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textColor="#FFFFFF"
+                    android:padding="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/organizer_2"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textColor="#FFFFFF"
+                    android:padding="8dp" />
+            </LinearLayout>
+
+            <!-- User Management Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/manage_users"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:paddingTop="16dp"
+                android:fontFamily="@font/sansation_bold"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:id="@+id/users_dropdown_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/browse_users"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#444444"
+                android:fontFamily="@font/sansation_bold"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_background"
+                android:gravity="center_vertical"
+                android:onClick="toggleUsersDropdown"
+                app:drawableEndCompat="@drawable/ic_expand_more" />
+
+            <!-- Users Dropdown Content -->
+            <LinearLayout
+                android:id="@+id/users_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_1"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textColor="#FFFFFF"
+                    android:padding="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_2"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textColor="#FFFFFF"
+                    android:padding="8dp" />
+            </LinearLayout>
+
+            <!-- Facility Management Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/manage_facilities"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/sansation_bold"
+                android:textSize="18sp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:id="@+id/facilities_dropdown_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/browse_facilities"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#444444"
+                android:fontFamily="@font/sansation_bold"
+                android:padding="12dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/edit_text_background"
+                android:onClick="toggleFacilitiesDropdown"
+                app:drawableEndCompat="@drawable/ic_expand_more" />
+
+            <!-- Facilities Dropdown Content -->
+            <LinearLayout
+                android:id="@+id/facilities_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/facility_1"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textColor="#FFFFFF"
+                    android:padding="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/facility_2"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textColor="#FFFFFF"
+                    android:padding="8dp" />
+            </LinearLayout>
 
         </LinearLayout>
+    </ScrollView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_events"
-            android:layout_width="match_parent"
-            android:layout_height="583dp"
-            android:layout_marginTop="8dp"
-            android:padding="8dp"
-            app:layout_constraintBottom_toTopOf="@id/linearLayout"
-            app:layout_constraintTop_toBottomOf="@id/profile_picture"
-            tools:listitem="@layout/event_card" />
-
-    </LinearLayout>
-
+    <!-- Bottom Navigation -->
     <LinearLayout
-
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:background="#232323"
         android:gravity="center"
         android:orientation="horizontal"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-
-        <ImageView
-            android:id="@+id/event_history"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_margin="15dp"
-            android:layout_weight="1"
-            android:alpha="0.92"
-            android:padding="0dp"
-            android:src="@drawable/event_history_24"
-            app:tint="@color/white" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/qr_scanner"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_margin="4dp"
-            android:alpha="0.9"
-            android:background="@drawable/custom_fab_layout"
-            android:backgroundTint="@color/white"
-            android:elevation="2dp"
-            android:enabled="true"
-            android:foreground="@drawable/baseline_qr_code_scanner_24"
-            android:foregroundGravity="center"
-            android:foregroundTint="@color/black"
-            android:scaleType="center"
-            android:tint="@color/black"
-            android:translationZ="0dp"
-            app:hoveredFocusedTranslationZ="4dp"
-            app:useCompatPadding="false" />
-
-        <ImageView
-            android:id="@+id/event_map"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_margin="15dp"
-            android:layout_weight="1"
-            android:alpha="0.92"
-            android:padding="0dp"
-            android:src="@drawable/baseline_explore_24"
-            app:tint="@color/white" />
-
-
-    </LinearLayout>
-
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

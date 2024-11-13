@@ -110,5 +110,24 @@
     <string name="add_event">Add Event</string>
     <string name="search_events">Search Events</string>
     <string name="organiser_profile">organiser profile</string>
+    <string name="matata_admin_view">Matata Admin View</string>
+    <string name="remove_facility">Remove Facility</string>
+    <string name="browse_facilities">Browse Facilities</string>
+    <string name="manage_events">Manage Events</string>
+    <string name="browse_events">Browse Events</string>
+    <string name="remove_event">Remove</string>
+    <string name="manage_facilities">Manage Facilities</string>
+    <string name="manage_users">Manage Users</string>
+    <string name="manage_organizers">Manage Organizers</string>
+    <string name="browse_organizers">Browse Organizers</string>
+    <string name="organizer_1">Organizer 1</string>
+    <string name="organizer_2">Organizer 2</string>
+    <string name="event_1">Event 1</string>
+    <string name="event_2">Event 2</string>
+    <string name="user_1">User 1</string>
+    <string name="user_2">User 2</string>
+    <string name="browse_users">Browse Users</string>
+    <string name="facility_2">Facility 2</string>
+    <string name="facility_1">Facility 1</string>
 
 </resources>

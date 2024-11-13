@@ -37,6 +37,18 @@
                 android:textSize="25sp" />
 
             <ImageButton
+                android:id="@+id/admin"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="16dp"
+                android:background="#232323"
+                android:contentDescription="@string/admin_view"
+                android:elevation="10dp"
+                app:tint="@color/sky_blue"
+                android:src="@drawable/baseline_admin_panel_settings_24" />
+
+            <ImageButton
                 android:id="@+id/notifiy_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"

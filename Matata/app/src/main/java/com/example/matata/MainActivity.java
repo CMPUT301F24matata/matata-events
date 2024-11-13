@@ -124,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView FacilityProfile;
 
+    private ImageButton admin;
+
 
     /**
      * Initializes the MainActivity and sets up UI components, database references, and event data.
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         explore = findViewById(R.id.event_map);
         notificationButton = findViewById(R.id.notifiy_button);
         FacilityProfile = findViewById(R.id.FacilityProfile);
-
+        admin = findViewById(R.id.admin);
         recyclerView = findViewById(R.id.recycler_view_events);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -225,6 +227,11 @@ public class MainActivity extends AppCompatActivity {
 
         FacilityProfile.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, FacilityActivity.class);
+            startActivity(intent);
+        });
+
+        admin.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, AdminView.class);
             startActivity(intent);
         });
     }
