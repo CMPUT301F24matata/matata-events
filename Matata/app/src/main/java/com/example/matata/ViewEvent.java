@@ -440,10 +440,18 @@ public class ViewEvent extends AppCompatActivity {
                 String Location = documentSnapshot.getString("Location");
 
                 argbase64 = documentSnapshot.getString("bitmap");
-                String ImageUri = documentSnapshot.getString("Poster");
-                if (!ImageUri.isEmpty()) {
-                    Glide.with(this).load(ImageUri).into(poster);
+                try{
+                    String ImageUri = documentSnapshot.getString("Poster");
+                    if (ImageUri!=null) {
+                        Glide.with(this).load(ImageUri).into(poster);
+                    }
+                    else{
+                        ;
+                    }
+                }catch(Exception e){
+                    throw e;
                 }
+
 
                 Bitmap QR = decodeBase64toBmp(argbase64);
 
