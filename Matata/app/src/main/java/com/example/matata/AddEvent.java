@@ -249,6 +249,9 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                         ConfirmationFragment backpress = new ConfirmationFragment();
                         backpress.show(getSupportFragmentManager(), "BackPressFragment");
                     }
+                    else {
+                        finish();
+                    }
                 }
             }
             else {
