@@ -11,11 +11,7 @@
     android:orientation="horizontal">
 
     <!-- Event Title -->
-    <ImageView
-        android:id="@+id/card_poster"
-        android:layout_width="270dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
+
 
     <LinearLayout
         android:paddingTop="16dp"
@@ -126,5 +122,10 @@
             android:textColor="#C1B129"
             android:textSize="14sp" />
     </LinearLayout>
+    <ImageView
+        android:id="@+id/card_poster"
+        android:layout_width="270dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
 
 </LinearLayout>
