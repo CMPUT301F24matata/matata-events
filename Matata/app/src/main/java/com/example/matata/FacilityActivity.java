@@ -168,6 +168,7 @@ public class FacilityActivity extends AppCompatActivity {
 
         profileIcon.setOnClickListener(v -> {
             Intent intent = new Intent(FacilityActivity.this, FacilityPicActivity.class);
+            intent.putExtra("userId", USER_ID);
             profilePicLauncher.launch(intent);
         });
 

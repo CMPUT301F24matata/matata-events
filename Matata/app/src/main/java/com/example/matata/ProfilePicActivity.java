@@ -79,7 +79,13 @@ public class ProfilePicActivity extends AppCompatActivity {
         setContentView(R.layout.profile_pic);
 
         db = FirebaseFirestore.getInstance();
-        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        String userId = getIntent().getStringExtra("userId");
+        if (userId != null) {
+            USER_ID = userId;
+        } else {
+            USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
 
         ivProfilePicture = findViewById(R.id.ivProfilePicture);
         ImageView btnBack = findViewById(R.id.btnBack);

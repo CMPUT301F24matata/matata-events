@@ -155,6 +155,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         profileIcon.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, ProfilePicActivity.class);
+            intent.putExtra("userId", USER_ID);
             profilePicLauncher.launch(intent);
         });
 
