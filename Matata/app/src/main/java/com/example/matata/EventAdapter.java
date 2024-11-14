@@ -5,11 +5,17 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * EventAdapter is a RecyclerView adapter that binds a list of Event objects to views displayed in a RecyclerView.
@@ -22,11 +28,14 @@ import java.util.List;
  */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
+
     /**
      * A list of status strings representing the current status of each event.
      */
     private List<String> statusList;
 
+    private String EVENT_ID;
+    private FirebaseFirestore db;
     /**
      * The context in which the adapter or activity is operating.
      */
@@ -36,8 +45,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      * A list of events containing details of each event.
      */
     private List<Event> eventList;
-
-
+    private Map<String, String> posterUrls;
     /**
      * Constructs an EventAdapter with a specified context, list of events, and list of statuses.
      *
@@ -45,10 +53,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      * @param eventList the list of Event objects to display in the RecyclerView
      * @param status the list of event statuses corresponding to each event in the eventList
      */
-    public EventAdapter(Context context, List<Event> eventList, List<String> status) {
+    public EventAdapter(Context context, List<Event> eventList, List<String> status,  Map<String, String> posterUrls) {
         this.context = context;
         this.eventList = eventList;
         this.statusList = status;
+        this.posterUrls= posterUrls;
     }
 
     /**
@@ -61,6 +70,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         View view = LayoutInflater.from(context).inflate(R.layout.event_card, parent, false);
         return new EventViewHolder(view);
     }
@@ -73,17 +83,32 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      */
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
+
         Event event = eventList.get(position);
+        String posterUrl = posterUrls.get(event.getEventid());
+
+        if (posterUrl != null) {
+            Glide.with(holder.itemView.getContext())
+                    .load(posterUrl)
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.failed_image)
+                    .into(holder.poster);
+        } else {
+            holder.poster.setImageResource(R.drawable.placeholder_image);
+        }
+
         holder.titleTextView.setText(event.getTitle());
         holder.dateTextView.setText(event.getDate());
         holder.timeTextView.setText(event.getTime());
         holder.locationTextView.setText(event.getLocation());
 
-        String description = event.getDescription();
-        if (description.length() > 100) {
-            description = description.substring(0, 100) + "...";
-        }
-        holder.descriptionTextView.setText(description);
+
+
+//        String description = event.getDescription();
+//        if (description.length() > 100) {
+//            description = description.substring(0, 100) + "...";
+//        }
+        //holder.descriptionTextView.setText(description);
         holder.eventStatus.setText(statusList.get(position));
 
         // Set click listener on the entire event card
@@ -117,8 +142,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      */
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
-        TextView titleTextView, dateTextView, timeTextView, locationTextView, descriptionTextView, eventStatus;
-
+        TextView  titleTextView, dateTextView, timeTextView, locationTextView, eventStatus;
+        ImageView poster;
         /**
          * Constructs an EventViewHolder with the specified itemView, binding its views to the layout elements.
          *
@@ -126,11 +151,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
          */
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            poster = itemView.findViewById(R.id.card_poster);
             titleTextView = itemView.findViewById(R.id.titleTextView);
             dateTextView = itemView.findViewById(R.id.dateTextView);
             timeTextView = itemView.findViewById(R.id.timeTextView);
             locationTextView = itemView.findViewById(R.id.locationTextView);
-            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             eventStatus = itemView.findViewById(R.id.status_event_card);
         }
     }

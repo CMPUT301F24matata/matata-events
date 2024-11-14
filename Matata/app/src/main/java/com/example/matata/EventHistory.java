@@ -18,7 +18,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * EventHistory activity displays a list of past events created by the user, allowing them to view details of each event.
@@ -70,6 +72,7 @@ public class EventHistory extends AppCompatActivity {
      */
     private List<String> statusList = new ArrayList<>();
 
+    private Map<String,String>posterUrls=new HashMap<>();
 
     /**
      * Initializes the EventHistory activity, setting up the RecyclerView and loading event data from Firestore.
@@ -87,7 +90,7 @@ public class EventHistory extends AppCompatActivity {
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("EventHistory", "Device USER_ID: " + USER_ID);
 
-        eventAdapter = new EventAdapter(this, eventHistoryList, statusList);
+        eventAdapter = new EventAdapter(this, eventHistoryList, statusList,posterUrls);
         eventHistoryRecyclerView.setAdapter(eventAdapter);
 
         backBtn = findViewById(R.id.go_back_event_history);

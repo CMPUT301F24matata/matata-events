@@ -102,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private List<String> statusList = new ArrayList<>();
 
+    private Map<String,String> posterUrls= new HashMap<>();
+
     /**
      * ImageButton for accessing notifications.
      */
@@ -138,6 +140,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+
+
+
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -195,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         eventList = new ArrayList<>();
-        eventAdapter = new EventAdapter(this, eventList, statusList);
+        eventAdapter = new EventAdapter(this, eventList, statusList,posterUrls);
         recyclerView.setAdapter(eventAdapter);
     }
 
@@ -242,16 +249,17 @@ public class MainActivity extends AppCompatActivity {
     private void addEventsInit() {
         db.collection("EVENT_PROFILES")
                 .addSnapshotListener((snapshots, e) -> {
-                    eventList.clear();
-                    statusList.clear();
-
                     if (snapshots != null) {
+                        eventList.clear();
+                        statusList.clear();
+                        posterUrls.clear();
+
                         for (QueryDocumentSnapshot document : snapshots) {
-                            String eventStatus = "";
                             DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
                             List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
                             List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
                             List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+
                             if (accepted != null && accepted.contains(entrantRef)) {
                                 statusList.add("Accepted");
                             } else if (pending != null && pending.contains(entrantRef)) {
@@ -261,8 +269,9 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 statusList.add("");
                             }
+
+                            String uid = document.getId();
                             String title = document.getString("Title");
-                            uid = document.getId();
                             String date = document.getString("Date");
                             String time = document.getString("Time");
                             String location = document.getString("Location");
@@ -271,8 +280,16 @@ public class MainActivity extends AppCompatActivity {
                             int capacity = document.getLong("Capacity").intValue();
 
                             eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
+
+                            String posterUrl = document.getString("Poster");
+                            if (posterUrl != null) {
+                                posterUrls.put(uid, posterUrl);
+                            }
                         }
+
                         eventAdapter.notifyDataSetChanged();
+                    } else if (e != null) {
+                        Log.e("FirestoreError", "Error fetching events: ", e);
                     }
                 });
     }

@@ -80,6 +80,7 @@ public class Event implements Serializable {
         this.capacity = capacity;
         this.location = location;
         this.description = description;
+
         this.Organizerid = Organizerid;
         this.waitlistLimit = weightlistSize;
     }

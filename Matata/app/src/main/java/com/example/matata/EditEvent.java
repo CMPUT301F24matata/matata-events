@@ -129,6 +129,12 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         });
 
         genrQR.setText("Update Event");
+        genrQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
 
         if (!eveTitle.getText().toString().isEmpty() &&
