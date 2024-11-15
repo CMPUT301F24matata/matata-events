@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         explore.setOnClickListener(v -> {
-            Intent intent=new Intent(MainActivity.this,MapsActivity.class);
+            Intent intent=new Intent(MainActivity.this,ExploreEvents.class);
             startActivity(intent);
             // Add event search logic here
         });

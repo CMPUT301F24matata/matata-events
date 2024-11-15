@@ -44,9 +44,8 @@
             android:value="AIzaSyD1W__WyUkCOPt4LATs1k7h626JWTI0k1Y" />
 
         <activity
-            android:name=".MapsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_maps" />
+            android:name=".ExploreEvents"
+            android:exported="false" />
         <activity android:name=".EventHistory" />
         <activity android:name=".EventDraw" />
         <activity
