@@ -49,6 +49,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -410,6 +412,11 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         String compressedBMP = bmpCompression(bmp);
         StorageReference imagesRef = ref.child("EventsPosters/" + EVENT_ID + ".jpg");
 
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = dateFormat.format(currentDate);
+
+
         Map<String, Object> Event_details = new HashMap<>();
         Event_details.put("Poster", posterURI);
         Event_details.put("Title", event.getTitle());
@@ -421,6 +428,26 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         Event_details.put("WaitlistLimit", event.getWaitlistLimit());
         Event_details.put("bitmap", compressedBMP);
         Event_details.put("OrganizerID", USER_ID);
+        Event_details.put("Status", "active");
+        Event_details.put("CreationDate", formattedDate);
+
+        db.collection("USER_PROFILES")
+                .document(USER_ID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String username = document.getString("username");
+                            Event_details.put("OrganiserName", username);
+                        } else {
+                            Log.d("Firestore", "No such document for USER_ID: " + USER_ID);
+                        }
+                    } else {
+                        Log.e("Firestore", "Failed to fetch user profile", task.getException());
+                    }
+                });
+
 
         if (isDefaultImage) {
             Event_details.put("Poster", "");
