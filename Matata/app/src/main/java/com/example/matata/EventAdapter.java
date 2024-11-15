@@ -2,17 +2,28 @@ package com.example.matata;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import android.graphics.drawable.GradientDrawable;
+import androidx.palette.graphics.Palette;
 
 import java.util.List;
 import java.util.Map;
@@ -41,6 +52,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      */
     private Context context;
 
+    private int lastPosition = -1;
     /**
      * A list of events containing details of each event.
      */
@@ -89,10 +101,35 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         if (posterUrl != null) {
             Glide.with(holder.itemView.getContext())
+                    .asBitmap()
                     .load(posterUrl)
                     .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.failed_image)
-                    .into(holder.poster);
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            holder.poster.setImageBitmap(resource);
+
+                            // Generate palette from the loaded bitmap
+                            Palette.from(resource).generate(palette -> {
+                                if (palette != null) {
+                                    int vibrantColor = palette.getVibrantColor(0xFF000000);
+                                    int dominantColor = palette.getDominantColor(0xFF000000);
+
+                                    GradientDrawable gradientDrawable = new GradientDrawable(
+                                            GradientDrawable.Orientation.LEFT_RIGHT,
+                                            new int[]{vibrantColor, dominantColor}
+                                    );
+
+                                    holder.card_bg.setBackground(gradientDrawable);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
         } else {
             holder.poster.setImageResource(R.drawable.placeholder_image);
         }
@@ -111,6 +148,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         //holder.descriptionTextView.setText(description);
         holder.eventStatus.setText(statusList.get(position));
 
+        setAnimation(holder.itemView, position);
         // Set click listener on the entire event card
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +180,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      */
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout card_bg;
         TextView  titleTextView, dateTextView, timeTextView, locationTextView, eventStatus;
         ImageView poster;
         /**
@@ -152,12 +191,21 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            card_bg=itemView.findViewById(R.id.card_bg);
             poster = itemView.findViewById(R.id.card_poster);
             titleTextView = itemView.findViewById(R.id.titleTextView);
             dateTextView = itemView.findViewById(R.id.dateTextView);
             timeTextView = itemView.findViewById(R.id.timeTextView);
             locationTextView = itemView.findViewById(R.id.locationTextView);
             eventStatus = itemView.findViewById(R.id.status_event_card);
+        }
+    }
+
+    public void setAnimation(View animateView,int pos) {
+        if (pos > lastPosition) {
+            Animation animation =AnimationUtils.loadAnimation(context, R.anim.slide_in);
+            animateView.startAnimation(animation);
+            lastPosition=pos;
         }
     }
 }

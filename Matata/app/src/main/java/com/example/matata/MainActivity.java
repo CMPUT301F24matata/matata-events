@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -199,11 +201,18 @@ public class MainActivity extends AppCompatActivity {
         FacilityProfile = findViewById(R.id.FacilityProfile);
         admin = findViewById(R.id.admin);
         recyclerView = findViewById(R.id.recycler_view_events);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, R.anim.anim_slide_in);
+        recyclerView.setLayoutAnimation(animation);
 
         eventList = new ArrayList<>();
         eventAdapter = new EventAdapter(this, eventList, statusList,posterUrls);
         recyclerView.setAdapter(eventAdapter);
+
+
     }
 
     /**
@@ -247,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
      * Loads and listens for changes to events in Firestore, updating the RecyclerView accordingly.
      */
     private void addEventsInit() {
+
         db.collection("EVENT_PROFILES")
                 .addSnapshotListener((snapshots, e) -> {
                     if (snapshots != null) {
@@ -288,10 +298,13 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         eventAdapter.notifyDataSetChanged();
+
+
                     } else if (e != null) {
                         Log.e("FirestoreError", "Error fetching events: ", e);
                     }
                 });
+        recyclerView.scheduleLayoutAnimation();
     }
 
     /**
