@@ -198,6 +198,10 @@ public class AdminView extends AppCompatActivity {
             Intent intent = new Intent(AdminView.this, AdminView.class);
             startActivity(intent);
         });
+        viewAllEvents.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminView.this, ManageAllEventsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void initialise() {

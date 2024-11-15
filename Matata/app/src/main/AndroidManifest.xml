@@ -37,8 +37,8 @@
         <activity android:name=".SignUpSheet"
             android:parentActivityName=".ViewEvent"
             android:exported="false"/>
-
-
+        <activity android:name=".ManageAllEventsActivity"
+            android:exported="false"/>
         <activity android:name=".QR_camera"
             android:exported="false"
             android:parentActivityName=".MainActivity"/>
