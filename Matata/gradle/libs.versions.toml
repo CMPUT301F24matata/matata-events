@@ -16,6 +16,8 @@ playServicesMlkitBarcodeScanning = "18.3.1"
 core = "1.6.1"
 coreVersion = "1.46.0"
 rules = "1.5.0"
+googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
+playServicesMaps = "19.0.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -34,7 +36,9 @@ play-services-mlkit-barcode-scanning = { group = "com.google.android.gms", name 
 core = { group = "androidx.test", name = "core", version.ref = "core" }
 ar-core = { group = "com.google.ar", name = "core", version.ref = "coreVersion" }
 rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+google-android-libraries-mapsplatform-secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleAndroidLibrariesMapsplatformSecretsGradlePlugin" }
 

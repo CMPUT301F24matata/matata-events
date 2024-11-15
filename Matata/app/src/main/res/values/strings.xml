@@ -149,4 +149,5 @@
     <string name="active">Active</string>
     <string name="waitlist">Waitlist</string>
     <string name="view_event">View</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>
