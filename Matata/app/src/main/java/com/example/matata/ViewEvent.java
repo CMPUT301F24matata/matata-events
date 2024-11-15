@@ -137,7 +137,6 @@ public class ViewEvent extends AppCompatActivity {
     private boolean admin_view;
 
 
-
     /**
      * Called when the activity is first created.
      * Sets up initial configurations, initializes Firebase and UI elements,
@@ -196,7 +195,6 @@ public class ViewEvent extends AppCompatActivity {
                 else{
                     finish();
                 }
-
             }
         });
 

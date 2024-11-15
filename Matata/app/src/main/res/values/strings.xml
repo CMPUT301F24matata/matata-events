@@ -150,4 +150,5 @@
     <string name="waitlist">Waitlist</string>
     <string name="view_event">View</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="matata_event_draw">Matata Event Draw</string>
 </resources>

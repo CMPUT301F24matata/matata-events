@@ -218,16 +218,15 @@ public class EventDraw extends AppCompatActivity {
         }
 
 
-        title = findViewById(R.id.event_title_draw_event);
         totalEntrant = findViewById(R.id.total_entrant_text);
         remainingPosition = findViewById(R.id.remaining_text);
         drawBtn = findViewById(R.id.draw_button);
         backBtn = findViewById(R.id.go_back_draw_event);
 
-        pendingRecyclerView = findViewById(R.id.pending_recyclerView);
-        acceptedRecyclerView = findViewById(R.id.accepted_recyclerView);
-        rejectedRecyclerView = findViewById(R.id.rejected_recyclerView);
-        waitlistRecyclerView = findViewById(R.id.waitlist_recyclerView);
+//        pendingRecyclerView = findViewById(R.id.pending_recyclerView);
+//        acceptedRecyclerView = findViewById(R.id.accepted_recyclerView);
+//        rejectedRecyclerView = findViewById(R.id.rejected_recyclerView);
+//        waitlistRecyclerView = findViewById(R.id.waitlist_recyclerView);
 
         entrantList = new ArrayList<>();
         waitlistAdapter = new EntrantAdapter(this, entrantList);

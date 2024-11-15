@@ -4,55 +4,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="match_parent"
-
+    android:background="@color/white"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
+            android:background="#232323"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:paddingTop="16dp"
-            android:paddingRight="9dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="16dp"
+            android:orientation="horizontal"
+            tools:ignore="MissingConstraints">
 
             <ImageView
                 android:id="@+id/go_back_draw_event"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:alpha="0.8"
-                android:src="@drawable/fancy_back" />
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="10dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_back_arrow"
+                android:contentDescription="@string/back_button"
+                app:tint="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
-                android:id="@+id/event_title_draw_event"
-                android:layout_width="316dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:alpha="0.8"
                 android:fontFamily="@font/sansation_bold"
-                android:text="Title"
-                android:textColor="@color/black"
-                android:textSize="25sp" />
+                android:text="@string/matata_event_draw"
+                android:textSize="22sp"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toEndOf="@id/go_back_draw_event"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:maxWidth="300dp"/>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:background="@color/white"
-
             android:orientation="horizontal"
             android:paddingLeft="16dp"
             android:paddingTop="16dp"
@@ -100,11 +108,11 @@
             android:textStyle="bold"
             android:paddingTop="16dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/accepted_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/entrant_card"/>
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/accepted_recyclerView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            tools:listitem="@layout/entrant_card"/>-->
 
         <!-- Pending Section -->
         <TextView
@@ -122,11 +130,11 @@
             android:layout_marginLeft="240dp"
             android:text="Clear Pending list"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/pending_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/entrant_card"/>
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/pending_recyclerView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            tools:listitem="@layout/entrant_card"/>-->
 
         <!-- Rejected Section -->
         <TextView
@@ -137,11 +145,11 @@
             android:textStyle="bold"
             android:paddingTop="16dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rejected_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/entrant_card"/>
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/rejected_recyclerView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            tools:listitem="@layout/entrant_card"/>-->
 
         <TextView
             android:layout_width="wrap_content"
@@ -179,11 +187,11 @@
             android:text="Save"/>
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/waitlist_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/entrant_card"/>
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/waitlist_recyclerView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            tools:listitem="@layout/entrant_card"/>-->
     </LinearLayout>
 
     <LinearLayout
