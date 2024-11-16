@@ -43,7 +43,7 @@
     <string name="location">Location</string>
     <string name="description_icon">Description Icon</string>
     <string name="event_description_here">Event description here</string>
-    <string name="accepted">Accepted</string>
+    <string name="accepted">Accept</string>
     <string name="matata">Matata</string>
     <string name="emergency_contact_name">Emergency Contact Name</string>
     <string name="enter_your_contact_number">Enter your contact number</string>
@@ -137,7 +137,7 @@
     <string name="entrants">Entrants</string>
     <string name="edit_event">Edit Event</string>
     <string name="view_details">View Details</string>
-    <string name="pending">Pending</string>
+    <string name="pending">Hang</string>
     <string name="manage_all_events">Manage All Events</string>
     <string name="event_created_on">Created On: </string>
     <string name="event_statistics">Event Statistics</string>
@@ -147,10 +147,11 @@
     <string name="sample_name">John Gotti</string>
     <string name="manage_event">Manage Events</string>
     <string name="active">Active</string>
-    <string name="waitlist">Waitlist</string>
+    <string name="waitlist">Wait</string>
     <string name="view_event">View</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="matata_event_draw">Matata Event Draw</string>
     <string name="manage_users_admin">Manage Users</string>
     <string name="admin_or_user">Admin Or User</string>
+    <string name="rejected_list">Reject</string>
 </resources>

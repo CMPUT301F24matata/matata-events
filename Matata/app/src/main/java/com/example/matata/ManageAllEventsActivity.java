@@ -12,10 +12,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
 
 public class ManageAllEventsActivity extends AppCompatActivity {
 
@@ -87,8 +90,59 @@ public class ManageAllEventsActivity extends AppCompatActivity {
         TextView btnFreezeEvent = eventView.findViewById(R.id.btn_freeze_event);
         TextView btnViewEvent = eventView.findViewById(R.id.btn_view_event);
         TextView btnDeleteEvent = eventView.findViewById(R.id.btn_delete_event);
+        TextView acceptedCount = eventView.findViewById(R.id.accepted_count);
+        TextView pendingCount = eventView.findViewById(R.id.pending_count);
+        TextView waitlistCount = eventView.findViewById(R.id.waitlist_count);
+        TextView rejectedCount = eventView.findViewById(R.id.rejected_count);
 
-        Log.d("ManageAllEvents", "event_details found: " + (eventDetails != null));
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(eventId);
+
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Object acceptedField = documentSnapshot.get("accepted");
+                if (acceptedField instanceof List<?>) {
+                    List<?> acceptedList = (List<?>) acceptedField;
+                    acceptedCount.setText(String.valueOf(acceptedList.size()));
+                } else {
+                    acceptedCount.setText("0");
+                    Log.e("StatsActivity", "'accepted' field is not a List");
+                }
+
+                Object pendingField = documentSnapshot.get("pending");
+                if (pendingField instanceof List<?>) {
+                    List<?> pendingList = (List<?>) pendingField;
+                    pendingCount.setText(String.valueOf(pendingList.size()));
+                } else {
+                    pendingCount.setText("0");
+                    Log.e("StatsActivity", "'pending' field is not a List");
+                }
+
+                Object rejectedField = documentSnapshot.get("rejected");
+                if (rejectedField instanceof List<?>) {
+                    List<?> rejectedList = (List<?>) rejectedField;
+                    rejectedCount.setText(String.valueOf(rejectedList.size()));
+                } else {
+                    rejectedCount.setText("0");
+                    Log.e("StatsActivity", "'rejected' field is not a List");
+                }
+
+                Object waitlistField = documentSnapshot.get("waitlist");
+                if (waitlistField instanceof List<?>) {
+                    List<?> waitlistList = (List<?>) waitlistField;
+                    waitlistCount.setText(String.valueOf(waitlistList.size()));
+                } else {
+                    waitlistCount.setText("0");
+                    Log.e("StatsActivity", "'waitlist' field is not a List");
+                }
+
+            } else {
+                Log.e("StatsActivity", "Document does not exist");
+                acceptedCount.setText("0");
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("StatsActivity", "Failed to fetch accepted count: " + e.getMessage());
+            acceptedCount.setText("0");
+        });
 
         eventTitle.setText(title);
         organizerNameView.setText(organizerName);
