@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * MainActivity serves as the main hub of the app, displaying available events in a RecyclerView,
@@ -143,35 +144,11 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-
-
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        db = FirebaseFirestore.getInstance();
-        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        // Initialize user profile if not exists
-        DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
-        userRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null && !task.getResult().exists()) {
-                Map<String, Object> userProfile = new HashMap<>();
-                userProfile.put("username", USER_ID);
-                userProfile.put("phone", "");
-                userProfile.put("email", "");
-                userProfile.put("notifications", false);
-                userProfile.put("profileUri", "");
-                userRef.set(userProfile);
-            }
-        });
-
-        initializeUI();
-        setOnClickListeners();
 
         // Set up permission launcher and notification manager
         notificationPermissionLauncher = registerForActivityResult(
@@ -180,6 +157,72 @@ public class MainActivity extends AppCompatActivity {
         );
         notificationManager = new Notification();
         notificationManager.setNotificationPermissionLauncher(notificationPermissionLauncher);
+
+
+        db = FirebaseFirestore.getInstance();
+        USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                if (!task.getResult().exists()) {
+
+                    Map<String, Object> userProfile = new HashMap<>();
+                    userProfile.put("username", USER_ID);
+                    userProfile.put("phone", "");
+                    userProfile.put("email", "");
+                    userProfile.put("notifications", false);
+                    userProfile.put("profileUri", "");
+                    userProfile.put("freeze", "awake");
+                    userProfile.put("admin", "entrant");
+                    userRef.set(userProfile);
+
+                    initializeApp();
+                } else {
+                    // Check the freeze status
+                    String freezeStatus = task.getResult().getString("freeze");
+                    String admin = task.getResult().getString("admin");
+                    if ("awake".equalsIgnoreCase(freezeStatus)) {
+                        if("admin".equalsIgnoreCase(admin)) {
+                            initializeApp();
+                        }
+                        else if ("entrant".equalsIgnoreCase(admin)) {
+                            initializeEntrantApp();
+                        }
+                    } else {
+                        showFrozenDialog();
+                    }
+                }
+            } else {
+                Log.e("MainActivity", "Error fetching user profile", task.getException());
+            }
+        });
+
+    }
+
+    private void showFrozenDialog() {
+        FrozenDialogFragment dialogFragment = new FrozenDialogFragment();
+        dialogFragment.setCancelable(false);
+        dialogFragment.show(getSupportFragmentManager(), "FrozenDialogFragment");
+    }
+
+    private void initializeEntrantApp() {
+
+        initializeUI();
+        setOnClickListeners();
+        admin.setVisibility(View.GONE);
+
+        // Initialize notification channel
+        Notification.initNotificationChannel(this);
+
+        // Load events
+        addEventsInit();
+    }
+
+    private void initializeApp() {
+
+        initializeUI();
+        setOnClickListeners();
 
         // Initialize notification channel
         Notification.initNotificationChannel(this);
@@ -290,13 +333,16 @@ public class MainActivity extends AppCompatActivity {
                             String description = document.getString("Description");
                             String organizerId = document.getString("OrganizerId");
                             int capacity = document.getLong("Capacity").intValue();
+                            String status = document.getString("Status");
 
-                            eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
-
-                            String posterUrl = document.getString("Poster");
-                            if (posterUrl != null) {
-                                posterUrls.put(uid, posterUrl);
+                            if (Objects.equals(status, "Active")) {
+                                eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
+                                String posterUrl = document.getString("Poster");
+                                if (posterUrl != null) {
+                                    posterUrls.put(uid, posterUrl);
+                                }
                             }
+
                         }
 
                         eventAdapter.notifyDataSetChanged();

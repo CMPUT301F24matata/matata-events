@@ -65,6 +65,9 @@
             android:name=".ManageAllEventsActivity"
             android:exported="false" />
         <activity
+            android:name=".ManageAllUsersActivity"
+            android:exported="false" />
+        <activity
             android:name=".QR_camera"
             android:exported="false"
             android:parentActivityName=".MainActivity" />

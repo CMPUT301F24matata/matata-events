@@ -428,7 +428,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         Event_details.put("WaitlistLimit", event.getWaitlistLimit());
         Event_details.put("bitmap", compressedBMP);
         Event_details.put("OrganizerID", USER_ID);
-        Event_details.put("Status", "active");
+        Event_details.put("Status", "Active");
         Event_details.put("CreationDate", formattedDate);
 
         db.collection("USER_PROFILES")

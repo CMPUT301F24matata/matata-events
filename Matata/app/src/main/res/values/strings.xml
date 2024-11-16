@@ -151,4 +151,6 @@
     <string name="view_event">View</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="matata_event_draw">Matata Event Draw</string>
+    <string name="manage_users_admin">Manage Users</string>
+    <string name="admin_or_user">Admin Or User</string>
 </resources>
