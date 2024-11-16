@@ -60,17 +60,24 @@ import java.util.UUID;
  * AddEvent Activity for creating new events within the Matata application.
  * This activity allows users to input event details, select a date and time,
  * upload an event poster, and generate a QR code. The event information is stored
- * in Firebase Firestore and the image in Firebase Storage.
+ * in Firebase Firestore, and the image is stored in Firebase Storage.
  * Implements TimePickerListener and DatePickerListener for selecting event date and time.
  */
 public class AddEvent extends AppCompatActivity implements TimePickerListener, DatePickerListener {
 
     /**
-     * ImageView for the back button in the event creation screen.
+     * ImageView for navigating back to the previous screen.
      */
     private ImageView backBtn;
 
+    /**
+     * TextView for displaying and selecting the event time.
+     */
     private TextView eventTime;
+
+    /**
+     * TextView for displaying and selecting the event date.
+     */
     private TextView eventDate;
 
     /**
@@ -84,12 +91,14 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
     private ImageView posterPic;
 
     /**
-     * FloatingActionButton for generating a QR code for the event.
+     * Button for generating a QR code for the event.
      */
     private Button genrQR;
-    private Button clearAllButton;
 
-    private boolean shouldRefreshOnResume = false;
+    /**
+     * Button for clearing all input fields in the activity.
+     */
+    private Button clearAllButton;
 
     /**
      * EditText for entering the title of the event.
@@ -121,26 +130,35 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      */
     private String USER_ID;
 
+    /**
+     * String representing the unique ID of the event.
+     */
     private String EVENT_ID;
+
     /**
      * String containing the URI of the uploaded poster image.
      */
     private String posterURI;
 
     /**
-     * Boolean indicating if the default image is used for the poster.
+     * Boolean indicating whether the default image is being used for the poster.
      */
     private boolean isDefaultImage = true;
 
     /**
-     * Request code for the image picker intent.
+     * Flag indicating if the activity should refresh upon resuming.
+     */
+    private boolean shouldRefreshOnResume = false;
+
+    /**
+     * Request code for selecting an image from the gallery.
      */
     private static final int PICK_IMAGE_REQUEST = 1;
 
 
     /**
-     * Initializes the activity, sets up the Firebase instances, and assigns view elements.
-     * Also, sets up click listeners for back button, date and time pickers, and QR generation.
+     * Initializes the activity, sets up Firebase instances, assigns view elements, and
+     * defines click listeners for various components.
      *
      * @param savedInstanceState Bundle object containing the activity's previously saved state.
      */
@@ -213,6 +231,9 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
 
     }
 
+    /**
+     * Refreshes the activity if required when it is restarted.
+     */
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -292,6 +313,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      * Validates input fields and initiates event QR generation and storage if fields are complete.
      *
      * @param EVENT_ID Unique identifier for the event.
+     * @param USER_ID Unique identifier for the user creating the event.
      * @param view Current view context.
      */
     private void handleGenerateQR(String EVENT_ID, String USER_ID, View view) {

@@ -118,7 +118,7 @@ public class ManageAllFacilityActivity extends AppCompatActivity {
                 Log.e("FreezeFacility", "Failed to fetch Facility data: " + e.getMessage());
             });
         });
-        
+
         delete.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
                     .setTitle("Confirm Deletion")

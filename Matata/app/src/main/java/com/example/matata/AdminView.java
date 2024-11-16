@@ -4,12 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,27 +20,125 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.ref.Reference;
-import java.util.Objects;
 
+/**
+ * The AdminView class provides an admin dashboard for managing events, organizers, users, and facilities.
+ * Admins can view lists of these entities, navigate to their detailed views, and perform administrative actions.
+ * The class fetches data from Firebase Firestore and displays it in expandable dropdown menus.
+ */
 public class AdminView extends AppCompatActivity {
 
-    private LinearLayout eventsDropdown, organizersDropdown, usersDropdown, facilitiesDropdown;
-    private TextView eventsDropdownButton, organizersDropdownButton, usersDropdownButton, facilitiesDropdownButton;
+    /**
+     * LinearLayout for displaying the dropdown menu of events.
+     */
+    private LinearLayout eventsDropdown;
+
+    /**
+     * LinearLayout for displaying the dropdown menu of organizers.
+     */
+    private LinearLayout organizersDropdown;
+
+    /**
+     * LinearLayout for displaying the dropdown menu of users.
+     */
+    private LinearLayout usersDropdown;
+
+    /**
+     * LinearLayout for displaying the dropdown menu of facilities.
+     */
+    private LinearLayout facilitiesDropdown;
+
+    /**
+     * TextView acting as a button for toggling the events dropdown.
+     */
+    private TextView eventsDropdownButton;
+
+    /**
+     * TextView acting as a button for toggling the organizers dropdown.
+     */
+    private TextView organizersDropdownButton;
+
+    /**
+     * TextView acting as a button for toggling the users dropdown.
+     */
+    private TextView usersDropdownButton;
+
+    /**
+     * TextView acting as a button for toggling the facilities dropdown.
+     */
+    private TextView facilitiesDropdownButton;
+
+    /**
+     * ImageView for the Dashboard navigation icon in the bottom navigation bar.
+     */
     private ImageView iconDashboard;
+
+    /**
+     * ImageView for the Users navigation icon in the bottom navigation bar.
+     */
     private ImageView iconUsers;
+
+    /**
+     * ImageView for the Reports navigation icon in the bottom navigation bar.
+     */
     private ImageView iconReports;
+
+    /**
+     * ImageView for the Notifications navigation icon in the bottom navigation bar.
+     */
     private ImageView iconNotifications;
+
+    /**
+     * ImageView for the Settings navigation icon in the bottom navigation bar.
+     */
     private ImageView iconSettings;
+
+    /**
+     * ImageView for the back button to navigate to the previous screen.
+     */
     private ImageView backBtn;
+
+    /**
+     * TextView to navigate to a screen displaying all events.
+     */
     private TextView viewAllEvents;
+
+    /**
+     * TextView to navigate to a screen displaying all organizers.
+     */
     private TextView viewAllOrganizers;
+
+    /**
+     * TextView to navigate to a screen displaying all users.
+     */
     private TextView viewAllUsers;
+
+    /**
+     * TextView to navigate to a screen displaying all facilities.
+     */
     private TextView viewAllFacilities;
+
+    /**
+     * Instance of FirebaseFirestore to interact with Firestore.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * Typeface for dropdown item text.
+     */
     private Typeface sansationBoldTypeface;
+
+    /**
+     * Drawable for the border of dropdown items.
+     */
     private Drawable dropdown_item_border;
 
+    /**
+     * Called when the activity is first created.
+     * Initializes UI components, sets up event listeners, and fetches data from Firestore.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +152,10 @@ public class AdminView extends AppCompatActivity {
         fetchFromFirestore();
     }
 
+    /**
+     * Fetches data from Firestore collections for events, organizers, users, and facilities,
+     * and populates the respective dropdowns.
+     */
     private void fetchFromFirestore() {
         // Fetch events
         eventsDropdown.removeAllViews();
@@ -164,10 +262,23 @@ public class AdminView extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Displays a toast message with the specified text.
+     *
+     * @param message The message to display in the toast.
+     */
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Adds a TextView to the specified dropdown layout with the given text and click listener.
+     * The TextView is styled with a background, padding, and a drawable arrow icon.
+     *
+     * @param dropdown The LinearLayout to which the TextView will be added.
+     * @param text The text to display in the TextView.
+     * @param clickListener The click listener to attach to the TextView.
+     */
     private void addTextViewToDropdown(LinearLayout dropdown, String text, View.OnClickListener clickListener) {
         TextView textView = new TextView(this);
         textView.setText(text);
@@ -186,6 +297,10 @@ public class AdminView extends AppCompatActivity {
         dropdown.addView(textView);
     }
 
+    /**
+     * Sets onClick listeners for UI components including back button, dropdown toggles, and navigation icons.
+     * Defines actions for navigating to other screens or toggling dropdowns.
+     */
     private void setonClickListeners() {
         backBtn.setOnClickListener(v -> finish());
         eventsDropdownButton.setOnClickListener(v -> toggleDropdown(eventsDropdown, eventsDropdownButton));
@@ -213,6 +328,9 @@ public class AdminView extends AppCompatActivity {
         });
     }
 
+    /**
+     * Initializes all UI components, sets typefaces and drawable resources, and initializes the Firestore instance.
+     */
     private void initialise() {
         sansationBoldTypeface = ResourcesCompat.getFont(this, R.font.sansation_bold);
         dropdown_item_border = ContextCompat.getDrawable(this, R.drawable.dropdown_item_border);
@@ -237,6 +355,13 @@ public class AdminView extends AppCompatActivity {
         viewAllFacilities = findViewById(R.id.view_all_facilities);
     }
 
+    /**
+     * Toggles the visibility of the specified dropdown layout and updates the dropdown button icon accordingly.
+     * Expands the dropdown if it is hidden, or collapses it if it is visible.
+     *
+     * @param dropdownLayout The LinearLayout representing the dropdown menu.
+     * @param dropdownButton The TextView button associated with the dropdown menu.
+     */
     private void toggleDropdown(LinearLayout dropdownLayout, TextView dropdownButton) {
         if (dropdownLayout.getVisibility() == View.GONE) {
             dropdownLayout.setVisibility(View.VISIBLE);

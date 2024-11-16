@@ -35,68 +35,112 @@ import com.google.firebase.storage.StorageReference;
 
 public class EditEvent extends AppCompatActivity implements DatePickerListener,TimePickerListener {
 
+    /**
+     * ImageView for navigating back to the previous screen.
+     */
     private ImageView backBtn;
+
+    /**
+     * TextView for displaying and selecting the event time.
+     */
     private TextView eventTime;
+
+    /**
+     * TextView for displaying and selecting the event date.
+     */
     private TextView eventDate;
+
     /**
      * TextView displaying the location of the event.
      */
     private TextView location;
+
     /**
      * ImageView for uploading or displaying the event poster image.
      */
     private ImageView posterPic;
+
     /**
-     * FloatingActionButton for generating a QR code for the event.
+     * Button for updating the event details.
      */
     private Button genrQR;
 
+    /**
+     * TextView for the header text, indicating "Edit Event."
+     */
     private TextView headerText;
+
+    /**
+     * Button for clearing all input fields in the activity.
+     */
     private Button clearAllButton;
 
-    private boolean shouldRefreshOnResume = false;
     /**
      * EditText for entering the title of the event.
      */
     private EditText eveTitle;
+
     /**
      * EditText for entering a description of the event.
      */
     private EditText descriptionBox;
+
     /**
      * EditText for specifying the capacity of the event.
      */
     private EditText capacity;
+
     /**
      * FirebaseFirestore instance for accessing Firestore database.
      */
     private FirebaseFirestore db;
+
     /**
      * StorageReference instance for accessing Firebase Storage.
      */
     private StorageReference ref;
+
+    /**
+     * String representing the unique ID of the event.
+     */
+    private String EVENT_ID;
+
     /**
      * String representing the unique ID of the user.
      */
-    private String EVENT_ID;
     private String USER_ID;
+
     /**
      * String containing the URI of the uploaded poster image.
      */
     private String posterURI;
+
     /**
      * Boolean indicating if the default image is used for the poster.
      */
-
-    private Event event;
     private boolean isDefaultImage = true;
 
+    /**
+     * Encoded Base64 string representing the QR code bitmap.
+     */
     private String argbase64;
+
+    /**
+     * Event object containing the details of the event being edited.
+     */
+    private Event event;
+
     /**
      * Request code for the image picker intent.
      */
     private static final int PICK_IMAGE_REQUEST = 1;
 
+    /**
+     * Called when the activity is created.
+     * Initializes UI components, loads event details from Firestore, and sets up click listeners.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     public void onCreate( @Nullable Bundle savedInstanceState) {
         db = FirebaseFirestore.getInstance();
@@ -163,6 +207,9 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
 
     }
 
+    /**
+     * Loads the details of the event being edited from Firestore and populates the input fields.
+     */
     public void loadDetails(){
         DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);
         doc.get().addOnSuccessListener(documentSnapshot -> {
@@ -202,7 +249,9 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         }).addOnFailureListener(e -> Toast.makeText(EditEvent.this, "Failed to load event", Toast.LENGTH_SHORT).show());
     }
 
-
+    /**
+     * Initializes UI components by finding views and assigning them to instance variables.
+     */
     private void initializeViews() {
         headerText=findViewById(R.id.headerText);
         backBtn = findViewById(R.id.btnBackCreateEvent);
@@ -296,10 +345,16 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         pickImageLauncher.launch(intent);
     }
 
+    /**
+     * Updates the event details in Firestore and reflects the changes in the application.
+     *
+     * @param event Event object containing updated details.
+     * @param intent Intent for navigating to another activity after updating.
+     * @param view The current view context.
+     */
     public void updateEvent(Event event, Intent intent, View view){
         CollectionReference eventProfilesRef = db.collection("EVENT_PROFILES");
         DocumentReference docRef = eventProfilesRef.document(EVENT_ID);
-
 
     }
 }
