@@ -24,11 +24,6 @@ import java.util.Objects;
 public class ManageAllUsersActivity extends AppCompatActivity {
 
     private LinearLayout userContainer;
-    private ImageView btnBack;
-    private ImageView iconUsers;
-    private ImageView iconReports;
-    private ImageView iconNotifications;
-    private ImageView iconSettings;
     private FirebaseFirestore db;
 
     @Override
@@ -38,13 +33,13 @@ public class ManageAllUsersActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        btnBack = findViewById(R.id.btnBack);
+        ImageView btnBack = findViewById(R.id.btnBack);
         userContainer = findViewById(R.id.userContainer);
         ImageView iconDashboard = findViewById(R.id.icon_dashboard);
-        iconUsers = findViewById(R.id.icon_users);
-        iconReports = findViewById(R.id.icon_reports);
-        iconNotifications = findViewById(R.id.icon_notifications);
-        iconSettings = findViewById(R.id.icon_settings);
+        ImageView iconUsers = findViewById(R.id.icon_users);
+        ImageView iconReports = findViewById(R.id.icon_reports);
+        ImageView iconNotifications = findViewById(R.id.icon_notifications);
+        ImageView iconSettings = findViewById(R.id.icon_settings);
 
         btnBack.setOnClickListener(v -> finish());
 
@@ -166,7 +161,7 @@ public class ManageAllUsersActivity extends AppCompatActivity {
                         freeze.setImageResource(R.drawable.view);
                         userRef.update("freeze", "awake")
                                 .addOnSuccessListener(aVoid -> {
-                                    Log.d("FreezeUser", "User state updated to 'awakw'");
+                                    Log.d("FreezeUser", "User state updated to 'awake'");
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.e("FreezeUser", "Failed to update user state to 'awake': " + e.getMessage());

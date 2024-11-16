@@ -68,6 +68,9 @@
             android:name=".ManageAllUsersActivity"
             android:exported="false" />
         <activity
+            android:name=".ManageAllFacilityActivity"
+            android:exported="false" />
+        <activity
             android:name=".QR_camera"
             android:exported="false"
             android:parentActivityName=".MainActivity" />

@@ -1,0 +1,44 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/section_divider"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/facility"
+            android:textColor="#FFFFFF"
+            android:fontFamily="@font/sansation_bold"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/freeze_facility"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/view"
+            android:layout_marginEnd="20dp"
+            android:contentDescription="@string/freeze"/>
+
+        <ImageView
+            android:id="@+id/delete_facility"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/delete_facility"
+            android:layout_marginEnd="5dp"
+            android:contentDescription="@string/add_event" />
+    </LinearLayout>
+
+</LinearLayout>

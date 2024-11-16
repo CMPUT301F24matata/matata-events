@@ -206,6 +206,11 @@ public class AdminView extends AppCompatActivity {
             Intent intent = new Intent(AdminView.this, ManageAllUsersActivity.class);
             startActivity(intent);
         });
+
+        viewAllFacilities.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminView.this, ManageAllFacilityActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void initialise() {

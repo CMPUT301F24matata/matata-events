@@ -1,7 +1,5 @@
 package com.example.matata;
 
-import static com.example.matata.ProfileActivity.createImageFromString;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,13 +10,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -33,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * FacilityActivity allows users to enter and save facility information,
@@ -235,18 +231,19 @@ public class FacilityActivity extends AppCompatActivity {
     private void saveFacilityData(String name, String address, String capacity, String contact, String email, String owner, boolean notificationsEnabled, String imageUriString) {
         loadFacilityPicture(imageUriString);
 
-        Map<String, Object> userProfile = new HashMap<>();
-        userProfile.put("name", name);
-        userProfile.put("address", address);
-        userProfile.put("email", email);
-        userProfile.put("notifications", notificationsEnabled);
-        userProfile.put("profileUri", imageUriString);
-        userProfile.put("capacity", capacity);
-        userProfile.put("contact", contact);
-        userProfile.put("owner", owner);
+        Map<String, Object> facilityProfile = new HashMap<>();
+        facilityProfile.put("name", name);
+        facilityProfile.put("address", address);
+        facilityProfile.put("email", email);
+        facilityProfile.put("notifications", notificationsEnabled);
+        facilityProfile.put("profileUri", imageUriString);
+        facilityProfile.put("capacity", capacity);
+        facilityProfile.put("contact", contact);
+        facilityProfile.put("owner", owner);
+        facilityProfile.put("freeze", "awake");
 
         db.collection("FACILITY_PROFILES").document(USER_ID)
-                .set(userProfile)
+                .set(facilityProfile)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(FacilityActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show();
                     finish();
@@ -292,24 +289,32 @@ public class FacilityActivity extends AppCompatActivity {
         docRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("name");
-                        String address = documentSnapshot.getString("address");
-                        String email = documentSnapshot.getString("email");
-                        boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
-                        String sImageUri = documentSnapshot.getString("profileUri");
-                        String capacity = documentSnapshot.getString("capacity");
-                        String contact = documentSnapshot.getString("contact");
-                        String owner = documentSnapshot.getString("owner");
 
-                        facilityName.setText(name);
-                        facilityAddress.setText(address);
-                        facilityCapacity.setText(capacity);
-                        facilityContact.setText(contact);
-                        facilityEmail.setText(email);
-                        facilityOwner.setText(owner);
-                        switchNotification.setChecked(notificationsChecked);
+                        String freeze = documentSnapshot.getString("freeze");
 
-                        loadFacilityPicture(sImageUri);
+                        if (Objects.equals(freeze, "frozen")) {
+                            FacilityFrozenDialogFragment dialog = new FacilityFrozenDialogFragment();
+                            dialog.show(getSupportFragmentManager(), "FacilityFrozenDialog");
+                        } else if (Objects.equals(freeze, "awake")) {
+                            String name = documentSnapshot.getString("name");
+                            String address = documentSnapshot.getString("address");
+                            String email = documentSnapshot.getString("email");
+                            boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
+                            String sImageUri = documentSnapshot.getString("profileUri");
+                            String capacity = documentSnapshot.getString("capacity");
+                            String contact = documentSnapshot.getString("contact");
+                            String owner = documentSnapshot.getString("owner");
+
+                            facilityName.setText(name);
+                            facilityAddress.setText(address);
+                            facilityCapacity.setText(capacity);
+                            facilityContact.setText(contact);
+                            facilityEmail.setText(email);
+                            facilityOwner.setText(owner);
+                            switchNotification.setChecked(notificationsChecked);
+
+                            loadFacilityPicture(sImageUri);
+                        }
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(FacilityActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());

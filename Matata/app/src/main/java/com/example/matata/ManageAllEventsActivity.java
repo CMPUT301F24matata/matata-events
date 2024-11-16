@@ -22,10 +22,6 @@ import java.util.List;
 
 public class ManageAllEventsActivity extends AppCompatActivity {
 
-    private LinearLayout eventDetails;
-    private ImageView btnToggleDetails;
-    private final boolean isDropdownVisible = false;
-    private final boolean isEventFrozen = false;
     private FirebaseFirestore db;
     private LinearLayout eventsContainer;
 
@@ -39,6 +35,10 @@ public class ManageAllEventsActivity extends AppCompatActivity {
         eventsContainer = findViewById(R.id.eventsContainer);
         ImageView btnBack = findViewById(R.id.btnBack);
         ImageView iconDashboard = findViewById(R.id.icon_dashboard);
+        ImageView iconUsers = findViewById(R.id.icon_users);
+        ImageView iconReports = findViewById(R.id.icon_reports);
+        ImageView iconNotifications = findViewById(R.id.icon_notifications);
+        ImageView iconSettings = findViewById(R.id.icon_settings);
 
         btnBack.setOnClickListener(v -> finish());
 
@@ -177,7 +177,6 @@ public class ManageAllEventsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
         btnFreezeEvent.setOnClickListener(v -> {
             if (eventStatus.getText().toString().equalsIgnoreCase("Active")) {
                 eventStatus.setText("Inactive");
@@ -225,7 +224,6 @@ public class ManageAllEventsActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> Log.d("ManageAllEvents", "Event status updated successfully"))
                 .addOnFailureListener(e -> Log.e("ManageAllEvents", "Failed to update event status", e));
     }
-
 
     private void showToast() {
         Toast.makeText(this, "Failed to load events", Toast.LENGTH_SHORT).show();
