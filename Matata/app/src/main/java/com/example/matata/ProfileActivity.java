@@ -72,11 +72,6 @@ public class ProfileActivity extends AppCompatActivity {
     private String USER_ID = "";
 
     /**
-     * View that contains additional fields specifically for organizers.
-     */
-    private View organizerField;
-
-    /**
      * Spinner for selecting the user's gender.
      */
     private Spinner genderSpinner;
@@ -101,10 +96,14 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private EditText nameEditText;
 
+    /**
+     * String for storing the user's device ID.
+     */
     private String userId;
 
-
-    // ActivityResultLauncher for user profile picture selection
+    /**
+     * ActivityResultLauncher for handling profile picture selection.
+     */
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -115,8 +114,7 @@ public class ProfileActivity extends AppCompatActivity {
             });
 
     /**
-     * Initializes ProfileActivity, sets up UI components, loads user and facility data from Firestore,
-     * and configures event listeners for saving data and profile image updates.
+     * Initializes the activity, sets up UI components, loads user profile data, and configures event listeners.
      *
      * @param savedInstanceState if the activity is being re-initialized, this contains the data it most recently supplied
      */

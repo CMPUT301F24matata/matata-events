@@ -35,8 +35,6 @@ public class ExploreEvents extends AppCompatActivity {
 
         goBack=findViewById(R.id.goBackMap);
 
-
-
         goBack.setOnClickListener(v->finish());
         loadMapFragment();
 

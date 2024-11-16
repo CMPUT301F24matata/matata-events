@@ -19,11 +19,28 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
+/**
+ * The ManageAllFacilityActivity class provides an interface for administrators to manage all facilities.
+ * It allows viewing, freezing/unfreezing, and deleting facilities. This activity interacts with Firebase Firestore
+ * to fetch, display, and update facility data.
+ */
 public class ManageAllFacilityActivity extends AppCompatActivity {
 
+    /**
+     * LinearLayout container for dynamically adding facility items.
+     */
     private LinearLayout facilityContainer;
+
+    /**
+     * Instance of FirebaseFirestore for database operations.
+     */
     private FirebaseFirestore db;
 
+    /**
+     * Called when the activity is created. Sets up the UI, initializes Firestore, and fetches facility data.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +66,10 @@ public class ManageAllFacilityActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Fetches all facility profiles from Firestore and adds them to the `facilityContainer`.
+     * Only facilities with the "awake" state are displayed.
+     */
     private void fetchFromFirestore() {
         facilityContainer.removeAllViews();
 
@@ -73,6 +94,14 @@ public class ManageAllFacilityActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Dynamically adds a facility item to the `facilityContainer`. Each facility has options to view,
+     * freeze/unfreeze, and delete it.
+     *
+     * @param facility Name of the facility.
+     * @param frozen   Current frozen state ("awake" or "frozen").
+     * @param facilityId Unique ID of the facility.
+     */
     private void addFacilityItem(String facility, String frozen, String facilityId) {
 
         View facilityView = getLayoutInflater().inflate(R.layout.facility_item, facilityContainer, false);
@@ -137,6 +166,9 @@ public class ManageAllFacilityActivity extends AppCompatActivity {
         facilityContainer.addView(facilityView);
     }
 
+    /**
+     * Displays a toast message to indicate that facilities failed to load from Firestore.
+     */
     private void showToast() {
         Toast.makeText(this, "Failed to load facilities", Toast.LENGTH_SHORT).show();
     }

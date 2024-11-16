@@ -20,11 +20,30 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
+/**
+ * The ManageAllEventsActivity class provides an interface for administrators to manage all events.
+ * It allows viewing, freezing/unfreezing, and deleting events, and displays event statistics such as
+ * the number of accepted, pending, rejected, and waitlisted participants.
+ * This activity interacts with Firebase Firestore to fetch and update event data.
+ */
 public class ManageAllEventsActivity extends AppCompatActivity {
 
+    /**
+     * Instance of FirebaseFirestore for database operations.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * LinearLayout container for dynamically adding event items.
+     */
     private LinearLayout eventsContainer;
 
+    /**
+     * Called when the activity is first created.
+     * Sets up UI components, configures click listeners for navigation buttons, and fetches events from Firestore.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +70,10 @@ public class ManageAllEventsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Fetches all events from Firestore and adds them to the `eventsContainer`.
+     * Each event is displayed with its title, status, organizer name, creation date, and statistics.
+     */
     private void fetchFromFirestore() {
         eventsContainer.removeAllViews();
 
@@ -77,6 +100,18 @@ public class ManageAllEventsActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Adds a dynamically created event item to the `eventsContainer` with actions for viewing,
+     * freezing/unfreezing, and deleting the event. Displays event statistics such as accepted,
+     * pending, rejected, and waitlisted counts.
+     *
+     * @param title        Title of the event.
+     * @param eventId      Unique ID of the event.
+     * @param organizerName Name of the event organizer.
+     * @param creationDate Date the event was created.
+     * @param status       Status of the event ("Active" or "Inactive").
+     * @param orgId        Unique ID of the event organizer.
+     */
     private void addEventItem(String title, String eventId, String organizerName, String creationDate, String status, String orgId) {
 
         View eventView = getLayoutInflater().inflate(R.layout.event_item, eventsContainer, false);
@@ -206,6 +241,12 @@ public class ManageAllEventsActivity extends AppCompatActivity {
         eventsContainer.addView(eventView);
     }
 
+    /**
+     * Deletes the specified event from Firestore and removes its reference from the organizer's profile.
+     *
+     * @param eventId Unique ID of the event to be deleted.
+     * @param orgId   Unique ID of the organizer of the event.
+     */
     private void deleteEventFromDatabase(String eventId, String orgId) {
         db.collection("EVENT_PROFILES").document(eventId)
                 .delete()
@@ -218,6 +259,12 @@ public class ManageAllEventsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("ManageAllEvents", "Error removing event reference", e));
     }
 
+    /**
+     * Updates the status of the specified event in Firestore.
+     *
+     * @param eventId   Unique ID of the event.
+     * @param newStatus New status of the event ("Active" or "Inactive").
+     */
     private void updateEventStatusInDatabase(String eventId, String newStatus) {
         db.collection("EVENT_PROFILES").document(eventId)
                 .update("Status", newStatus)
@@ -225,6 +272,9 @@ public class ManageAllEventsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("ManageAllEvents", "Failed to update event status", e));
     }
 
+    /**
+     * Displays a toast message indicating failure to load events from Firestore.
+     */
     private void showToast() {
         Toast.makeText(this, "Failed to load events", Toast.LENGTH_SHORT).show();
     }

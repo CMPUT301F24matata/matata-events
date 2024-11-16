@@ -16,10 +16,27 @@ import androidx.fragment.app.DialogFragment;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * FacilityFrozenDialogFragment displays a dialog to notify the user that their facility is frozen.
+ * The user is provided with an option to reset the facility's information.
+ * This dialog integrates with Firebase Firestore to update facility data.
+ */
 public class FacilityFrozenDialogFragment extends DialogFragment {
 
+    /**
+     * Instance of FirebaseFirestore for database operations.
+     */
     private FirebaseFirestore db;
 
+    /**
+     * Called to initialize and inflate the dialog's view.
+     * Sets up the UI components, such as the reset facility button and informational text.
+     *
+     * @param inflater           The LayoutInflater used to inflate the dialog's layout.
+     * @param container          The parent container for the dialog's view, if applicable.
+     * @param savedInstanceState Bundle containing the dialog's previously saved state, if any.
+     * @return The root view of the dialog's layout.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,6 +69,11 @@ public class FacilityFrozenDialogFragment extends DialogFragment {
         return view;
     }
 
+    /**
+     * Called when the dialog is starting.
+     * Ensures that the dialog is not cancellable by the user, either by tapping outside the dialog
+     * or using the back button.
+     */
     @Override
     public void onStart() {
         super.onStart();

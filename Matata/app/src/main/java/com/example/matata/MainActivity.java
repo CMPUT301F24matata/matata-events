@@ -35,33 +35,30 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * MainActivity serves as the main hub of the app, displaying available events in a RecyclerView,
- * allowing users to navigate to different sections, and setting up notifications for waitlist updates.
- * This activity also initializes a user profile if it doesn't already exist in Firestore.
- *
- * Outstanding issues: The `addEventsInit()` method retrieves events without any pagination,
- * which may impact performance if the event list grows significantly. Additionally, the notification
- * logic assumes the app has permission to post notifications, which may not be granted by the user.
+ * MainActivity serves as the central hub of the Matata app, displaying a list of events,
+ * allowing users to navigate to different sections, and managing notifications.
+ * This activity initializes a user profile in Firestore if it does not already exist,
+ * handles event-related actions, and manages user permissions for notifications.
  */
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * ImageView for displaying the profile icon.
+     * ImageView for displaying the user profile icon.
      */
     private ImageView profileIcon;
 
     /**
-     * ImageView for navigating to the new event creation screen.
+     * ImageView for navigating to the "Add Event" screen.
      */
     private ImageView new_event;
 
     /**
-     * ImageView for accessing event history.
+     * LinearLayout for accessing the event history section.
      */
     private LinearLayout eventHistory;
 
     /**
-     * EditText for searching events.
+     * LinearLayout for exploring events on the map.
      */
     private LinearLayout explore;
 
@@ -86,12 +83,12 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton QR_scanner;
 
     /**
-     * Instance of FirebaseFirestore used for database access.
+     * Instance of FirebaseFirestore for database access.
      */
     private FirebaseFirestore db;
 
     /**
-     * User ID string for accessing user-specific data.
+     * String representing the unique user ID for Firestore operations.
      */
     private String USER_ID = "";
 
@@ -101,11 +98,14 @@ public class MainActivity extends AppCompatActivity {
     private String uid = null;
 
     /**
-     * List of statuses related to events.
+     * List of statuses for the events (e.g., "Accepted," "Pending," "Waitlist").
      */
     private List<String> statusList = new ArrayList<>();
 
-    private Map<String,String> posterUrls= new HashMap<>();
+    /**
+     * Map storing event poster URLs associated with their event IDs.
+     */
+    private Map<String, String> posterUrls = new HashMap<>();
 
     /**
      * ImageButton for accessing notifications.
@@ -123,20 +123,26 @@ public class MainActivity extends AppCompatActivity {
     private Notification notificationManager;
 
     /**
-     * Channel ID used for waitlist notifications.
+     * Static channel ID used for managing waitlist notifications.
      */
     private static final String CHANNEL_ID = "waitlist_notification_channel";
 
+    /**
+     * ImageView for accessing the facility profile section.
+     */
     private ImageView FacilityProfile;
 
+    /**
+     * ImageButton for accessing the admin section.
+     */
     private ImageButton admin;
 
 
     /**
-     * Initializes the MainActivity and sets up UI components, database references, and event data.
-     * Configures notification channels and permissions for handling waitlist notifications.
+     * Called when the activity is first created. Initializes the user profile in Firestore if necessary,
+     * sets up UI components, handles notification permissions, and loads event data.
      *
-     * @param savedInstanceState if the activity is being re-initialized, this contains the data it most recently supplied
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,14 +156,12 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Set up permission launcher and notification manager
         notificationPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> Log.d("NotificationPermission", isGranted ? "Permission granted" : "Permission denied")
         );
         notificationManager = new Notification();
         notificationManager.setNotificationPermissionLauncher(notificationPermissionLauncher);
-
 
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -200,39 +204,45 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Displays a frozen dialog when the user's account is marked as frozen.
+     */
     private void showFrozenDialog() {
         FrozenDialogFragment dialogFragment = new FrozenDialogFragment();
         dialogFragment.setCancelable(false);
         dialogFragment.show(getSupportFragmentManager(), "FrozenDialogFragment");
     }
 
+    /**
+     * Initializes the app in entrant mode, which hides admin-specific features.
+     * Configures notifications and loads event data for the user.
+     */
     private void initializeEntrantApp() {
 
         initializeUI();
         setOnClickListeners();
         admin.setVisibility(View.GONE);
 
-        // Initialize notification channel
         Notification.initNotificationChannel(this);
 
-        // Load events
         addEventsInit();
     }
 
+    /**
+     * Initializes the app with admin features, configuring notifications and loading event data.
+     */
     private void initializeApp() {
 
         initializeUI();
         setOnClickListeners();
 
-        // Initialize notification channel
         Notification.initNotificationChannel(this);
 
-        // Load events
         addEventsInit();
     }
 
     /**
-     * Initializes UI elements and sets up the RecyclerView for displaying event data.
+     * Sets up the UI components, including the RecyclerView for displaying events.
      */
     private void initializeUI() {
         profileIcon = findViewById(R.id.profile_picture);
@@ -254,12 +264,11 @@ public class MainActivity extends AppCompatActivity {
         eventList = new ArrayList<>();
         eventAdapter = new EventAdapter(this, eventList, statusList,posterUrls);
         recyclerView.setAdapter(eventAdapter);
-
-
     }
 
     /**
-     * Sets click listeners for various UI elements to handle navigation and actions.
+     * Sets up click listeners for various UI elements, such as profile navigation, adding events,
+     * QR scanner, and exploring events on the map.
      */
     private void setOnClickListeners() {
         profileIcon.setOnClickListener(view -> {
@@ -298,7 +307,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads and listens for changes to events in Firestore, updating the RecyclerView accordingly.
+     * Loads and listens for changes to event data in Firestore.
+     * Updates the RecyclerView dynamically when data changes.
      */
     private void addEventsInit() {
 
@@ -356,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Retrieves the waitlist for each event organized by the user and sends notifications to those on the waitlist.
+     * Retrieves the waitlist for events organized by the user and sends notifications to the waitlisted users.
      */
     private void retrieveWaitlistAndNotify() {
         db.collection("EVENT_PROFILES")

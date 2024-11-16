@@ -21,11 +21,28 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
+/**
+ * The ManageAllUsersActivity class provides an interface for administrators to manage all user profiles.
+ * Administrators can view, freeze/unfreeze, delete, and change a user's role between "admin" and "entrant."
+ * This activity interacts with Firebase Firestore to fetch, display, and update user data.
+ */
 public class ManageAllUsersActivity extends AppCompatActivity {
 
+    /**
+     * LinearLayout container for dynamically adding user profile items.
+     */
     private LinearLayout userContainer;
+
+    /**
+     * Instance of FirebaseFirestore for database operations.
+     */
     private FirebaseFirestore db;
 
+    /**
+     * Called when the activity is created. Sets up the UI, initializes Firestore, and fetches user data.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +68,10 @@ public class ManageAllUsersActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Fetches all user profiles from Firestore and adds them to the `userContainer`.
+     * Only users with the "awake" state are displayed.
+     */
     private void fetchFromFirestore() {
         userContainer.removeAllViews();
 
@@ -79,6 +100,15 @@ public class ManageAllUsersActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Dynamically adds a user profile item to the `userContainer`.
+     * Each user item includes options to view their profile, freeze/unfreeze their account,
+     * delete the user, and change their role between "admin" and "entrant."
+     *
+     * @param username Name of the user.
+     * @param frozen   Current frozen state ("awake" or "frozen").
+     * @param userId   Unique ID of the user.
+     */
     private void addUserItem(String username, String frozen, String userId) {
 
         View userView = getLayoutInflater().inflate(R.layout.user_item, userContainer, false);
@@ -192,6 +222,9 @@ public class ManageAllUsersActivity extends AppCompatActivity {
         userContainer.addView(userView);
     }
 
+    /**
+     * Displays a toast message to indicate that users failed to load from Firestore.
+     */
     private void showToast() {
         Toast.makeText(this, "Failed to load users", Toast.LENGTH_SHORT).show();
     }
