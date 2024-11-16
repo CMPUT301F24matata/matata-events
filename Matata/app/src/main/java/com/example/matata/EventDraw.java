@@ -223,10 +223,10 @@ public class EventDraw extends AppCompatActivity {
         drawBtn = findViewById(R.id.draw_button);
         backBtn = findViewById(R.id.go_back_draw_event);
 
-//        pendingRecyclerView = findViewById(R.id.pending_recyclerView);
-//        acceptedRecyclerView = findViewById(R.id.accepted_recyclerView);
-//        rejectedRecyclerView = findViewById(R.id.rejected_recyclerView);
-//        waitlistRecyclerView = findViewById(R.id.waitlist_recyclerView);
+        pendingRecyclerView = findViewById(R.id.pending_recyclerView);
+        acceptedRecyclerView = findViewById(R.id.accepted_recyclerView);
+        rejectedRecyclerView = findViewById(R.id.rejected_recyclerView);
+        waitlistRecyclerView = findViewById(R.id.waitlist_recyclerView);
 
         entrantList = new ArrayList<>();
         waitlistAdapter = new EntrantAdapter(this, entrantList);
@@ -251,7 +251,7 @@ public class EventDraw extends AppCompatActivity {
         entrantMap = new LinkedHashMap<>();
         selectedIdList = new ArrayList<>();
 
-        loadLimit(uid);
+        //loadLimit(uid);
 
         // Back button to close the activity
         backBtn.setOnClickListener(v -> finish());
@@ -294,7 +294,7 @@ public class EventDraw extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        title.setText(document.getString("Title"));
+                        //title.setText(document.getString("Title"));
                         drawNum = document.getLong("Capacity").intValue();
 
                         List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");

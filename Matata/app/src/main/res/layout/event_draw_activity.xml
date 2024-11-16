@@ -100,19 +100,21 @@
             android:visibility="gone"/>
 
         <!-- Accepted Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Accepted"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp" />
 
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/accepted_recyclerView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            tools:listitem="@layout/entrant_card"/>-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accepted"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/accepted_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/entrant_card"/>
+
+
 
         <!-- Pending Section -->
         <TextView
@@ -130,11 +132,11 @@
             android:layout_marginLeft="240dp"
             android:text="Clear Pending list"/>
 
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/pending_recyclerView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            tools:listitem="@layout/entrant_card"/>-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pending_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/entrant_card"/>
 
         <!-- Rejected Section -->
         <TextView
@@ -145,11 +147,11 @@
             android:textStyle="bold"
             android:paddingTop="16dp" />
 
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/rejected_recyclerView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            tools:listitem="@layout/entrant_card"/>-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rejected_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/entrant_card"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -187,11 +189,11 @@
             android:text="Save"/>
 
 
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/waitlist_recyclerView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            tools:listitem="@layout/entrant_card"/>-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/waitlist_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/entrant_card"/>
     </LinearLayout>
 
     <LinearLayout
