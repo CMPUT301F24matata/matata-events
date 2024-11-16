@@ -184,8 +184,8 @@ public class ViewEvent extends AppCompatActivity {
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String parentActivity = getCallingActivity() != null ? getCallingActivity().getClassName() : "";
-                if (parentActivity.equals(AddEvent.class.getName())) {
+                String ParentName=intent.getStringExtra("Parent");
+                if (ParentName.equals("AddEvent")) {
                     Intent intent = new Intent(ViewEvent.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);

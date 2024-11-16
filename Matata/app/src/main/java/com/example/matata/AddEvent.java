@@ -477,6 +477,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         doc.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     executeDBchange(Event_details, EVENT_ID, intent, view);
+                    intent.putExtra("Parent","AddEvent");
                     intent.putExtra("Unique_id", EVENT_ID);
                     view.getContext().startActivity(intent);
                 })
