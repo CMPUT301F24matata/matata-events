@@ -53,6 +53,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -175,29 +176,36 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         docRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("name");
-                        String address = documentSnapshot.getString("address");
-                        String email = documentSnapshot.getString("email");
-                        boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
-                        String sImageUri = documentSnapshot.getString("profileUri");
-                        String capacity = documentSnapshot.getString("capacity");
-                        String contact = documentSnapshot.getString("contact");
-                        String owner = documentSnapshot.getString("owner");
+                        String freeze = documentSnapshot.getString("freeze");
 
-                        if (!name.isEmpty() &&
-                                !address.isEmpty() &&
-                                !contact.isEmpty() &&
-                                !capacity.isEmpty() &&
-                                !email.isEmpty() &&
-                                !owner.isEmpty()) {
-                            location.setText(address);
-                            showFacilityDialog(name, address, capacity, contact, email, owner, notificationsChecked, sImageUri);
+                        if (Objects.equals(freeze, "frozen")) {
+                            FacilityFrozenDialogFragment dialog = new FacilityFrozenDialogFragment();
+                            dialog.show(getSupportFragmentManager(), "FacilityFrozenDialog");
                         }
-                        else {
-                            Toast.makeText(AddEvent.this, "Please Provide Facility Information First", Toast.LENGTH_SHORT).show();
-                            shouldRefreshOnResume = true;
-                            Intent intent = new Intent(AddEvent.this, FacilityActivity.class);
-                            startActivity(intent);
+                        else if (Objects.equals(freeze, "awake")) {
+                            String name = documentSnapshot.getString("name");
+                            String address = documentSnapshot.getString("address");
+                            String email = documentSnapshot.getString("email");
+                            boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
+                            String sImageUri = documentSnapshot.getString("profileUri");
+                            String capacity = documentSnapshot.getString("capacity");
+                            String contact = documentSnapshot.getString("contact");
+                            String owner = documentSnapshot.getString("owner");
+
+                            if (!name.isEmpty() &&
+                                    !address.isEmpty() &&
+                                    !contact.isEmpty() &&
+                                    !capacity.isEmpty() &&
+                                    !email.isEmpty() &&
+                                    !owner.isEmpty()) {
+                                location.setText(address);
+                                showFacilityDialog(name, address, capacity, contact, email, owner, notificationsChecked, sImageUri);
+                            } else {
+                                Toast.makeText(AddEvent.this, "Please Provide Facility Information First", Toast.LENGTH_SHORT).show();
+                                shouldRefreshOnResume = true;
+                                Intent intent = new Intent(AddEvent.this, FacilityActivity.class);
+                                startActivity(intent);
+                            }
                         }
                     }
                 })

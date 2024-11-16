@@ -1,11 +1,13 @@
 package com.example.matata;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +26,9 @@ public class FacilityFrozenDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_facility_frozen, container, false);
 
         Button createFacilityButton = view.findViewById(R.id.create_facility_button);
+        TextView contact_admin_text = view.findViewById(R.id.contact_admin_text);
+
+        contact_admin_text.setText("@string/facility_freeze_msg");
 
         String facilityId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
