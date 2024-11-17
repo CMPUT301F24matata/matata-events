@@ -45,7 +45,7 @@ public class FacilityFrozenDialogFragment extends DialogFragment {
         Button createFacilityButton = view.findViewById(R.id.create_facility_button);
         TextView contact_admin_text = view.findViewById(R.id.contact_admin_text);
 
-        contact_admin_text.setText("@string/facility_freeze_msg");
+        contact_admin_text.setText("Please contact the admin for further assistance to unfreeze your facility.");
 
         String facilityId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
