@@ -6,7 +6,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Base64;
 import java.io.ByteArrayOutputStream;
@@ -28,6 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -46,6 +49,7 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -140,6 +144,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      */
     private String posterURI;
 
+
+    private Uri test_uri;
     /**
      * Boolean indicating whether the default image is being used for the poster.
      */
@@ -271,18 +277,14 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                 if (document.exists()) {
                     finish();
                 } else {
-                    if (!eveTitle.getText().toString().isEmpty() ||
-                            !descriptionBox.getText().toString().isEmpty() ||
-                            !eventDate.getText().toString().isEmpty() ||
-                            !eventTime.getText().toString().isEmpty() ||
-                            !capacity.getText().toString().isEmpty()) {
-
+                    if (areFieldsNonEmpty()) {
                         ConfirmationFragment backpress = new ConfirmationFragment();
                         backpress.show(getSupportFragmentManager(), "BackPressFragment");
                     }
-                    else {
+                    else{
                         finish();
                     }
+
                 }
             }
             else {
@@ -291,6 +293,14 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         });
     }
 
+
+    private boolean areFieldsNonEmpty() {
+        return !eveTitle.getText().toString().isEmpty() ||
+                !descriptionBox.getText().toString().isEmpty() ||
+                !eventDate.getText().toString().isEmpty() ||
+                !eventTime.getText().toString().isEmpty() ||
+                !capacity.getText().toString().isEmpty();
+    }
     /**
      * Opens the time picker dialog.
      */
@@ -409,12 +419,18 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
     }
 
     ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
-                    posterPic.setImageURI(imageUri);
-                    isDefaultImage = false;
+                    Log.d(TAG, "Selected Image URI: " + imageUri);
+
+                    Glide.with(this).load(imageUri).into(posterPic);
+                    test_uri=imageUri;
+                    isDefaultImage = false; // Update the flag
+                } else {
+                    Log.e(TAG, "Image selection failed or canceled");
                 }
             }
     );
@@ -426,6 +442,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         pickImageLauncher.launch(intent);
+
+
     }
 
     /**
@@ -493,6 +511,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
             }
 
             Uri returned = Uri.fromFile(temp);
+
             imagesRef.putFile(returned)
                     .addOnSuccessListener(v -> imagesRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         posterURI = uri.toString();

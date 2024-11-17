@@ -59,11 +59,9 @@
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/ic_upload"
             android:contentDescription="@string/poster_picture"
-            android:scaleType="centerCrop"
             android:src="@drawable/ic_upload"
-            app:tint="@color/white" />
+            android:scaleType="centerCrop" />
 
         <!-- Event Title and Capacity Input Section -->
         <androidx.constraintlayout.widget.ConstraintLayout
