@@ -33,6 +33,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class EditEvent extends AppCompatActivity implements DatePickerListener,TimePickerListener {
 
     /**
@@ -325,13 +328,18 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         datePicker.show(getSupportFragmentManager(), "datePicker");
     }
 
+
     ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
-                    posterPic.setImageURI(imageUri);
+                    Log.d(TAG, "Selected Image URI: " + imageUri);
+                    Glide.with(this).load(imageUri).into(posterPic);
                     isDefaultImage = false;
+                } else {
+                    Log.e(TAG, "Image selection failed or canceled");
                 }
             }
     );
@@ -355,6 +363,31 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
     public void updateEvent(Event event, Intent intent, View view){
         CollectionReference eventProfilesRef = db.collection("EVENT_PROFILES");
         DocumentReference docRef = eventProfilesRef.document(EVENT_ID);
+
+        Map<String,Object> updates=new HashMap<>();
+        if (!isDefaultImage){
+
+            //*********************************
+            updates.put("poster",null);
+            //*********************************
+        }
+        updates.put("Date",eventDate.getText().toString());
+        updates.put("Time",eventTime.getText().toString());
+        updates.put("Title",eveTitle.getText().toString());
+        updates.put("Capacity",Integer.parseInt(capacity.getText().toString()));
+        updates.put("Description",descriptionBox.getText().toString());
+        updates.put("Location",location.getText().toString());
+
+        docRef.update(updates)
+                .addOnSuccessListener(v->{
+                    Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
+                    Intent intent_home=new Intent(EditEvent.this,MainActivity.class);
+                    startActivity(intent_home);
+                    finish();
+                })
+                .addOnFailureListener(v->{
+                    Toast.makeText(EditEvent.this, "Event Update Error", Toast.LENGTH_SHORT).show();
+                });
 
     }
 }
