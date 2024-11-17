@@ -81,59 +81,52 @@
         <!-- Dashboard Icon -->
         <ImageView
             android:id="@+id/icon_dashboard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_weight="1"
             android:contentDescription="@string/dashboard"
-            android:src="@drawable/ic_dashboard"
-            android:padding="10dp"
-            android:layout_gravity="center" />
+            android:src="@drawable/dashboard"
+            android:layout_gravity="center_vertical"/>
 
         <!-- Users Icon -->
         <ImageView
             android:id="@+id/icon_users"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
             android:contentDescription="@string/users"
-            android:src="@drawable/baseline_people_alt_24"
-            app:tint="@color/white"
-            android:padding="10dp"
-            android:layout_gravity="center" />
+            android:src="@drawable/users" />
 
         <!-- Reports Icon -->
         <ImageView
             android:id="@+id/icon_reports"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
             android:contentDescription="@string/reports"
-            android:src="@drawable/ic_reports"
-            android:padding="10dp"
-            android:layout_gravity="center" />
+            android:src="@drawable/report" />
 
         <!-- Notifications Icon -->
         <ImageView
             android:id="@+id/icon_notifications"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
             android:contentDescription="@string/notifications"
-            android:src="@drawable/ic_notifications"
-            android:padding="10dp"
-            app:tint="@color/white"
-            android:layout_gravity="center" />
+            android:src="@drawable/notifications"/>
 
         <!-- Settings Icon -->
         <ImageView
             android:id="@+id/icon_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
             android:contentDescription="@string/settings"
-            android:src="@drawable/ic_settings"
-            android:padding="10dp"
-            android:layout_gravity="center" />
+            android:src="@drawable/exit"/>
 
     </LinearLayout>
 

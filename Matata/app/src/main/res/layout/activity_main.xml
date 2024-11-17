@@ -36,59 +36,50 @@
                 android:textColor="#FFFFFF"
                 android:textSize="25sp" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/admin"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="16dp"
-                android:background="#232323"
-                app:tint="@color/sky_blue"
-                android:elevation="10dp"
                 android:contentDescription="@string/admin_view"
-                android:src="@drawable/baseline_admin_panel_settings_24" />
+                android:src="@drawable/admin" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/notifiy_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="28dp"
+                android:layout_height="26dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="16dp"
-                android:background="#232323"
                 android:contentDescription="@string/notifications"
-                android:elevation="10dp"
-                android:src="@drawable/ic_notification_icon" />
+                android:src="@drawable/notifications" />
 
             <ImageView
                 android:id="@+id/add_event"
                 android:layout_width="30dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginEnd="16dp"
                 android:contentDescription="@string/add_event"
-                android:elevation="10dp"
-                android:src="@drawable/add_event"
-                android:visibility="visible" />
+                android:src="@drawable/add_event_pic" />
 
             <ImageView
                 android:id="@+id/FacilityProfile"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_gravity="center"
+                android:layout_gravity="center_vertical"
                 android:layout_marginEnd="16dp"
-                android:background="?attr/selectableItemBackground"
                 android:contentDescription="@string/organiser_profile"
-                android:src="@drawable/ic_facility_profile" />
+                android:src="@drawable/organiser_profile" />
 
             <ImageView
                 android:id="@+id/profile_picture"
                 android:layout_width="30dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginEnd="0dp"
                 android:contentDescription="@string/profile_picture"
-                android:elevation="10dp"
-                android:src="@drawable/profile_pic" />
+                android:src="@drawable/user_profile" />
 
         </LinearLayout>
 

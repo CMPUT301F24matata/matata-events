@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * ImageButton for accessing notifications.
      */
-    private ImageButton notificationButton;
+    private ImageView notificationButton;
 
     /**
      * Launcher for requesting notification permissions.
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * ImageButton for accessing the admin section.
      */
-    private ImageButton admin;
+    private ImageView admin;
 
 
     /**

@@ -94,11 +94,6 @@ public class AdminView extends AppCompatActivity {
     private ImageView iconSettings;
 
     /**
-     * ImageView for the back button to navigate to the previous screen.
-     */
-    private ImageView backBtn;
-
-    /**
      * TextView to navigate to a screen displaying all events.
      */
     private TextView viewAllEvents;
@@ -302,7 +297,6 @@ public class AdminView extends AppCompatActivity {
      * Defines actions for navigating to other screens or toggling dropdowns.
      */
     private void setonClickListeners() {
-        backBtn.setOnClickListener(v -> finish());
         eventsDropdownButton.setOnClickListener(v -> toggleDropdown(eventsDropdown, eventsDropdownButton));
         organizersDropdownButton.setOnClickListener(v -> toggleDropdown(organizersDropdown, organizersDropdownButton));
         usersDropdownButton.setOnClickListener(v -> toggleDropdown(usersDropdown, usersDropdownButton));
@@ -311,7 +305,15 @@ public class AdminView extends AppCompatActivity {
         iconDashboard.setOnClickListener(v -> {
             Intent intent = new Intent(AdminView.this, AdminView.class);
             startActivity(intent);
+            finish();
         });
+
+        iconSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminView.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
         viewAllEvents.setOnClickListener(v -> {
             Intent intent = new Intent(AdminView.this, ManageAllEventsActivity.class);
             startActivity(intent);
@@ -335,7 +337,6 @@ public class AdminView extends AppCompatActivity {
         sansationBoldTypeface = ResourcesCompat.getFont(this, R.font.sansation_bold);
         dropdown_item_border = ContextCompat.getDrawable(this, R.drawable.dropdown_item_border);
         db = FirebaseFirestore.getInstance();
-        backBtn = findViewById(R.id.btnBack);
         eventsDropdown = findViewById(R.id.events_dropdown);
         organizersDropdown = findViewById(R.id.organizers_dropdown);
         usersDropdown = findViewById(R.id.users_dropdown);

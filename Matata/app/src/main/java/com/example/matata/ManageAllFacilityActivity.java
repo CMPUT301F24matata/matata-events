@@ -60,7 +60,15 @@ public class ManageAllFacilityActivity extends AppCompatActivity {
 
         iconDashboard.setOnClickListener(v -> {
             startActivity(new Intent(this, AdminView.class));
+            finish();
         });
+
+        iconSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(ManageAllFacilityActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
 
         fetchFromFirestore();
 

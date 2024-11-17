@@ -156,4 +156,5 @@
     <string name="rejected_list">Reject</string>
     <string name="facility_freeze_msg">Please contact the admin for further assistance to unfreeze your facility.</string>
     <string name="create_new_facility">Create New Facility</string>
+    <string name="admin_control">admin control</string>
 </resources>
