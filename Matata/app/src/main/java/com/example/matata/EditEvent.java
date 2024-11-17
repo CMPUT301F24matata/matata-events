@@ -118,6 +118,8 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
      */
     private String posterURI;
 
+    private Uri global_Uri;
+    private String downloadUrl;
     /**
      * Boolean indicating if the default image is used for the poster.
      */
@@ -336,8 +338,10 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
                     Log.d(TAG, "Selected Image URI: " + imageUri);
+                    global_Uri= imageUri;
                     Glide.with(this).load(imageUri).into(posterPic);
                     isDefaultImage = false;
+                    Log.wtf(TAG,"false");
                 } else {
                     Log.e(TAG, "Image selection failed or canceled");
                 }
@@ -360,36 +364,64 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
      * @param intent Intent for navigating to another activity after updating.
      * @param view The current view context.
      */
-    public void updateEvent(Event event, Intent intent, View view){
+    public void updateEvent(Event event, Intent intent, View view) {
         CollectionReference eventProfilesRef = db.collection("EVENT_PROFILES");
         DocumentReference docRef = eventProfilesRef.document(EVENT_ID);
+        StorageReference posterRef = ref.child("EventPosters/" + EVENT_ID + ".jpg");
 
-        Map<String,Object> updates=new HashMap<>();
-        if (!isDefaultImage){
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("Date", eventDate.getText().toString());
+        updates.put("Time", eventTime.getText().toString());
+        updates.put("Title", eveTitle.getText().toString());
+        updates.put("Capacity", Integer.parseInt(capacity.getText().toString()));
+        updates.put("Description", descriptionBox.getText().toString());
+        updates.put("Location", location.getText().toString());
 
-            //*********************************
-            updates.put("poster",null);
-            //*********************************
+        if (!isDefaultImage) {
+            posterRef.putFile(global_Uri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        posterRef.getDownloadUrl()
+                                .addOnSuccessListener(uri -> {
+                                    String downloadUrl = uri.toString();
+                                    updates.put("Poster", downloadUrl);
+                                    docRef.update(updates)
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
+                                                Intent intentHome = new Intent(EditEvent.this, MainActivity.class);
+                                                startActivity(intentHome);
+                                                finish();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e(TAG, "Error updating event in Firestore", e);
+                                                Toast.makeText(EditEvent.this, "Event Update Error", Toast.LENGTH_SHORT).show();
+                                            });
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e(TAG, "Error getting download URL", e);
+                                    Toast.makeText(EditEvent.this, "Failed to update poster URL", Toast.LENGTH_SHORT).show();
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error uploading poster", e);
+                        Toast.makeText(EditEvent.this, "Poster upload failed", Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            updates.put("Poster", posterURI);
+            docRef.update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
+                        Intent intentHome = new Intent(EditEvent.this, MainActivity.class);
+                        startActivity(intentHome);
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error updating event in Firestore", e);
+                        Toast.makeText(EditEvent.this, "Event Update Error", Toast.LENGTH_SHORT).show();
+                    });
         }
-        updates.put("Date",eventDate.getText().toString());
-        updates.put("Time",eventTime.getText().toString());
-        updates.put("Title",eveTitle.getText().toString());
-        updates.put("Capacity",Integer.parseInt(capacity.getText().toString()));
-        updates.put("Description",descriptionBox.getText().toString());
-        updates.put("Location",location.getText().toString());
-
-        docRef.update(updates)
-                .addOnSuccessListener(v->{
-                    Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
-                    Intent intent_home=new Intent(EditEvent.this,MainActivity.class);
-                    startActivity(intent_home);
-                    finish();
-                })
-                .addOnFailureListener(v->{
-                    Toast.makeText(EditEvent.this, "Event Update Error", Toast.LENGTH_SHORT).show();
-                });
-
     }
 }
+
+
 
 
