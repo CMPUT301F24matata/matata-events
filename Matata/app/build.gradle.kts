@@ -7,7 +7,6 @@ plugins {
 }
 
 
-
 android {
     namespace = "com.example.matata"
     compileSdk = 34
