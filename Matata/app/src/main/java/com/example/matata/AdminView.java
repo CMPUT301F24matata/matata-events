@@ -114,6 +114,16 @@ public class AdminView extends AppCompatActivity {
     private TextView viewAllFacilities;
 
     /**
+     * TextView to navigate to a screen displaying all images.
+     */
+    private TextView viewAllImages;
+
+    /**
+     * TextView to navigate to a screen displaying all hashed QR data.
+     */
+    private TextView viewAllQR;
+
+    /**
      * Instance of FirebaseFirestore to interact with Firestore.
      */
     private FirebaseFirestore db;
@@ -328,6 +338,16 @@ public class AdminView extends AppCompatActivity {
             Intent intent = new Intent(AdminView.this, ManageAllFacilityActivity.class);
             startActivity(intent);
         });
+
+        viewAllImages.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminView.this, ManageAllImagesActivity.class);
+            startActivity(intent);
+        });
+
+        viewAllQR.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminView.this, ManageAllQRActivity.class);
+            startActivity(intent);
+        });
     }
 
     /**
@@ -354,6 +374,8 @@ public class AdminView extends AppCompatActivity {
         viewAllOrganizers = findViewById(R.id.view_all_organizers);
         viewAllUsers = findViewById(R.id.view_all_users);
         viewAllFacilities = findViewById(R.id.view_all_facilities);
+        viewAllImages = findViewById(R.id.view_all_images);
+        viewAllQR = findViewById(R.id.view_all_QR);
     }
 
     /**

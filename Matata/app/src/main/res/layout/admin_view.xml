@@ -404,6 +404,139 @@
                     android:layout_marginBottom="8dp"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start"
+                android:padding="12dp"
+                android:background="@drawable/section_divider">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/manage_images"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/sansation_bold"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/view_all_images"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/admin_control"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/admin_control" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#2A2A2A"
+                android:layout_marginVertical="12dp" />
+
+            <LinearLayout
+                android:id="@+id/images_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/dropdown_background"
+                android:layout_marginHorizontal="8dp"
+                android:visibility="gone"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/facility_1"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/dropdown_item_border"
+                    android:padding="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/facility_2"
+                    android:fontFamily="@font/sansation_bold"
+                    android:background="@drawable/dropdown_item_border"
+                    android:textColor="#FFFFFF"
+                    android:padding="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start"
+                android:padding="12dp"
+                android:background="@drawable/section_divider">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/manage_qr_data"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/sansation_bold"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/view_all_QR"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/admin_control"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/admin_control" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#2A2A2A"
+                android:layout_marginVertical="12dp" />
+
+            <LinearLayout
+                android:id="@+id/QR_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/dropdown_background"
+                android:layout_marginHorizontal="8dp"
+                android:visibility="gone"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/facility_1"
+                    android:fontFamily="@font/sansation_bold"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/dropdown_item_border"
+                    android:padding="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/facility_2"
+                    android:fontFamily="@font/sansation_bold"
+                    android:background="@drawable/dropdown_item_border"
+                    android:textColor="#FFFFFF"
+                    android:padding="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"/>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

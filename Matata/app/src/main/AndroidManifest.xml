@@ -47,7 +47,7 @@
         -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyD1W__WyUkCOPt4LATs1k7h626JWTI0k1Y"/>
+            android:value="AIzaSyBrBi-UznGkZ2cluWnvg1ndThNw7EbYuYU"/>
 
         <uses-library android:name="com.google.android.maps"/>
         <activity
@@ -70,6 +70,12 @@
             android:parentActivityName=".ViewEvent" />
         <activity
             android:name=".ManageAllEventsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ManageAllImagesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ManageAllQRActivity"
             android:exported="false" />
         <activity
             android:name=".ManageAllUsersActivity"

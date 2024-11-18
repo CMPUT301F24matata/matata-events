@@ -486,12 +486,11 @@ public class ViewEvent extends AppCompatActivity {
                         Glide.with(this).load(ImageUri).into(poster);
                     }
                     else{
-                        ;
+                        Glide.with(this).load(R.drawable.ic_upload).into(poster);
                     }
                 }catch(Exception e){
                     throw e;
                 }
-
 
                 Bitmap QR = decodeBase64toBmp(argbase64);
 

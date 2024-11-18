@@ -157,4 +157,10 @@
     <string name="facility_freeze_msg">Please contact the admin for further assistance to unfreeze your facility.</string>
     <string name="create_new_facility">Create New Facility</string>
     <string name="admin_control">admin control</string>
+    <string name="manage_images">Manage Images</string>
+    <string name="browse_images">Browse Images</string>
+    <string name="manage_qr_data">Manage QR Data</string>
+    <string name="browse_qr_codes">Browse QR Codes</string>
+    <string name="event_poster">event poster</string>
+    <string name="manage_qr_codes">Manage QR Codes</string>
 </resources>

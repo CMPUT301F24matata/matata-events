@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         notificationManager = new Notification();
         notificationManager.setNotificationPermissionLauncher(notificationPermissionLauncher);
 
+
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -221,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
 
         initializeUI();
         setOnClickListeners();
-        admin.setVisibility(View.GONE);
 
         Notification.initNotificationChannel(this);
 
@@ -235,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
 
         initializeUI();
         setOnClickListeners();
+        admin.setVisibility(View.VISIBLE);
 
         Notification.initNotificationChannel(this);
 
