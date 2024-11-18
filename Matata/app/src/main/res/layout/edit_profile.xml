@@ -114,6 +114,7 @@
                     android:background="@drawable/edit_text_background"
                     android:padding="12dp"
                     android:textColor="@color/black"
+                    android:onClick="clearTextOnClick"
                     android:textColorHint="#CCCCCC"/>
 
                 <TextView
