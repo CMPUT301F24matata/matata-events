@@ -184,17 +184,23 @@ public class ViewEvent extends AppCompatActivity {
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String ParentName=intent.getStringExtra("Parent");
-                if (ParentName.equals("AddEvent")) {
-                    Intent intent = new Intent(ViewEvent.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
+                try{
+                    String ParentName=intent.getStringExtra("Parent");
+                    if (ParentName!=null && ParentName.equals("AddEvent")) {
+                        Intent intent = new Intent(ViewEvent.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                }catch (Exception e){
+                    throw e;
                 }
-                else{
-                    finish();
-                }
+                finish();
+
+
+
+
             }
         });
 
