@@ -281,6 +281,8 @@ public class ProfileActivity extends AppCompatActivity {
         userProfile.put("profileUri", imageUriString);
         userProfile.put("gender", selectedGender);
         userProfile.put("DOB", dobText);
+        userProfile.put("freeze", "awake");
+        userProfile.put("admin", "entrant");
 
         db.collection("USER_PROFILES").document(USER_ID)
                 .set(userProfile)
