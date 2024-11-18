@@ -2,7 +2,10 @@ package com.example.matata;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,16 +15,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-/**
- * The ManageAllQRActivity class provides an interface for administrators to manage event posters.
- * Administrators can view and delete posters linked to specific events.
- */
+
 public class ManageAllQRActivity extends AppCompatActivity {
 
+    /**
+     * Event details encoded as a Base64 string.
+     */
+    private String argbase64;
     private LinearLayout qrContainer;
     private FirebaseFirestore db;
 
@@ -53,15 +58,11 @@ public class ManageAllQRActivity extends AppCompatActivity {
             finish();
         });
 
-        fetchEventPosters();
+        fetchEventQR();
 
-        fetchEventPosters();
     }
 
-    /**
-     * Fetches event posters from Firestore and Firebase Storage, linking them to events.
-     */
-    private void fetchEventPosters() {
+    private void fetchEventQR() {
         qrContainer.removeAllViews();
 
         db.collection("EVENT_PROFILES")
@@ -72,7 +73,9 @@ public class ManageAllQRActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             String eventId = document.getId();
                             String eventTitle = document.getString("Title");
-                            addPosterItem(eventId, eventTitle);
+                            argbase64 = document.getString("bitmap");
+                            Bitmap QR = decodeBase64toBmp(argbase64);
+                            addQRItem(eventId, eventTitle, QR);
                         }
                     } else {
                         showToast("Failed to fetch events.");
@@ -81,19 +84,35 @@ public class ManageAllQRActivity extends AppCompatActivity {
     }
 
     /**
-     * Dynamically adds an event poster item to the `imagesContainer`.
+     * Decodes a Base64 encoded string to a Bitmap image.
      *
-     * @param eventId    ID of the event.
+     * @param bmp64 The Base64 encoded string.
+     * @return The decoded Bitmap image.
      */
-    private void addPosterItem(String eventId, String eventTitle) {
+    public Bitmap decodeBase64toBmp(String bmp64) {
+        try {
+            byte[] decodedBytes = Base64.decode(bmp64, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    private void addQRItem(String eventId, String eventTitle, Bitmap QR) {
         View qrView = getLayoutInflater().inflate(R.layout.qr_item, qrContainer, false);
 
         TextView event = qrView.findViewById(R.id.event_title);
         TextView deletePoster = qrView.findViewById(R.id.btn_delete_event);
         ImageView toggleButton = qrView.findViewById(R.id.add_qr);
         LinearLayout qrDetails = qrView.findViewById(R.id.qr_details);
+        ImageView qr_code = qrView.findViewById(R.id.qr_code);
 
         event.setText(eventTitle);
+
+        Glide.with(this)
+                .load(QR)
+                .placeholder(R.drawable.placeholder_image)
+                .into(qr_code);
 
         toggleButton.setOnClickListener(view -> {
             if (qrDetails.getVisibility() == View.VISIBLE) {

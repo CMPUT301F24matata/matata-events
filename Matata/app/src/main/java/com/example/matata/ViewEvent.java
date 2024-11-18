@@ -92,8 +92,6 @@ public class ViewEvent extends AppCompatActivity {
      */
     private TextView location;
 
-// Firebase Firestore
-
     /**
      * Firestore instance used for database operations.
      */
