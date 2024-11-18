@@ -61,12 +61,13 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         try {
-            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle( requireContext(), R.raw.map_style));
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style));
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle the exception gracefully
         }
-        catch (Exception e){
-            throw e;
-        }
+
         LatLng edmonton = new LatLng(53.5461, -113.4937);
         mMap.addMarker(new MarkerOptions().position(edmonton).title("Marker in Edmonton"));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(edmonton, 11));
