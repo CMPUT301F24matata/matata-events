@@ -2,12 +2,14 @@ package com.example.matata;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +21,7 @@ import com.example.matata.R;
 public class EventDetailsFragment extends Fragment {
 
     private String title,  date, time, eventId,posterUrl;
+    private LinearLayout cardTap;
 
 
     public static EventDetailsFragment newInstance(String title, String date, String time,
@@ -47,7 +50,11 @@ public class EventDetailsFragment extends Fragment {
             eventId = getArguments().getString("eventId");
             posterUrl=getArguments().getString("posterUrl");
 
+
         }
+
+
+
     }
 
     @Nullable
@@ -55,12 +62,20 @@ public class EventDetailsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.event_card_swipe, container, false);
 
+
         // Bind views
         TextView eventTitle = view.findViewById(R.id.SwipeTitle);
 
         TextView eventDate = view.findViewById(R.id.SwipeDate);
         TextView eventTime = view.findViewById(R.id.SwipeTime);
         ImageView poster=view.findViewById(R.id.SwipePoster);
+        cardTap=view.findViewById(R.id.swipe_preview);
+        cardTap.setOnClickListener(v-> {
+            Intent intent = new Intent(requireContext(), ViewEvent.class);
+            intent.putExtra("Unique_id", eventId);
+            startActivity(intent);
+        });
+
 
         eventTitle.setText(title);
         eventDate.setText(date);

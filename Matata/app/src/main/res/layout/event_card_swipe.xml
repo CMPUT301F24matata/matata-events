@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/swipe_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
@@ -102,32 +103,6 @@
                         android:layout_weight="1"
                         android:text="26/12/2024" />
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_gravity="end"
-                android:layout_margin="5dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/SwipeDetails"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:alpha="0.8"
-                    android:textSize="20sp"
-                    android:layout_weight="1"
-                    android:text="View Details" />
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:alpha="0.8"
-                    android:src="@drawable/next"
-                    app:tint="@color/white" />
             </LinearLayout>
 
         </LinearLayout>
