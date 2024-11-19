@@ -203,8 +203,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                         String freeze = documentSnapshot.getString("freeze");
 
                         if (Objects.equals(freeze, "frozen")) {
-                            FacilityFrozenDialogFragment dialog = new FacilityFrozenDialogFragment();
-                            dialog.show(getSupportFragmentManager(), "FacilityFrozenDialog");
+                            Intent intent = new Intent(AddEvent.this, FacilityActivity.class);
+                            startActivity(intent);
                         }
                         else if (Objects.equals(freeze, "awake")) {
                             String name = documentSnapshot.getString("name");

@@ -19,7 +19,6 @@
         android:gravity="center"
         android:paddingBottom="16dp" />
 
-
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
