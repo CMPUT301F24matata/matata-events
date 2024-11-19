@@ -70,6 +70,6 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback {
 
         LatLng edmonton = new LatLng(53.5461, -113.4937);
         mMap.addMarker(new MarkerOptions().position(edmonton).title("Marker in Edmonton"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(edmonton, 11));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(edmonton, 11));
     }
 }
