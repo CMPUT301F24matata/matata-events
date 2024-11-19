@@ -82,6 +82,8 @@ dependencies {
     implementation("com.google.firebase:firebase-storage:20.1.0")
     testImplementation("org.robolectric:robolectric:4.10.3")
 
+    implementation ("androidx.viewpager2:viewpager2:1.0.0")
+
     implementation ("androidx.palette:palette:1.0.0")
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-firestore")
