@@ -136,7 +136,7 @@
             tools:ignore="MissingConstraints">
 
             <RadioGroup
-                android:checkedButton="@+id/offer"
+                android:checkedButton="@+id/ListToggle"
                 android:id="@+id/toggle"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
@@ -148,42 +148,46 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginBottom="1dp"
                     android:layout_marginLeft="1dp"
-                    android:id="@+id/searchToggle"
+                    android:id="@+id/ExploreToggle"
                     android:background="@drawable/toggle_widget_background"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="Search"
+                    android:text="Explore"
                     android:textColor="@color/white" />
 
                 <RadioButton
                     android:layout_marginRight="1dp"
                     android:layout_marginTop="1dp"
                     android:layout_marginBottom="1dp"
-                    android:id="@+id/offer"
+                    android:id="@+id/ListToggle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/toggle_widget_background"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="Offers"
+                    android:text="List"
                     android:textColor="@color/white" />
             </RadioGroup>
 
 
         </LinearLayout>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_events"
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/scrollListFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            app:layout_constraintBottom_toTopOf="@id/linearLayout"
-            app:layout_constraintTop_toBottomOf="@id/search"
-            tools:listitem="@layout/event_card" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+
+
+
+        </androidx.fragment.app.FragmentContainerView>
+
+
 
     </LinearLayout>
 

@@ -188,4 +188,6 @@
     <string name="active_frozen_facilities">Active Facilities: 8 | Frozen Facilities: 2</string>
     <string name="top_facilities_chart">Top Facilities Chart</string>
     <string name="app_stats">App Stats</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
