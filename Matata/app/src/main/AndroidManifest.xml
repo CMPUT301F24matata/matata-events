@@ -54,6 +54,7 @@
         <activity
             android:name=".ExploreEvents"
             android:exported="false" />
+        <activity android:name=".AdminReportActivity"/>
         <activity android:name=".EventHistory" />
         <activity android:name=".EventDraw" />
         <activity

@@ -286,6 +286,9 @@ public class MainActivity extends AppCompatActivity {
                 fragment=new Recycler_fragment();
 
             }
+            else if(checkedID==R.id.ExploreToggle){
+                fragment=new SwipeView();
+            }
             else{
                 fragment=null;
             }

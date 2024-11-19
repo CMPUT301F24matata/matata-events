@@ -3,19 +3,18 @@ package com.example.matata;
 import static android.content.ContentValues.TAG;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,35 +26,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class Recycler_fragment extends Fragment {
+public class SwipeView extends Fragment {
 
-
-    private RecyclerView recyclerView;
+    private ViewPager2 viewPager2;
+    private FirebaseFirestore db;
     private EventAdapter eventAdapter;
     private List<Event> eventList;
-    private FirebaseFirestore db;
     private String USER_ID = "";
     private String uid = null;
     private List<String> statusList = new ArrayList<>();
     private Map<String, String> posterUrls = new HashMap<>();
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_events, container, false);
-        recyclerView=view.findViewById(R.id.recycler_view_events);
 
-        db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        addEventsInit();
+        db=FirebaseFirestore.getInstance();
+        View view=inflater.inflate(R.layout.swipe_scroll, container, false);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventList = new ArrayList<>();
-        eventAdapter = new EventAdapter(getContext(), eventList, statusList, posterUrls);
-        recyclerView.setAdapter(eventAdapter);
-
+        viewPager2=view.findViewById(R.id.viewPager);
+        addEventsInit();
 
         return view;
     }
@@ -64,9 +56,7 @@ public class Recycler_fragment extends Fragment {
         db.collection("EVENT_PROFILES")
                 .addSnapshotListener((snapshots, e) -> {
                     if (snapshots != null) {
-                        eventList.clear();
-                        statusList.clear();
-                        posterUrls.clear();
+
 
                         for (QueryDocumentSnapshot document : snapshots) {
                             DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
@@ -93,6 +83,7 @@ public class Recycler_fragment extends Fragment {
                             String organizerId = document.getString("OrganizerID");
                             int capacity = document.getLong("Capacity").intValue();
                             String status = document.getString("Status");
+                            //Log.wtf(TAG,uid+title+date+time+location+description+organizerId+status);
 
 
 
@@ -105,15 +96,18 @@ public class Recycler_fragment extends Fragment {
                             }
 
                         }
+                        EventPagerAdapter adapter = new EventPagerAdapter(requireActivity(), eventList);
+                        viewPager2.setAdapter(adapter);
+                        viewPager2.setOffscreenPageLimit(1);
 
-                        eventAdapter.notifyDataSetChanged();
+
 
 
                     } else if (e != null) {
                         Log.e("FirestoreError", "Error fetching events: ", e);
                     }
                 });
-        recyclerView.scheduleLayoutAnimation();
+
 
     }
 }
