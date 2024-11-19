@@ -58,6 +58,12 @@ public class ManageAllQRActivity extends AppCompatActivity {
             finish();
         });
 
+        iconReports.setOnClickListener(v -> {
+            Intent intent = new Intent(ManageAllQRActivity.this, AdminReportActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
         fetchEventQR();
 
     }
@@ -106,6 +112,7 @@ public class ManageAllQRActivity extends AppCompatActivity {
         ImageView toggleButton = qrView.findViewById(R.id.add_qr);
         LinearLayout qrDetails = qrView.findViewById(R.id.qr_details);
         ImageView qr_code = qrView.findViewById(R.id.qr_code);
+        LinearLayout toggle_tile = qrView.findViewById(R.id.toggle_tile);
 
         event.setText(eventTitle);
 
@@ -114,7 +121,7 @@ public class ManageAllQRActivity extends AppCompatActivity {
                 .placeholder(R.drawable.placeholder_image)
                 .into(qr_code);
 
-        toggleButton.setOnClickListener(view -> {
+        toggle_tile.setOnClickListener(view -> {
             if (qrDetails.getVisibility() == View.VISIBLE) {
                 qrDetails.setVisibility(View.GONE);
                 toggleButton.setImageResource(R.drawable.ic_add);

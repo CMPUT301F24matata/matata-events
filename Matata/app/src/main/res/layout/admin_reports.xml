@@ -108,24 +108,36 @@
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Total Events Organized: "
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
                         android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Total Events Organized"
+                        android:fontFamily="@font/sansation_bold"
+                        android:textSize="16sp"
+                        android:background="@drawable/text_background2"
                         android:layout_marginStart="26dp"/>
 
-                    <EditText
+                    <TextView
+                        android:id="@+id/totalEvents"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
                         android:text="50"
-                        android:textColor="@color/white"
                         android:textSize="16sp"
                         android:layout_weight="0.2"
                         android:layout_gravity="center"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"/>
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -134,25 +146,36 @@
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
                         android:layout_weight="1"
-                        android:text="Average Attendance: "
-                        android:textColor="@color/white"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Average Attendance"
                         android:textSize="16sp"
-                        android:layout_gravity="center"
                         android:layout_marginStart="26dp"/>
 
-                    <EditText
+                    <TextView
+                        android:id="@+id/averageAttendance"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
                         android:text="75%"
-                        android:textColor="@color/white"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
                         android:textSize="16sp"
                         android:layout_weight="0.2"
                         android:layout_gravity="center"
                         android:gravity="center"/>
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -161,24 +184,36 @@
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
                         android:layout_weight="1"
-                        android:text="Active Events: "
-                        android:textColor="@color/white"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Active Events"
                         android:textSize="16sp"
-                        android:layout_gravity="center"
                         android:layout_marginStart="26dp"/>
 
-                    <EditText
+                    <TextView
+                        android:id="@+id/activeEvents"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
                         android:text="30"
-                        android:textColor="@color/white"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
                         android:textSize="16sp"
                         android:layout_weight="0.2"
                         android:layout_gravity="center"
                         android:gravity="center"/>
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -187,60 +222,204 @@
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
                         android:layout_weight="1"
-                        android:text="Inactive Events: "
-                        android:textColor="@color/white"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Inactive Events"
                         android:textSize="16sp"
-                        android:layout_gravity="center"
                         android:layout_marginStart="26dp"/>
 
-                    <EditText
+                    <TextView
+                        android:id="@+id/inactiveEvents"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
                         android:text="20"
-                        android:textColor="@color/white"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
                         android:textSize="16sp"
                         android:layout_weight="0.2"
                         android:layout_gravity="center"
                         android:gravity="center"/>
                 </LinearLayout>
 
-                <TextView
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:fontFamily="@font/sansation_regular"
-                    android:text="Waitlisted vs Accepted Participants: 100 vs 300"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Waitlisted Participants"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/waitlistedParticipants"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="100"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Accepted Participants"
+                        android:fontFamily="@font/sansation_bold"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/acceptedParticipants"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="300"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
 
                 <!-- Event Engagement -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
                     android:text="Event Engagement"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Most Popular Event: Cultural Night"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:orientation="horizontal">
 
-                <TextView
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Most Popular Event"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/popular_event"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="Cultural Night"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Least Popular Event: Study Session"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Least Popular Event"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/un_popular_event"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="Study Session"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
 
                 <!-- Event Insights Chart -->
                 <ImageView
+                    android:id="@+id/event_chart"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_marginTop="8dp"
@@ -279,57 +458,256 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
                     android:fontFamily="@font/sansation_regular"
                     android:text="@string/user_activity"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:fontFamily="@font/sansation_regular"
-                    android:text="Total Users: 155"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:fontFamily="@font/sansation_regular"
-                    android:text="Frozen Users: 30"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Total Users"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
 
-                <TextView
+                    <TextView
+                        android:id="@+id/totalUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="155"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:text="Active Users (Last 30 Days): 100"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Active Users"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/activeUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="100"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Frozen Users"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/frozenUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="30"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
 
                 <!-- User Role Distribution -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
                     android:text="User Role Distribution"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Organizers: 20 | Entrants: 130 | Admins: 5"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Entrants"
+                        android:fontFamily="@font/sansation_bold"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/entrantUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="130"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:fontFamily="@font/sansation_bold"
+                        android:layout_weight="1"
+                        android:text="Organizers"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/organiserUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="20"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Admins"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/adminUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="5"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
 
                 <!-- User Role Chart -->
                 <ImageView
+                    android:id="@+id/user_chart"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_marginTop="8dp"
@@ -368,33 +746,133 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
                     android:fontFamily="@font/sansation_regular"
                     android:text="@string/facility_utilization"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:text="Total Facilities: 10"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:orientation="horizontal">
 
-                <TextView
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Total Facilities"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/totalFacilities"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="10"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:fontFamily="@font/sansation_regular"
-                    android:text="Active Facilities: 8 | Frozen Facilities: 2"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Active Facilities"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/activeFacilities"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="8"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Frozen Facilities"
+                        android:fontFamily="@font/sansation_bold"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/frozenFacilities"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="2"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
                     android:text="Top Facilities"
                     android:textColor="@color/white"
                     android:textSize="18sp"
@@ -402,6 +880,7 @@
 
                 <!-- Facility Metrics Chart -->
                 <ImageView
+                    android:id="@+id/facility_chart"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_marginTop="8dp"

@@ -318,6 +318,12 @@ public class AdminView extends AppCompatActivity {
             finish();
         });
 
+        iconReports.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminView.this, AdminReportActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
         iconSettings.setOnClickListener(v -> {
             Intent intent = new Intent(AdminView.this, MainActivity.class);
             startActivity(intent);
