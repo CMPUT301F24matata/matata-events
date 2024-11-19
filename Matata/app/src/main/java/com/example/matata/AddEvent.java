@@ -205,6 +205,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                         if (Objects.equals(freeze, "frozen")) {
                             Intent intent = new Intent(AddEvent.this, FacilityActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                         else if (Objects.equals(freeze, "awake")) {
                             String name = documentSnapshot.getString("name");
