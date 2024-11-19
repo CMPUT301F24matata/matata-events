@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                         if("admin".equalsIgnoreCase(admin)) {
                             initializeApp();
                         }
-                        else if ("entrant".equalsIgnoreCase(admin)) {
+                        else {
                             initializeEntrantApp();
                         }
                     } else {

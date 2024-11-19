@@ -338,6 +338,12 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         DocumentReference organizerRef = organizerProfilesRef.document(USER_ID);
         DocumentReference eventRef = eventProfilesRef.document(EVENT_ID);
 
+        userRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                userRef.update("admin", "organiser");
+                            }
+                        });
         organizerRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
