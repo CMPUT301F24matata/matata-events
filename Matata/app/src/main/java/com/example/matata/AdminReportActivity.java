@@ -1,6 +1,11 @@
 package com.example.matata;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -71,7 +76,11 @@ public class AdminReportActivity extends AppCompatActivity {
         facility_chart= findViewById(R.id.facility_chart);
 
         // Set up click listeners
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminReportActivity.this, AdminView.class);
+            startActivity(intent);
+            finish();
+        });
 
         // Set dummy data or fetch real data from backend
         loadData();
@@ -296,6 +305,11 @@ public class AdminReportActivity extends AppCompatActivity {
                             totalFacilities.setText(String.valueOf(totalFacilitiesCount.get()));
                             activeFacilities.setText(String.valueOf(activeFacilitiesCount.get()));
                             frozenFacilities.setText(String.valueOf(frozenFacilitiesCount.get()));
+                            int activeFacilities = activeFacilitiesCount.get();
+                            int frozenFacilities = frozenFacilitiesCount.get();
+
+                            Bitmap pieChartBitmap = drawPieChart(activeFacilities, frozenFacilities);
+                            facility_chart.setImageBitmap(pieChartBitmap);
                         } else {
                             // No documents found
                             totalFacilities.setText("0");
@@ -313,5 +327,48 @@ public class AdminReportActivity extends AppCompatActivity {
 
         // Example Toast Message (Optional)
         Toast.makeText(this, "Reports Loaded", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Draws a pie chart for the given active and frozen facility counts.
+     *
+     * @param activeCount Number of active facilities.
+     * @param frozenCount Number of frozen facilities.
+     * @return Bitmap representing the pie chart.
+     */
+    private Bitmap drawPieChart(int activeCount, int frozenCount) {
+        int total = activeCount + frozenCount;
+        if (total == 0) total = 1; // Avoid division by zero
+
+        float activePercentage = (float) activeCount / total * 360;
+        float frozenPercentage = (float) frozenCount / total * 360;
+
+        int width = 500; // Chart width
+        int height = 500; // Chart height
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+
+        // Background color
+        canvas.drawColor(Color.BLACK);
+
+        // Draw active facilities (Green slice)
+        paint.setColor(Color.GREEN);
+        canvas.drawArc(50, 50, width - 50, height - 50, 0, activePercentage, true, paint);
+
+        // Draw frozen facilities (Red slice)
+        paint.setColor(Color.RED);
+        canvas.drawArc(50, 50, width - 50, height - 50, activePercentage, frozenPercentage, true, paint);
+
+        // Optional: Draw chart border
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.WHITE);
+        paint.setStrokeWidth(4);
+        canvas.drawOval(50, 50, width - 50, height - 50, paint);
+
+        return bitmap;
     }
 }

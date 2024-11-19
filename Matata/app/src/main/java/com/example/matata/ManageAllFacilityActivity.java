@@ -97,10 +97,7 @@ public class ManageAllFacilityActivity extends AppCompatActivity {
                             String facility_id = document.getId();
                             String frozen = document.getString("freeze");
 
-                            if (Objects.equals(frozen, "awake")) {
-                                addFacilityItem(name, frozen, facility_id);
-                            }
-
+                            addFacilityItem(name, frozen, facility_id);
                         }
                     } else {
                         showToast();
@@ -131,6 +128,12 @@ public class ManageAllFacilityActivity extends AppCompatActivity {
             intent.putExtra("FACILITY_ID", facilityId);
             startActivity(intent);
         });
+
+        if (Objects.equals(frozen, "awake")) {
+            freeze.setImageResource(R.drawable.view);
+        } else if (Objects.equals(frozen, "frozen")) {
+            freeze.setImageResource(R.drawable.no_view);
+        }
 
         freeze.setOnClickListener(v -> {
             DocumentReference userRef = db.collection("FACILITY_PROFILES").document(facilityId);
