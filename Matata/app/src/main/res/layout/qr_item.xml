@@ -9,6 +9,7 @@
 
     <!-- Event Controls Section -->
     <LinearLayout
+        android:id="@+id/toggle_tile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

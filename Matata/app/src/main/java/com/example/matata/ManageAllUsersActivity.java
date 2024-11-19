@@ -71,6 +71,12 @@ public class ManageAllUsersActivity extends AppCompatActivity {
             finish();
         });
 
+        iconReports.setOnClickListener(v -> {
+            Intent intent = new Intent(ManageAllUsersActivity.this, AdminReportActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
         fetchFromFirestore();
 
     }

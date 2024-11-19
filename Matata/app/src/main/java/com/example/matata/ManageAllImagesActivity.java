@@ -54,6 +54,12 @@ public class ManageAllImagesActivity extends AppCompatActivity {
             finish();
         });
 
+        iconReports.setOnClickListener(v -> {
+            Intent intent = new Intent(ManageAllImagesActivity.this, AdminReportActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
         fetchEventPosters();
     }
 
@@ -97,10 +103,11 @@ public class ManageAllImagesActivity extends AppCompatActivity {
         TextView deletePoster = imageView.findViewById(R.id.btn_delete_event);
         ImageView toggleButton = imageView.findViewById(R.id.add_image);
         LinearLayout imageDetails = imageView.findViewById(R.id.image_details);
+        LinearLayout toggle_tile = imageView.findViewById(R.id.toggle_tile);
 
         event.setText(eventTitle);
 
-        toggleButton.setOnClickListener(view -> {
+        toggle_tile.setOnClickListener(view -> {
             if (imageDetails.getVisibility() == View.VISIBLE) {
                 imageDetails.setVisibility(View.GONE);
                 toggleButton.setImageResource(R.drawable.ic_add);

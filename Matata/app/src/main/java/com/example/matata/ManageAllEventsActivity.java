@@ -73,6 +73,12 @@ public class ManageAllEventsActivity extends AppCompatActivity {
             finish();
         });
 
+        iconReports.setOnClickListener(v -> {
+            Intent intent = new Intent(ManageAllEventsActivity.this, AdminReportActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
         fetchFromFirestore();
 
     }
@@ -136,6 +142,7 @@ public class ManageAllEventsActivity extends AppCompatActivity {
         TextView pendingCount = eventView.findViewById(R.id.pending_count);
         TextView waitlistCount = eventView.findViewById(R.id.waitlist_count);
         TextView rejectedCount = eventView.findViewById(R.id.rejected_count);
+        LinearLayout toggle_tile = eventView.findViewById(R.id.toggle_tile);
 
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(eventId);
 
@@ -201,7 +208,7 @@ public class ManageAllEventsActivity extends AppCompatActivity {
         eventDetails.setVisibility(View.GONE);
         toggleButton.setImageResource(R.drawable.ic_add);
 
-        toggleButton.setOnClickListener(view -> {
+        toggle_tile.setOnClickListener(view -> {
             if (eventDetails.getVisibility() == View.VISIBLE) {
                 eventDetails.setVisibility(View.GONE);
                 toggleButton.setImageResource(R.drawable.ic_add);
