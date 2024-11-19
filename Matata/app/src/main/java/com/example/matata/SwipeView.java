@@ -90,13 +90,14 @@ public class SwipeView extends Fragment {
                             if (Objects.equals(status, "Active")) {
                                 eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
                                 String posterUrl = document.getString("Poster");
+
                                 if (posterUrl != null) {
                                     posterUrls.put(uid, posterUrl);
                                 }
                             }
 
                         }
-                        EventPagerAdapter adapter = new EventPagerAdapter(requireActivity(), eventList);
+                        EventPagerAdapter adapter = new EventPagerAdapter(requireActivity(), eventList,posterUrls);
                         viewPager2.setAdapter(adapter);
                         viewPager2.setOffscreenPageLimit(1);
 
