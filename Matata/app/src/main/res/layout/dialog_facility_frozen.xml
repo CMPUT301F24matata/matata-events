@@ -19,16 +19,40 @@
         android:gravity="center"
         android:paddingBottom="16dp" />
 
-    <Button
-        android:id="@+id/create_facility_button"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#4CAF50"
-        android:textColor="@color/white"
-        android:textAllCaps="false"
-        android:fontFamily="@font/sansation_regular"
-        android:padding="12dp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/create_new_facility" />
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/create_facility_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#4CAF50"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:fontFamily="@font/sansation_regular"
+            android:padding="12dp"
+            android:textStyle="bold"
+            android:text="@string/create_new_facility" />
+
+        <Button
+            android:id="@+id/exit_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#F44336"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:fontFamily="@font/sansation_regular"
+            android:padding="12dp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"
+            android:text="@string/exit" />
+
+    </LinearLayout>
 </LinearLayout>

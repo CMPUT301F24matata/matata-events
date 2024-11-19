@@ -163,4 +163,5 @@
     <string name="browse_qr_codes">Browse QR Codes</string>
     <string name="event_poster">event poster</string>
     <string name="manage_qr_codes">Manage QR Codes</string>
+    <string name="exit">Exit</string>
 </resources>

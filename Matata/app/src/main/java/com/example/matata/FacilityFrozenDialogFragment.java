@@ -43,6 +43,7 @@ public class FacilityFrozenDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_facility_frozen, container, false);
 
         Button createFacilityButton = view.findViewById(R.id.create_facility_button);
+        Button exitButton = view.findViewById(R.id.exit_button);
         TextView contact_admin_text = view.findViewById(R.id.contact_admin_text);
 
         contact_admin_text.setText("Please contact the admin for further assistance to unfreeze your facility.");
@@ -64,6 +65,14 @@ public class FacilityFrozenDialogFragment extends DialogFragment {
                 }
             });
             dismiss();
+        });
+
+        exitButton.setOnClickListener(v -> {
+            if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                getParentFragmentManager().popBackStack();
+            } else {
+                requireActivity().finish();
+            }
         });
 
         return view;
