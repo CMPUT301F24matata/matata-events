@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -129,6 +130,14 @@ public class EventDraw extends AppCompatActivity {
      */
     private TextView remainingPosition;
 
+    private TextView acceptedSectionText;
+
+    private TextView rejectedSectionText;
+
+    private TextView pendingSectionText;
+
+    private TextView waitingSectionText;
+
     /**
      * Map linking each entrant to their status (e.g., accepted, rejected).
      */
@@ -226,6 +235,11 @@ public class EventDraw extends AppCompatActivity {
 
         totalEntrant = findViewById(R.id.total_entrant_text);
         remainingPosition = findViewById(R.id.remaining_text);
+        acceptedSectionText = findViewById(R.id.accepted_section_text);
+        rejectedSectionText = findViewById(R.id.rejected_section_text);
+        pendingSectionText = findViewById(R.id.pending_section_text);
+        waitingSectionText = findViewById(R.id.waiting_section_text);
+
         drawBtn = findViewById(R.id.draw_button);
         backBtn = findViewById(R.id.go_back_draw_event);
 
@@ -296,6 +310,18 @@ public class EventDraw extends AppCompatActivity {
             }
         });
 
+        acceptedSectionText.setOnClickListener(v->{
+            recyclerViewDropDown(acceptedRecyclerView,acceptedSectionText);
+        });
+        rejectedSectionText.setOnClickListener(v->{
+            recyclerViewDropDown(rejectedRecyclerView,rejectedSectionText);
+        });
+        pendingSectionText.setOnClickListener(v->{
+            recyclerViewDropDown(pendingRecyclerView,pendingSectionText);
+        });
+        waitingSectionText.setOnClickListener(v->{
+            recyclerViewDropDown(waitlistRecyclerView,waitingSectionText);
+        });
         // Load event data from Firestore
         db.collection("EVENT_PROFILES").document(uid).get()
                 .addOnCompleteListener(task -> {
@@ -304,8 +330,8 @@ public class EventDraw extends AppCompatActivity {
                         //title.setText(document.getString("Title"));
                         // set drawNum and remainNum to capacity
                         capacity = document.getLong("Capacity").intValue();
-                        remainNum = capacity;
-                        drawNum = capacity;
+                        //remainNum = capacity;
+                        //drawNum = capacity;
 
                         List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
                         List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
@@ -322,6 +348,10 @@ public class EventDraw extends AppCompatActivity {
                         drawNum = Math.min(remainNum, waitlist.size());
                         remainingPosition.setText("Remaining Position: " + remainNum);
                         totalEntrant.setText("From: " + waitlist.size());
+
+                        if (accepted.size()==capacity){
+                            acceptedSectionText.setText("Final List");
+                        }
                     }
                 });
     }
@@ -351,7 +381,16 @@ public class EventDraw extends AppCompatActivity {
         }else{
             Toast.makeText(EventDraw.this, "You cannot draw now because there is no remaining position", Toast.LENGTH_SHORT).show();
         }
+    }
 
+    private void recyclerViewDropDown(RecyclerView dropdownLayout, TextView dropdownButton) {
+        if (dropdownLayout.getVisibility() == View.GONE) {
+            dropdownLayout.setVisibility(View.VISIBLE);
+            dropdownButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_less, 0);
+        } else {
+            dropdownLayout.setVisibility(View.GONE);
+            dropdownButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_more, 0);
+        }
     }
 
     /**
