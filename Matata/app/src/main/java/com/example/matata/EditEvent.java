@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -141,6 +142,11 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
     private static final int PICK_IMAGE_REQUEST = 1;
 
     /**
+     * Switch indicating if the event requires geolocation
+     */
+    private Switch geoRequirement;
+
+    /**
      * Called when the activity is created.
      * Initializes UI components, loads event details from Firestore, and sets up click listeners.
      *
@@ -227,6 +233,7 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                 String Time = documentSnapshot.getString("Time");
                 String Date = documentSnapshot.getString("Date");
                 String Location = documentSnapshot.getString("Location");
+                boolean GeoRequirement = documentSnapshot.getBoolean("GeoRequirement");
 
                 argbase64 = documentSnapshot.getString("bitmap");
                 try {
@@ -249,6 +256,7 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                 eventTime.setText(Time != null ? Time : "");
                 eventDate.setText(Date != null ? Date : "");
                 location.setText(Location != null ? Location : "");
+                geoRequirement.setChecked(GeoRequirement);
             } else {
                 Toast.makeText(EditEvent.this, "No event found", Toast.LENGTH_SHORT).show();
             }
@@ -270,6 +278,7 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         capacity = findViewById(R.id.number_of_people_event);
         location = findViewById(R.id.editTextLocation);
         clearAllButton = findViewById(R.id.clearAllButton);
+        geoRequirement = findViewById(R.id.geoRequirement);
     }
 
     /**
@@ -377,6 +386,7 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         updates.put("Capacity", Integer.parseInt(capacity.getText().toString()));
         updates.put("Description", descriptionBox.getText().toString());
         updates.put("Location", location.getText().toString());
+        updates.put("GeoRequirement", geoRequirement.isChecked());
 
         if (!isDefaultImage) {
             posterRef.putFile(global_Uri)
