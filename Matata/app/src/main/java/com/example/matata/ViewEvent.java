@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
@@ -443,11 +444,14 @@ public class ViewEvent extends AppCompatActivity {
         builder.setCancelable(true);
         builder.setMessage("Confirm to join waitlist");
         builder.setPositiveButton("Confirm", (dialog, which) -> {
-            if (geoRequirement) {
-                showGeolocationWarning();
-            } else {
-                addToWaitList();
-            }
+            loadEventDetails(uid);
+            new Handler().postDelayed(() -> {
+                if (geoRequirement) {
+                    showGeolocationWarning();
+                } else {
+                    addToWaitList();
+                }
+            }, 300);
         });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
         AlertDialog dialog = builder.create();
