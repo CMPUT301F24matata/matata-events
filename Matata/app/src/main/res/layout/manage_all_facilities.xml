@@ -39,7 +39,7 @@
             android:layout_weight="1"
             android:alpha="0.8"
             android:fontFamily="@font/sansation_bold"
-            android:text="@string/manage_users_admin"
+            android:text="@string/manage_facilities_admin"
             android:textSize="22sp"
             android:textColor="@color/white"
             app:layout_constraintStart_toEndOf="@id/btnBack"
