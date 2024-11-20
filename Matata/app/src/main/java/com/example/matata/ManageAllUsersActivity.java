@@ -139,14 +139,13 @@ public class ManageAllUsersActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        admin_user.setBackground(null);
         DocumentReference SuserRef = db.collection("USER_PROFILES").document(userId);
         SuserRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 String isAdmin = documentSnapshot.getString("admin");
                 if (Objects.equals(isAdmin, "admin")) {
                     admin_user.setImageResource(R.drawable.admin_icon);
-                } else if (Objects.equals(isAdmin, "entrant")) {
+                } else if (Objects.equals(isAdmin, "entrant") || Objects.equals(isAdmin, "organiser")) {
                     admin_user.setImageResource(R.drawable.user_icon);
                 }
             }
@@ -159,7 +158,7 @@ public class ManageAllUsersActivity extends AppCompatActivity {
             userRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     String isAdmin = documentSnapshot.getString("admin");
-                    if (Objects.equals(isAdmin, "entrant")) {
+                    if (Objects.equals(isAdmin, "entrant") || Objects.equals(isAdmin, "organiser") ) {
                         admin_user.setImageResource(R.drawable.admin_icon);
                         userRef.update("admin", "admin")
                                 .addOnSuccessListener(aVoid -> {
@@ -171,13 +170,25 @@ public class ManageAllUsersActivity extends AppCompatActivity {
 
                     } else if (Objects.equals(isAdmin, "admin")) {
                         admin_user.setImageResource(R.drawable.user_icon);
-                        userRef.update("admin", "entrant")
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d("adminUser", "User state updated to 'entrant'");
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e("adminUser", "Failed to update user state to 'entrant': " + e.getMessage());
-                                });
+                        String isOrg= documentSnapshot.getString("organiser");
+                        if (Objects.equals(isOrg, "yes")) {
+                            userRef.update("admin", "organiser")
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("adminUser", "User state updated to 'entrant'");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("adminUser", "Failed to update user state to 'entrant': " + e.getMessage());
+                                    });
+                        } else if (Objects.equals(isOrg, "no")) {
+                            userRef.update("admin", "entrant")
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("adminUser", "User state updated to 'entrant'");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("adminUser", "Failed to update user state to 'entrant': " + e.getMessage());
+                                    });
+                        }
+
                     }
                 }
             }).addOnFailureListener(e -> {

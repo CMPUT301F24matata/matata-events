@@ -190,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
                     userProfile.put("profileUri", "");
                     userProfile.put("freeze", "awake");
                     userProfile.put("admin", "entrant");
+                    userProfile.put("organiser", "no");
                     userRef.set(userProfile);
 
                     initializeApp();
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                         if("admin".equalsIgnoreCase(admin)) {
                             initializeApp();
                         }
-                        else if ("entrant".equalsIgnoreCase(admin)) {
+                        else {
                             initializeEntrantApp();
                         }
                     } else {

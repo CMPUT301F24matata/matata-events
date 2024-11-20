@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -161,6 +162,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      */
     private static final int PICK_IMAGE_REQUEST = 1;
 
+    private Switch geoRequirement;
+
 
     /**
      * Initializes the activity, sets up Firebase instances, assigns view elements, and
@@ -264,6 +267,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         capacity = findViewById(R.id.number_of_people_event);
         location = findViewById(R.id.editTextLocation);
         clearAllButton = findViewById(R.id.clearAllButton);
+        geoRequirement = findViewById(R.id.geoRequirement);
     }
 
     /**
@@ -338,6 +342,15 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         DocumentReference organizerRef = organizerProfilesRef.document(USER_ID);
         DocumentReference eventRef = eventProfilesRef.document(EVENT_ID);
 
+        userRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                userRef.update("admin", "organiser");
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("organiser", "yes");
+                                userRef.set(data, SetOptions.merge());
+                            }
+                        });
         organizerRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -370,7 +383,9 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                     location.getText().toString(),
                     descriptionBox.getText().toString(),
                     Integer.parseInt(capacity.getText().toString()),
-                    EVENT_ID, USER_ID, -1
+                    EVENT_ID, USER_ID,
+                    -1,
+                    geoRequirement.isChecked()
             );
 
             Intent intent = new Intent(view.getContext(), ViewEvent.class);
@@ -479,6 +494,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         Event_details.put("OrganizerID", USER_ID);
         Event_details.put("Status", "Active");
         Event_details.put("CreationDate", formattedDate);
+        Event_details.put("GeoRequirement", event.getGeoRequirement());
 
         db.collection("USER_PROFILES")
                 .document(USER_ID)

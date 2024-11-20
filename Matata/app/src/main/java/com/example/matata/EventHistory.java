@@ -133,8 +133,10 @@ public class EventHistory extends AppCompatActivity {
                                 String location = document.getString("Location");
                                 String description = document.getString("Description");
                                 int capacity = document.getLong("Capacity").intValue();
+                                int waitlistLimit = document.getLong("WaitlistLimit").intValue();
+                                boolean geoRequirement = document.getBoolean("GeoRequirement");
 
-                                eventHistoryList.add(new Event(title, date, time, location, description, capacity, uid, USER_ID, -1));
+                                eventHistoryList.add(new Event(title, date, time, location, description, capacity, uid, USER_ID, waitlistLimit, geoRequirement));
                                 eventAdapter.notifyDataSetChanged();
                             }
                         } else {
