@@ -136,6 +136,8 @@ public class ViewEvent extends AppCompatActivity {
      */
     private String uid;
 
+    private boolean geoRequirement;
+
     private boolean admin_view;
 
 
@@ -440,7 +442,13 @@ public class ViewEvent extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
         builder.setCancelable(true);
         builder.setMessage("Confirm to join waitlist");
-        builder.setPositiveButton("Confirm", (dialog, which) -> showGeolocationWarning());
+        builder.setPositiveButton("Confirm", (dialog, which) -> {
+            if (geoRequirement) {
+                showGeolocationWarning();
+            } else {
+                addToWaitList();
+            }
+        });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -518,6 +526,7 @@ public class ViewEvent extends AppCompatActivity {
                 String Time = documentSnapshot.getString("Time");
                 String Date = documentSnapshot.getString("Date");
                 String Location = documentSnapshot.getString("Location");
+                Boolean GeoRequirement = documentSnapshot.getBoolean("GeoRequirement");
 
                 argbase64 = documentSnapshot.getString("bitmap");
                 try{
@@ -540,6 +549,7 @@ public class ViewEvent extends AppCompatActivity {
                 time.setText(Time != null ? Time : "");
                 date.setText(Date != null ? Date : "");
                 location.setText(Location != null ? Location : "");
+                geoRequirement = Boolean.TRUE.equals(GeoRequirement);
             } else {
                 Toast.makeText(ViewEvent.this, "No event found", Toast.LENGTH_SHORT).show();
             }
