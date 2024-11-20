@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,7 +30,7 @@ public class AdminReportActivity extends AppCompatActivity {
     private TextView waitlistedParticipants, acceptedParticipants, pendingParticipants, rejectedParticipants, popularEvent, lLeastPopularEvent;
     private TextView totalUsers, activeUsers, frozenUsers, entrantUsers, organiserUsers, adminUsers;
     private TextView totalFacilities, activeFacilities, frozenFacilities;
-    private ImageView event_chart, user_chart, facility_chart;
+    private ImageView event_chart, user_chart, facility_chart, participants_chart, user_dist_chart;
     private FirebaseFirestore db;
 
     @Override
@@ -74,6 +75,8 @@ public class AdminReportActivity extends AppCompatActivity {
         event_chart = findViewById(R.id.event_chart);
         user_chart = findViewById(R.id.user_chart);
         facility_chart= findViewById(R.id.facility_chart);
+        participants_chart= findViewById(R.id.participants_chart);
+        user_dist_chart= findViewById(R.id.user_dist_chart);
 
         // Set up click listeners
         btnBack.setOnClickListener(v -> {
@@ -184,6 +187,20 @@ public class AdminReportActivity extends AppCompatActivity {
                             averageAttendance.setText(String.format("%.0f%%", averageAcceptance*100));
                             popularEvent.setText(mostPopularEvent[0]);
                             lLeastPopularEvent.setText(leastPopularEvent[0]);
+
+                            int activeFacilities = activeEventsCount.get();
+                            int frozenFacilities = inactiveEventsCount.get();
+
+                            Bitmap pieChartBitmap = drawPieChart(activeFacilities, frozenFacilities);
+                            event_chart.setImageBitmap(pieChartBitmap);
+
+                            int a = acceptedParticipantsCount.get();
+                            int p = pendingParticipantsCount.get();
+                            int r = rejectedParticipantsCount.get();
+
+                            Bitmap ChartBitmap = generatePieChartBitmap(a, p, r);
+                            participants_chart.setImageBitmap(ChartBitmap);
+
                         } else {
                             // No documents found
                             totalEvents.setText("0");
@@ -242,7 +259,7 @@ public class AdminReportActivity extends AppCompatActivity {
                                 String userRole = document.getString("admin");
                                 if ("admin".equalsIgnoreCase(userRole)) {
                                     adminUsersCount.incrementAndGet();
-                                } else if ("organizer".equalsIgnoreCase(userRole)) {
+                                } else if ("organiser".equalsIgnoreCase(userRole)) {
                                     organizerUsersCount.incrementAndGet();
                                 } else if ("entrant".equalsIgnoreCase(userRole)) {
                                     entrantUsersCount.incrementAndGet();
@@ -256,6 +273,20 @@ public class AdminReportActivity extends AppCompatActivity {
                             adminUsers.setText(String.valueOf(adminUsersCount.get()));
                             organiserUsers.setText(String.valueOf(organizerUsersCount.get()));
                             entrantUsers.setText(String.valueOf(entrantUsersCount.get()));
+
+                            int activeFacilities = activeUsersCount.get();
+                            int frozenFacilities = frozenUsersCount.get();
+
+                            Bitmap pieChartBitmap = drawPieChart(activeFacilities, frozenFacilities);
+                            user_chart.setImageBitmap(pieChartBitmap);
+
+                            int a = entrantUsersCount.get();
+                            int p = organizerUsersCount.get();
+                            int r = adminUsersCount.get();
+
+                            Bitmap ChartBitmap = generatePieChartBitmap(a, p, r);
+                            user_dist_chart.setImageBitmap(ChartBitmap);
+
                         } else {
                             // No documents found
                             totalUsers.setText("0");
@@ -353,21 +384,56 @@ public class AdminReportActivity extends AppCompatActivity {
         paint.setAntiAlias(true);
 
         // Background color
-        canvas.drawColor(Color.BLACK);
+        canvas.drawColor(Color.TRANSPARENT);
 
         // Draw active facilities (Green slice)
-        paint.setColor(Color.GREEN);
+        paint.setColor(Color.parseColor("#66BB6A"));
         canvas.drawArc(50, 50, width - 50, height - 50, 0, activePercentage, true, paint);
 
         // Draw frozen facilities (Red slice)
-        paint.setColor(Color.RED);
+        paint.setColor(Color.parseColor("#BDBDBD"));
         canvas.drawArc(50, 50, width - 50, height - 50, activePercentage, frozenPercentage, true, paint);
 
-        // Optional: Draw chart border
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.WHITE);
-        paint.setStrokeWidth(4);
-        canvas.drawOval(50, 50, width - 50, height - 50, paint);
+        return bitmap;
+    }
+
+    private Bitmap generatePieChartBitmap(int acceptedParticipantsCount, int pendingParticipantsCount, int rejectedParticipantsCount) {
+        int width = 500; // Width of the pie chart image
+        int height = 500; // Height of the pie chart image
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(Color.TRANSPARENT); // Transparent background
+
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+
+        int total = acceptedParticipantsCount + pendingParticipantsCount + rejectedParticipantsCount;
+
+        float acceptedPercentage = (float) acceptedParticipantsCount / total;
+        float pendingPercentage = (float) pendingParticipantsCount / total;
+        float rejectedPercentage = (float) rejectedParticipantsCount / total;
+
+        float startAngle = 0f;
+
+        RectF rectF = new RectF(50, 50, width - 50, height - 50);
+
+        // Accepted Participants (Blue)
+        paint.setColor(Color.parseColor("#42A5F5"));
+        float sweepAngle = acceptedPercentage * 360;
+        canvas.drawArc(rectF, startAngle, sweepAngle, true, paint);
+        startAngle += sweepAngle;
+
+        // Pending Participants (Orange)
+        paint.setColor(Color.parseColor("#FFA726"));
+        sweepAngle = pendingPercentage * 360;
+        canvas.drawArc(rectF, startAngle, sweepAngle, true, paint);
+        startAngle += sweepAngle;
+
+        // Rejected Participants (Red)
+        paint.setColor(Color.parseColor("#EF5350"));
+        sweepAngle = rejectedPercentage * 360;
+        canvas.drawArc(rectF, startAngle, sweepAngle, true, paint);
 
         return bitmap;
     }

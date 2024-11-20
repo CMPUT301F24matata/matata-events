@@ -34,11 +34,6 @@ public class AdminView extends AppCompatActivity {
     private LinearLayout eventsDropdown;
 
     /**
-     * LinearLayout for displaying the dropdown menu of organizers.
-     */
-    private LinearLayout organizersDropdown;
-
-    /**
      * LinearLayout for displaying the dropdown menu of users.
      */
     private LinearLayout usersDropdown;
@@ -52,11 +47,6 @@ public class AdminView extends AppCompatActivity {
      * TextView acting as a button for toggling the events dropdown.
      */
     private TextView eventsDropdownButton;
-
-    /**
-     * TextView acting as a button for toggling the organizers dropdown.
-     */
-    private TextView organizersDropdownButton;
 
     /**
      * TextView acting as a button for toggling the users dropdown.
@@ -97,11 +87,6 @@ public class AdminView extends AppCompatActivity {
      * TextView to navigate to a screen displaying all events.
      */
     private TextView viewAllEvents;
-
-    /**
-     * TextView to navigate to a screen displaying all organizers.
-     */
-    private TextView viewAllOrganizers;
 
     /**
      * TextView to navigate to a screen displaying all users.
@@ -188,38 +173,6 @@ public class AdminView extends AppCompatActivity {
                     }
                 });
 
-        // Fetch organizers
-        organizersDropdown.removeAllViews();
-        db.collection("ORGANIZER_PROFILES")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot organizerDoc : task.getResult()) {
-                            DocumentReference userProfileRef = organizerDoc.getDocumentReference("userReference");
-                            if (userProfileRef != null) {
-                                userProfileRef.get()
-                                        .addOnCompleteListener(userTask -> {
-                                            if (userTask.isSuccessful() && userTask.getResult().exists()) {
-                                                String username = userTask.getResult().getString("username");
-                                                String userId = userProfileRef.getId();
-                                                if (username != null && !username.isEmpty()) {
-                                                    addTextViewToDropdown(organizersDropdown, username, v -> {
-                                                        Intent intent = new Intent(this, ProfileActivity.class);
-                                                        intent.putExtra("USER_ID", userId);
-                                                        startActivity(intent);
-                                                    });
-                                                }
-                                            } else {
-                                                showToast("User profile not found for organizer");
-                                            }
-                                        })
-                                        .addOnFailureListener(e -> showToast("Failed to fetch user profile"));
-                            }
-                        }
-                    } else {
-                        showToast("Failed to load organizers");
-                    }
-                });
 
         // Fetch users
         usersDropdown.removeAllViews();
@@ -308,7 +261,6 @@ public class AdminView extends AppCompatActivity {
      */
     private void setonClickListeners() {
         eventsDropdownButton.setOnClickListener(v -> toggleDropdown(eventsDropdown, eventsDropdownButton));
-        organizersDropdownButton.setOnClickListener(v -> toggleDropdown(organizersDropdown, organizersDropdownButton));
         usersDropdownButton.setOnClickListener(v -> toggleDropdown(usersDropdown, usersDropdownButton));
         facilitiesDropdownButton.setOnClickListener(v -> toggleDropdown(facilitiesDropdown, facilitiesDropdownButton));
         // navigation bar click listeners
@@ -364,11 +316,9 @@ public class AdminView extends AppCompatActivity {
         dropdown_item_border = ContextCompat.getDrawable(this, R.drawable.dropdown_item_border);
         db = FirebaseFirestore.getInstance();
         eventsDropdown = findViewById(R.id.events_dropdown);
-        organizersDropdown = findViewById(R.id.organizers_dropdown);
         usersDropdown = findViewById(R.id.users_dropdown);
         facilitiesDropdown = findViewById(R.id.facilities_dropdown);
         eventsDropdownButton = findViewById(R.id.events_dropdown_button);
-        organizersDropdownButton = findViewById(R.id.organizers_dropdown_button);
         usersDropdownButton = findViewById(R.id.users_dropdown_button);
         facilitiesDropdownButton = findViewById(R.id.facilities_dropdown_button);
         iconDashboard = findViewById(R.id.icon_dashboard);
@@ -377,7 +327,6 @@ public class AdminView extends AppCompatActivity {
         iconNotifications = findViewById(R.id.icon_notifications);
         iconSettings = findViewById(R.id.icon_settings);
         viewAllEvents = findViewById(R.id.view_all_events);
-        viewAllOrganizers = findViewById(R.id.view_all_organizers);
         viewAllUsers = findViewById(R.id.view_all_users);
         viewAllFacilities = findViewById(R.id.view_all_facilities);
         viewAllImages = findViewById(R.id.view_all_images);
