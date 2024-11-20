@@ -493,6 +493,64 @@
                     android:layout_marginStart="26dp"
                     android:background="#C4A484" />
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active vs Inactive:"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:fontFamily="@font/sansation_regular" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#66BB6A" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#BDBDBD" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Frozen"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
                 <!-- Event Insights Chart -->
                 <ImageView
                     android:id="@+id/event_chart"
@@ -502,6 +560,88 @@
                     android:contentDescription="@string/event_status_chart"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_pie_chart_placeholder" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pending vs Accepted vs Rejected:"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/sansation_regular" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#42A5F5" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Accepted"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#FFA726" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pending"
+                            android:textColor="@color/white"
+                            android:layout_marginEnd="20dp"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#EF5350" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rejected"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/participants_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/event_status_chart"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_pie_chart_placeholder" />
+
+
             </LinearLayout>
 
             <!-- User Reports -->
@@ -781,6 +921,63 @@
                     android:layout_marginStart="26dp"
                     android:background="#C4A484" />
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active vs Inactive:"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:fontFamily="@font/sansation_regular" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#66BB6A" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#BDBDBD" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Frozen"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+                    </LinearLayout>
+                </LinearLayout>
+
                 <!-- User Role Chart -->
                 <ImageView
                     android:id="@+id/user_chart"
@@ -788,6 +985,86 @@
                     android:layout_height="150dp"
                     android:layout_marginTop="8dp"
                     android:contentDescription="@string/user_role_chart"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_pie_chart_placeholder" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Entrant vs Organiser vs Admin:"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/sansation_regular" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#42A5F5" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Entrant"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#FFA726" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Organiser"
+                            android:textColor="@color/white"
+                            android:layout_marginEnd="20dp"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#EF5350" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Admin"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/user_dist_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/event_status_chart"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_pie_chart_placeholder" />
             </LinearLayout>
@@ -946,39 +1223,58 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_marginTop="20dp"
-                    android:layout_marginStart="26dp"
-                    android:gravity="center">
-
-                    <View
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="#FF00FF00" />
+                    android:layout_marginStart="6dp"
+                    android:layout_gravity="center">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Active"
+                        android:text="Active vs Inactive:"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"
-                        android:layout_marginEnd="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:fontFamily="@font/sansation_regular" />
 
-                    <View
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="#FFFF0000" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Frozen"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/sansation_regular" />
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#66BB6A" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#BDBDBD" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Frozen"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+                    </LinearLayout>
                 </LinearLayout>
                 <!-- Facility Metrics Chart -->
                 <ImageView
