@@ -86,7 +86,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Map" />
+                    android:text="Map"
+                    android:visibility="invisible"/>
 
             </LinearLayout>
 
@@ -114,57 +115,66 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <!-- Accepted Section -->
+                <TextView
+                    android:id="@+id/accepted_section_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Accepted"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="#FFFFFF"
+                    app:drawableEndCompat="@drawable/ic_expand_less"
+                    android:background="@drawable/section_divider"/>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:background="@android:color/transparent" />
                 <LinearLayout
+                    android:id="@+id/accepted_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
-                    <!-- Accepted Section -->
-                    <TextView
-                        android:id="@+id/accepted_section_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Accepted"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:paddingTop="8dp"
-                        android:textColor="#FFFFFF"
-                        app:drawableEndCompat="@drawable/ic_expand_more"
-                        android:background="@drawable/section_divider"/>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/accepted_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/entrant_card"
-                        android:visibility="gone"/>
+                        tools:listitem="@layout/entrant_card"/>
                 </LinearLayout>
 
                     <!-- Pending Section -->
+                <TextView
+                    android:id="@+id/pending_section_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pending"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="#FFFFFF"
+                    app:drawableEndCompat="@drawable/ic_expand_less"
+                    android:background="@drawable/section_divider"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:background="@android:color/transparent" />
                 <LinearLayout
+                    android:id="@+id/pending_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
-
-                    <TextView
-                        android:id="@+id/pending_section_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Pending"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:paddingTop="8dp"
-                        android:textColor="#FFFFFF"
-                        app:drawableEndCompat="@drawable/ic_expand_more"
-                        android:background="@drawable/section_divider"/>
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/pending_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/entrant_card"
-                        android:visibility="gone"/>
+                        tools:listitem="@layout/entrant_card"/>
                     <Button
                         android:id="@+id/clearPendingList"
                         android:layout_width="wrap_content"
@@ -173,51 +183,62 @@
                         android:text="Clear Pending list"/>
                 </LinearLayout>
 
-                    <!-- Rejected Section -->
+                <!-- Rejected Section -->
+                <TextView
+                    android:id="@+id/rejected_section_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rejected"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="#FFFFFF"
+                    app:drawableEndCompat="@drawable/ic_expand_less"
+                    android:background="@drawable/section_divider"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:background="@android:color/transparent" />
                 <LinearLayout
+                    android:id="@+id/rejected_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
-
-                    <TextView
-                        android:id="@+id/rejected_section_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Rejected"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:paddingTop="8dp"
-                        android:textColor="#FFFFFF"
-                        app:drawableEndCompat="@drawable/ic_expand_more"
-                        android:background="@drawable/section_divider"/>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rejected_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/entrant_card"
-                        android:visibility="gone"/>
+                        tools:listitem="@layout/entrant_card"/>
                 </LinearLayout>
 
                     <!-- Waiting list Section -->
+                <TextView
+                    android:id="@+id/waiting_section_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Waitlist"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="#FFFFFF"
+                    app:drawableEndCompat="@drawable/ic_expand_less"
+                    android:background="@drawable/section_divider"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:background="@android:color/transparent" />
                 <LinearLayout
+                    android:id="@+id/waitlist_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
-
-                    <TextView
-                        android:id="@+id/waiting_section_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Waitlist"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:paddingTop="8dp"
-                        android:textColor="#FFFFFF"
-                        app:drawableEndCompat="@drawable/ic_expand_more"
-                        android:background="@drawable/section_divider"/>
 
                     <Switch
                         android:id="@+id/limitSwitch"
@@ -226,7 +247,6 @@
                         android:paddingLeft="250dp"
                         android:text="Set waitlist limit"
                         android:textColor="@color/white"/>
-
                     <EditText
                         android:id="@+id/waitlistLimit"
                         android:paddingLeft="10dp"
@@ -238,7 +258,6 @@
                         android:hint="# of entrants allowed in waitlist"
                         android:drawableEnd="@drawable/ic_edit"
                         android:background="@drawable/edit_text_background" />
-
                     <Button
                         android:id="@+id/saveButton"
                         android:visibility="gone"
@@ -247,13 +266,11 @@
                         android:layout_height="wrap_content"
                         android:text="Save"/>
 
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/waitlist_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/entrant_card"
-                        android:visibility="gone"/>
+                        tools:listitem="@layout/entrant_card"/>
                 </LinearLayout>
 
             </LinearLayout>

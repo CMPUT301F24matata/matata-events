@@ -136,7 +136,12 @@ public class EventDraw extends AppCompatActivity {
 
     private TextView pendingSectionText;
 
-    private TextView waitingSectionText;
+    private TextView waitlistSectionText;
+
+    private LinearLayout acceptedLinearLayout;
+    private LinearLayout rejectedLinearLayout;
+    private LinearLayout pendingLinearLayout;
+    private LinearLayout waitlistLinearLayout;
 
     /**
      * Map linking each entrant to their status (e.g., accepted, rejected).
@@ -238,7 +243,12 @@ public class EventDraw extends AppCompatActivity {
         acceptedSectionText = findViewById(R.id.accepted_section_text);
         rejectedSectionText = findViewById(R.id.rejected_section_text);
         pendingSectionText = findViewById(R.id.pending_section_text);
-        waitingSectionText = findViewById(R.id.waiting_section_text);
+        waitlistSectionText = findViewById(R.id.waiting_section_text);
+
+        acceptedLinearLayout = findViewById(R.id.accepted_section);
+        rejectedLinearLayout = findViewById(R.id.rejected_section);
+        pendingLinearLayout = findViewById(R.id.pending_section);
+        waitlistLinearLayout = findViewById(R.id.waitlist_section);
 
         drawBtn = findViewById(R.id.draw_button);
         backBtn = findViewById(R.id.go_back_draw_event);
@@ -310,28 +320,17 @@ public class EventDraw extends AppCompatActivity {
             }
         });
 
-        acceptedSectionText.setOnClickListener(v->{
-            recyclerViewDropDown(acceptedRecyclerView,acceptedSectionText);
-        });
-        rejectedSectionText.setOnClickListener(v->{
-            recyclerViewDropDown(rejectedRecyclerView,rejectedSectionText);
-        });
-        pendingSectionText.setOnClickListener(v->{
-            recyclerViewDropDown(pendingRecyclerView,pendingSectionText);
-        });
-        waitingSectionText.setOnClickListener(v->{
-            recyclerViewDropDown(waitlistRecyclerView,waitingSectionText);
-        });
+        acceptedSectionText.setOnClickListener(v->{ linearLayoutDropDown(acceptedLinearLayout,acceptedSectionText); });
+        rejectedSectionText.setOnClickListener(v->{ linearLayoutDropDown(rejectedLinearLayout,rejectedSectionText); });
+        pendingSectionText.setOnClickListener(v->{ linearLayoutDropDown(pendingLinearLayout,pendingSectionText); });
+        waitlistSectionText.setOnClickListener(v->{ linearLayoutDropDown(waitlistLinearLayout,waitlistSectionText); });
+
         // Load event data from Firestore
         db.collection("EVENT_PROFILES").document(uid).get()
                 .addOnCompleteListener(task -> {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         //title.setText(document.getString("Title"));
-                        // set drawNum and remainNum to capacity
-                        capacity = document.getLong("Capacity").intValue();
-                        //remainNum = capacity;
-                        //drawNum = capacity;
 
                         List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
                         List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
@@ -344,13 +343,21 @@ public class EventDraw extends AppCompatActivity {
                         loadList(rejected, rejectedList, rejectedAdapter, "rejected");
                         loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
 
-                        remainNum = capacity - pending.size() - accepted.size();
+                        capacity = document.getLong("Capacity").intValue();
+                        remainNum = Math.max(capacity - pending.size() - accepted.size(),0);
                         drawNum = Math.min(remainNum, waitlist.size());
                         remainingPosition.setText("Remaining Position: " + remainNum);
                         totalEntrant.setText("From: " + waitlist.size());
 
                         if (accepted.size()==capacity){
                             acceptedSectionText.setText("Final List");
+                            totalEntrant.setText("Event Full");
+                            pendingLinearLayout.setVisibility(View.GONE);
+                            pendingSectionText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_more, 0);
+                            rejectedLinearLayout.setVisibility(View.GONE);
+                            rejectedSectionText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_more, 0);
+                            waitlistLinearLayout.setVisibility(View.GONE);
+                            waitlistSectionText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_more, 0);
                         }
                     }
                 });
@@ -383,7 +390,7 @@ public class EventDraw extends AppCompatActivity {
         }
     }
 
-    private void recyclerViewDropDown(RecyclerView dropdownLayout, TextView dropdownButton) {
+    private void linearLayoutDropDown(LinearLayout dropdownLayout, TextView dropdownButton) {
         if (dropdownLayout.getVisibility() == View.GONE) {
             dropdownLayout.setVisibility(View.VISIBLE);
             dropdownButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_less, 0);
@@ -431,24 +438,6 @@ public class EventDraw extends AppCompatActivity {
         List<Map.Entry<String, Entrant>> tempList = new ArrayList<>(entrantMap.entrySet());
         Collections.shuffle(tempList);
 
-//        List<Entrant> list1 = new ArrayList<>();
-//        List<String> list2 = new ArrayList<>();
-//        for (int j = 0; j < tempList.size(); j++) {
-//            Map.Entry<Entrant, String> entrant = tempList.get(j);
-//            list1.add(entrant.getKey());
-//            list2.add(entrant.getValue());
-//        }
-//
-//        for (int j = 0; j < tempList.size(); j++) {
-//            Map.Entry<Entrant, String> entrant = tempList.get(j);
-//            list1.add(entrant.getKey());
-//            list2.add(entrant.getValue());
-//        }
-
-//        List<Integer> randList = new ArrayList<>();
-//        randList = ThreadLocalRandom.current().ints(0, 100).distinct().limit(5).boxed().collect(Collectors.toList());
-//        int randNum;
-
         db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
             List<DocumentReference> pending = (List<DocumentReference>) eventSnapshot.get("pending");
@@ -469,12 +458,13 @@ public class EventDraw extends AppCompatActivity {
             }
             transaction.update(eventRef, "pending", pending);
             transaction.update(eventRef, "waitlist", waitlist);
+            remainNum -= drawNum;
             return null;
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Entrant added to pending list successfully");
             pendingAdapter.notifyDataSetChanged();
             waitlistAdapter.notifyDataSetChanged();
-            //drawBtn.setClickable(false);
+            remainingPosition.setText("Remaining Position: " + remainNum);
             Toast.makeText(EventDraw.this, "Successfully sampled " + drawNum + " entrants to pending list", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to pending list", e));
     }
