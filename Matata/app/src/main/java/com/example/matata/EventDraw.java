@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 /**
  * EventDraw activity manages the draw process for an event, allowing the organizer to randomly select
@@ -130,7 +132,7 @@ public class EventDraw extends AppCompatActivity {
     /**
      * Map linking each entrant to their status (e.g., accepted, rejected).
      */
-    private Map<Entrant, String> entrantMap;
+    private Map<String, Entrant> entrantMap;
 
     /**
      * List of selected entrant IDs.
@@ -141,6 +143,10 @@ public class EventDraw extends AppCompatActivity {
      * The number of draws to be performed.
      */
     private int drawNum;
+
+    private int remainNum;
+
+    private int capacity;
 
     /**
      * Title TextView for displaying the event title.
@@ -257,7 +263,8 @@ public class EventDraw extends AppCompatActivity {
         backBtn.setOnClickListener(v -> finish());
 
         // Draw button opens a confirmation dialog
-        drawBtn.setOnClickListener(view -> drawConfirmDialog());
+        //drawBtn.setOnClickListener(view -> drawConfirmDialog());
+        drawBtn.setOnClickListener(view -> checkDrawStatus());
 
         clearPendingList = findViewById(R.id.clearPendingList);
         clearPendingList.setOnClickListener(v -> {
@@ -295,7 +302,10 @@ public class EventDraw extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         //title.setText(document.getString("Title"));
-                        drawNum = document.getLong("Capacity").intValue();
+                        // set drawNum and remainNum to capacity
+                        capacity = document.getLong("Capacity").intValue();
+                        remainNum = capacity;
+                        drawNum = capacity;
 
                         List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
                         List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
@@ -303,22 +313,23 @@ public class EventDraw extends AppCompatActivity {
                         List<DocumentReference> rejected = (List<DocumentReference>) document.get("rejected");
 
                         // Load entrants for each list
-                        loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
                         loadList(pending, selectedList, pendingAdapter, "pending");
                         loadList(accepted, acceptedList, acceptedAdapter, "accepted");
                         loadList(rejected, rejectedList, rejectedAdapter, "rejected");
+                        loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
+
+                        remainNum = capacity - pending.size() - accepted.size();
+                        drawNum = Math.min(remainNum, waitlist.size());
+                        remainingPosition.setText("Remaining Position: " + remainNum);
+                        totalEntrant.setText("From: " + waitlist.size());
                     }
                 });
     }
 
 
-        //checkDrawStatus();
 
 
 
-//    private void checkDrawStatus() {
-//
-//    }
 
     public static void injectFirestore(FirebaseFirestore firestore) {
         injectedFirestore = firestore;
@@ -328,15 +339,25 @@ public class EventDraw extends AppCompatActivity {
         injectedUid = uid;
     }
 
+    private void checkDrawStatus() {
+        // an organizer can draw when: 1. not drawn yet (no accepted/rejected/pending)
+        // 2. drew before but organizer cancelled some entrants/some entrants rejected (accepted+pending < capacity)
+        if (entrantList.isEmpty()){
+            Toast.makeText(EventDraw.this, "No one is in the waiting list", Toast.LENGTH_SHORT).show();
+            //return;
+        }else if (acceptedList.size() + selectedList.size() < capacity ){
+            // if there's still a spot and entrantList not empty, organizer can draw
+            drawConfirmDialog();
+        }else{
+            Toast.makeText(EventDraw.this, "You cannot draw now because there is no remaining position", Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
     /**
      * Opens a confirmation dialog for drawing entrants.
      */
     private void drawConfirmDialog() {
-        if (entrantList.isEmpty()) {
-            Toast.makeText(EventDraw.this, "No one entered waiting list", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(EventDraw.this);
         builder.setCancelable(true);
@@ -366,30 +387,46 @@ public class EventDraw extends AppCompatActivity {
      * Sets the selected entrants and updates Firestore accordingly.
      */
     private void setSelectedEntrant() {
-        List<Map.Entry<Entrant, String>> tempList = new ArrayList<>(entrantMap.entrySet());
-        Collections.shuffle(entrantList);
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
 
-        selectedList.clear();
-        selectedIdList.clear();
+        List<Map.Entry<String, Entrant>> tempList = new ArrayList<>(entrantMap.entrySet());
+        Collections.shuffle(tempList);
+
+//        List<Entrant> list1 = new ArrayList<>();
+//        List<String> list2 = new ArrayList<>();
+//        for (int j = 0; j < tempList.size(); j++) {
+//            Map.Entry<Entrant, String> entrant = tempList.get(j);
+//            list1.add(entrant.getKey());
+//            list2.add(entrant.getValue());
+//        }
+//
+//        for (int j = 0; j < tempList.size(); j++) {
+//            Map.Entry<Entrant, String> entrant = tempList.get(j);
+//            list1.add(entrant.getKey());
+//            list2.add(entrant.getValue());
+//        }
+
+//        List<Integer> randList = new ArrayList<>();
+//        randList = ThreadLocalRandom.current().ints(0, 100).distinct().limit(5).boxed().collect(Collectors.toList());
+//        int randNum;
+
         db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
             List<DocumentReference> pending = (List<DocumentReference>) eventSnapshot.get("pending");
             List<DocumentReference> waitlist = (List<DocumentReference>) eventSnapshot.get("waitlist");
-            drawNum = Math.min(drawNum, tempList.size());
 
             if (pending == null) {
                 pending = new ArrayList<>();
             }
             for (int i = 0; i < drawNum; i++) {
-                Map.Entry<Entrant, String> entry = tempList.get(i);
-                selectedList.add(entry.getKey());
-                selectedIdList.add(entry.getValue());
+                Map.Entry<String, Entrant> entrant = tempList.get(i);
+                selectedList.add(entrant.getValue());
+                selectedIdList.add(entrant.getKey());
 
-                DocumentReference entrantRef = db.collection("USER_PROFILES").document(entry.getValue());
+                DocumentReference entrantRef = db.collection("USER_PROFILES").document(entrant.getKey());
                 pending.add(entrantRef);
                 waitlist.remove(entrantRef);
-                entrantList.remove(entry.getKey());
+                entrantList.remove(entrant.getValue());
             }
             transaction.update(eventRef, "pending", pending);
             transaction.update(eventRef, "waitlist", waitlist);
@@ -398,7 +435,7 @@ public class EventDraw extends AppCompatActivity {
             Log.d("Firebase", "Entrant added to pending list successfully");
             pendingAdapter.notifyDataSetChanged();
             waitlistAdapter.notifyDataSetChanged();
-            drawBtn.setClickable(false);
+            //drawBtn.setClickable(false);
             Toast.makeText(EventDraw.this, "Successfully sampled " + drawNum + " entrants to pending list", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to pending list", e));
     }
@@ -450,11 +487,7 @@ public class EventDraw extends AppCompatActivity {
                     Entrant entrant = new Entrant(name, phone, email);
                     list.add(entrant);
                     if ("waitlist".equals(listType)) {
-                        entrantMap.put(entrant, snapshot.getId());
-                        totalEntrant.setText("From: " + list.size());
-                    }
-                    if ("pending".equals(listType) && (!list.isEmpty())) {
-                        drawBtn.setClickable(false);
+                        entrantMap.put(snapshot.getId(), entrant);
                     }
                 }
             }
