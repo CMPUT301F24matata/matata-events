@@ -181,6 +181,15 @@
             android:gravity="center_vertical"
             android:fontFamily="@font/sansation_regular" />
 
+        <Switch
+            android:id="@+id/geoRequirement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="230dp"
+            android:trackTint="@color/white"
+            android:textColor="@color/white"
+            android:text="Require Geolocation" />
+
         <Button
             android:id="@+id/genQR"
             android:layout_width="match_parent"

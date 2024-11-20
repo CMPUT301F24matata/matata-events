@@ -199,7 +199,9 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                     location.getText().toString(),
                     descriptionBox.getText().toString(),
                     Integer.parseInt(capacity.getText().toString()),
-                    EVENT_ID, USER_ID, -1
+                    EVENT_ID, USER_ID,
+                     -1,
+                     false
             );
 
         } else {

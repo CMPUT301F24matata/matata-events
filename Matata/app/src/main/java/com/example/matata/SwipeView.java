@@ -84,11 +84,12 @@ public class SwipeView extends Fragment {
                             int capacity = document.getLong("Capacity").intValue();
                             String status = document.getString("Status");
                             //Log.wtf(TAG,uid+title+date+time+location+description+organizerId+status);
-
+                            int waitlistLimit = document.getLong("WaitlistLimit").intValue();
+                            boolean geoRequirement = document.getBoolean("GeoRequirement");
 
 
                             if (Objects.equals(status, "Active")) {
-                                eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
+                                eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, waitlistLimit, geoRequirement));
                                 String posterUrl = document.getString("Poster");
 
                                 if (posterUrl != null) {

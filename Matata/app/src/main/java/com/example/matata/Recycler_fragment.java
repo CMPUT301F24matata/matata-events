@@ -93,11 +93,11 @@ public class Recycler_fragment extends Fragment {
                             String organizerId = document.getString("OrganizerID");
                             int capacity = document.getLong("Capacity").intValue();
                             String status = document.getString("Status");
-
+                            int waitlistLimit = document.getLong("WaitlistLimit").intValue();
 
 
                             if (Objects.equals(status, "Active")) {
-                                eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
+                                eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, waitlistLimit, false));
                                 String posterUrl = document.getString("Poster");
                                 if (posterUrl != null) {
                                     posterUrls.put(uid, posterUrl);
