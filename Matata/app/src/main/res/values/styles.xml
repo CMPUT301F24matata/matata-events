@@ -16,7 +16,7 @@
     </style>
 
     <style name="CustomSearchHintAppearance" parent="TextAppearance.AppCompat">
-        <item name="android:textColorHint">#CCCCCC</item>
+        <item name="android:textColorHint">@color/white</item>
     </style>
 
 </resources>
