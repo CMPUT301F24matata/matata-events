@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:background="@color/black"
     android:layout_height="match_parent"
-
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -23,64 +22,71 @@
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="9dp"
-            android:paddingBottom="16dp">
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingBottom="16dp"
+            android:alpha="0.9">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:alpha="0.8"
                 android:fontFamily="@font/sansation_bold"
                 android:text="@string/matata"
-                android:textColor="#FFFFFF"
+                android:textColor="#F5F5DC"
                 android:textSize="25sp" />
 
             <ImageView
                 android:id="@+id/admin"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="16dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="20dp"
                 android:contentDescription="@string/admin_view"
                 android:visibility="gone"
-                android:src="@drawable/admin" />
+                android:src="@drawable/admin"
+                app:tint="#F5F5DC"/>
 
             <ImageView
                 android:id="@+id/notifiy_button"
-                android:layout_width="28dp"
-                android:layout_height="26dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="16dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="20dp"
                 android:contentDescription="@string/notifications"
-                android:src="@drawable/notifications" />
+                android:src="@drawable/notifications"
+                app:tint="#F5F5DC"/>
 
             <ImageView
                 android:id="@+id/add_event"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="16dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="20dp"
                 android:contentDescription="@string/add_event"
-                android:src="@drawable/add_event_pic" />
+                android:src="@drawable/add_event_pic"
+                app:tint="#F5F5DC"/>
 
             <ImageView
                 android:id="@+id/FacilityProfile"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="16dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="20dp"
                 android:contentDescription="@string/organiser_profile"
-                android:src="@drawable/organiser_profile" />
+                android:src="@drawable/organiser_profile"
+                app:tint="#F5F5DC"/>
 
             <ImageView
                 android:id="@+id/profile_picture"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
                 android:layout_marginEnd="0dp"
                 android:contentDescription="@string/profile_picture"
-                android:src="@drawable/user_profile" />
+                android:src="@drawable/user_profile"
+                app:tint="#F5F5DC" />
 
         </LinearLayout>
 
@@ -113,7 +119,7 @@
                     android:button="@null"
                     android:gravity="center"
                     android:text="Explore"
-                    android:textColor="@color/white" />
+                    android:textColor="#F5F5DC" />
 
                 <RadioButton
                     android:layout_marginRight="1dp"
@@ -127,7 +133,7 @@
                     android:button="@null"
                     android:gravity="center"
                     android:text="List"
-                    android:textColor="@color/white" />
+                    android:textColor="#F5F5DC" />
             </RadioGroup>
 
 
@@ -171,21 +177,19 @@
             android:orientation="vertical">
 
             <ImageView
-
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-
                 android:alpha="0.9"
                 android:padding="0dp"
                 android:src="@drawable/event_history"
-                app:tint="@color/white" />
+                app:tint="#F5F5DC" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                android:textColor="#F5F5DC"
                 android:layout_gravity="center"
                 android:text="History"/>
         </LinearLayout>
@@ -197,7 +201,7 @@
             android:layout_margin="4dp"
             android:alpha="0.9"
             android:background="@drawable/custom_fab_layout"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="#F5F5DC"
             android:elevation="2dp"
             android:enabled="true"
             android:foreground="@drawable/baseline_qr_code_scanner_24"
@@ -225,14 +229,14 @@
                 android:alpha="0.92"
                 android:padding="0dp"
                 android:src="@drawable/explore_map"
-                app:tint="@color/white" />
+                app:tint="#F5F5DC" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Explore"
                 android:layout_gravity="center"
-                android:textColor="@color/white"/>
+                android:textColor="#F5F5DC"/>
         </LinearLayout>
 
     </LinearLayout>

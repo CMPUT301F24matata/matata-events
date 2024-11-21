@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#f3f4f6">
+    android:background="@color/black">
 
     <LinearLayout
         android:layout_width="match_parent"
