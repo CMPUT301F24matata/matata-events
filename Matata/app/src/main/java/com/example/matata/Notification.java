@@ -2,12 +2,23 @@ package com.example.matata;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
-//import com.google.firebase.messaging.FirebaseMessaging;
+import androidx.core.app.NotificationCompat;
+
+import com.google.firebase.functions.FirebaseFunctionsException;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.functions.FirebaseFunctions;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * The Notification class provides utility methods for managing and sending notifications.
@@ -37,6 +48,11 @@ public class Notification {
     private static final String CHANNEL_DESCRIPTION = "Notifications for event waitlists";
 
     /**
+     * Firebase Functions instance for sending notifications.
+     */
+    private static final FirebaseFunctions firebaseFunctions = FirebaseFunctions.getInstance();
+
+    /**
      * Initializes the notification channel for the app (required for Android 8.0+).
      *
      * @param context Application context.
@@ -63,18 +79,18 @@ public class Notification {
      * @param topic   The topic to subscribe to (e.g., event waitlist ID).
      * @param context Application context for displaying messages.
      */
-    //public static void subscribeToTopic(String topic, Context context) {
-    //    FirebaseMessaging.getInstance().subscribeToTopic(topic)
-    //            .addOnCompleteListener(task -> {
-    //                if (task.isSuccessful()) {
-    //                    Toast.makeText(context, "Subscribed to topic: " + topic, Toast.LENGTH_SHORT).show();
-    //                    Log.d(TAG, "Subscribed to topic: " + topic);
-    //                } else {
-    //                    Toast.makeText(context, "Failed to subscribe to topic.", Toast.LENGTH_SHORT).show();
-    //                    Log.e(TAG, "Failed to subscribe to topic: " + topic, task.getException());
-    //               }
-    //            });
-    //}
+    public static void subscribeToTopic(String topic, Context context) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(context, "Subscribed to topic: " + topic, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Subscribed to topic: " + topic);
+                    } else {
+                        Toast.makeText(context, "Failed to subscribe to topic.", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Failed to subscribe to topic: " + topic, task.getException());
+                   }
+                });
+    }
 
     /**
      * Unsubscribes the user from a specific topic.
@@ -82,28 +98,77 @@ public class Notification {
      * @param topic   The topic to unsubscribe from (e.g., event waitlist ID).
      * @param context Application context for displaying messages.
      */
-    //public static void unsubscribeFromTopic(String topic, Context context) {
-    //    FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
-    //            .addOnCompleteListener(task -> {
-    //                if (task.isSuccessful()) {
-    //                    Toast.makeText(context, "Unsubscribed from topic: " + topic, Toast.LENGTH_SHORT).show();
-    //                    Log.d(TAG, "Unsubscribed from topic: " + topic);
-    //                } else {
-    //                    Toast.makeText(context, "Failed to unsubscribe from topic.", Toast.LENGTH_SHORT).show();
-    //                    Log.e(TAG, "Failed to unsubscribe from topic: " + topic, task.getException());
-    //                }
-    //            });
-    //}
+    public static void unsubscribeFromTopic(String topic, Context context) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(context, "Unsubscribed from topic: " + topic, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Unsubscribed from topic: " + topic);
+                    } else {
+                        Toast.makeText(context, "Failed to unsubscribe from topic.", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Failed to unsubscribe from topic: " + topic, task.getException());
+                    }
+                });
+    }
 
     /**
      * Sends a notification to all users subscribed to a specific topic.
      *
-     * * @param context Application context.
      * @param topic   The topic to send the notification to (e.g., waitlist ID).
      * @param title   The title of the notification.
      * @param message The body of the notification.
+     * @param context Application context.
      */
     public static void sendTopicNotification(Context context, String topic, String title, String message) {
-    
+        Map<String, Object> data = new HashMap<>();
+        data.put("topic", topic);
+        data.put("title", title);
+        data.put("message", message);
+
+        firebaseFunctions.getHttpsCallable("sendTopicNotification")
+                .call(data)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(context, "Notification sent successfully!", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Notification sent successfully to topic: " + topic);
+                    } else {
+                        Exception e = task.getException();
+                        if (e instanceof FirebaseFunctionsException) {
+                            FirebaseFunctionsException ffe = (FirebaseFunctionsException) e;
+                            FirebaseFunctionsException.Code code = ffe.getCode();
+                            Object details = ffe.getDetails();
+                            Log.e(TAG, "Firebase Functions Error: " + code + ", Details: " + details);
+                        }
+                        Toast.makeText(context, "Failed to send notification.", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Failed to send notification to topic: " + topic, e);
+                    }
+                });
+    }
+
+
+    /**
+     * Handles incoming messages from Firebase Cloud Messaging.
+     */
+    public static class WaitlistMessagingService extends FirebaseMessagingService {
+        @Override
+        public void onMessageReceived(com.google.firebase.messaging.RemoteMessage remoteMessage) {
+            super.onMessageReceived(remoteMessage);
+
+            // Extract data
+            String title = remoteMessage.getNotification() != null
+                    ? remoteMessage.getNotification().getTitle()
+                    : "Waitlist Update";
+
+            String message = remoteMessage.getNotification() != null
+                    ? remoteMessage.getNotification().getBody()
+                    : "You have a new notification for your waitlist.";
+        }
+
+        @Override
+        public void onNewToken(String token) {
+            super.onNewToken(token);
+            Log.d(TAG, "New FCM Token: " + token);
+            // Optionally send token to backend
+        }
     }
 }

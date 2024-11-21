@@ -58,6 +58,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.activity:activity:1.9.2")
     implementation(libs.play.services.maps)
+    implementation(libs.firebase.functions)
 
     testImplementation("junit:junit:4.13.2")
     testImplementation(libs.core)
