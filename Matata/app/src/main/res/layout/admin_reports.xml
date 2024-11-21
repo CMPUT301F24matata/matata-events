@@ -1,0 +1,1291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#232323"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="10dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back_arrow"
+            android:contentDescription="@string/back_button"
+            app:tint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:alpha="0.8"
+            android:fontFamily="@font/sansation_bold"
+            android:text="@string/app_stats"
+            android:textSize="22sp"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toEndOf="@id/btnBack"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:maxWidth="300dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:padding="16dp">
+
+            <!-- Event Reports -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/section_divider"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sansation_bold"
+                    android:text="@string/event_reports"
+                    android:textColor="@color/sky_blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="8dp"
+                    android:background="@color/white" />
+
+                <!-- Event Performance -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/sansation_regular"
+                    android:text="@string/event_performance"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Total Events Organized"
+                        android:fontFamily="@font/sansation_bold"
+                        android:textSize="16sp"
+                        android:background="@drawable/text_background2"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/totalEvents"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="50"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Average Attendance"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/averageAttendance"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="75%"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Active Events"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/activeEvents"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="30"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Inactive Events"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/inactiveEvents"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="20"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Waitlisted Participants"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/waitlistedParticipants"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="100"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Accepted Participants"
+                        android:fontFamily="@font/sansation_bold"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/acceptedParticipants"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="300"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Rejected Participants"
+                        android:fontFamily="@font/sansation_bold"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/rejectedParticipants"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="300"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Pending Participants"
+                        android:fontFamily="@font/sansation_bold"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/pendingParticipants"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="300"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <!-- Event Engagement -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:text="Event Engagement"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Most Popular Event"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/popular_event"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="Cultural Night"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Least Popular Event"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/un_popular_event"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="Study Session"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active vs Inactive:"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:fontFamily="@font/sansation_regular" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#66BB6A" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#BDBDBD" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Frozen"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <!-- Event Insights Chart -->
+                <ImageView
+                    android:id="@+id/event_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/event_status_chart"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_pie_chart_placeholder" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pending vs Accepted vs Rejected:"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/sansation_regular" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#42A5F5" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Accepted"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#FFA726" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pending"
+                            android:textColor="@color/white"
+                            android:layout_marginEnd="20dp"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#EF5350" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rejected"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/participants_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/event_status_chart"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_pie_chart_placeholder" />
+
+
+            </LinearLayout>
+
+            <!-- User Reports -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/section_divider"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sansation_bold"
+                    android:text="@string/user_reports"
+                    android:textColor="@color/sky_blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="8dp"
+                    android:background="@color/white" />
+
+                <!-- User Activity -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/sansation_regular"
+                    android:text="@string/user_activity"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Total Users"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/totalUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="155"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Active Users"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/activeUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="100"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Frozen Users"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/frozenUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="30"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <!-- User Role Distribution -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:text="User Role Distribution"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Entrants"
+                        android:fontFamily="@font/sansation_bold"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/entrantUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="130"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:fontFamily="@font/sansation_bold"
+                        android:layout_weight="1"
+                        android:text="Organizers"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/organiserUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="20"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Admins"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/adminUsers"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="5"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active vs Inactive:"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:fontFamily="@font/sansation_regular" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#66BB6A" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#BDBDBD" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Frozen"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- User Role Chart -->
+                <ImageView
+                    android:id="@+id/user_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/user_role_chart"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_pie_chart_placeholder" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Entrant vs Organiser vs Admin:"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/sansation_regular" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:layout_gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#42A5F5" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Entrant"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#FFA726" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Organiser"
+                            android:textColor="@color/white"
+                            android:layout_marginEnd="20dp"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#EF5350" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Admin"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/user_dist_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/event_status_chart"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_pie_chart_placeholder" />
+            </LinearLayout>
+
+            <!-- Facility Reports -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/section_divider"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sansation_bold"
+                    android:text="@string/facility_reports"
+                    android:textColor="@color/sky_blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="8dp"
+                    android:background="@color/white" />
+
+                <!-- Facility Utilization -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/sansation_regular"
+                    android:text="@string/facility_utilization"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Total Facilities"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/totalFacilities"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="10"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/sansation_bold"
+                        android:text="Active Facilities"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/activeFacilities"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="8"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:textColor="#F5F5DC"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/text_background2"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Frozen Facilities"
+                        android:fontFamily="@font/sansation_bold"
+                        android:textSize="16sp"
+                        android:layout_marginStart="26dp"/>
+
+                    <TextView
+                        android:id="@+id/frozenFacilities"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="2"
+                        android:textColor="#212121"
+                        android:fontFamily="@font/sansation_bold"
+                        android:background="@drawable/text_background"
+                        android:textSize="16sp"
+                        android:layout_weight="0.2"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="26dp"
+                    android:background="#C4A484" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active vs Inactive:"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:fontFamily="@font/sansation_regular" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#66BB6A" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="20dp"
+                            android:fontFamily="@font/sansation_regular" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="#BDBDBD" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Frozen"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/sansation_regular" />
+                    </LinearLayout>
+                </LinearLayout>
+                <!-- Facility Metrics Chart -->
+                <ImageView
+                    android:id="@+id/facility_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/top_facilities_chart"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_pie_chart_placeholder" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

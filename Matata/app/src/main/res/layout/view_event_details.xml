@@ -12,8 +12,10 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/header"
@@ -21,52 +23,52 @@
             android:layout_height="wrap_content"
             android:background="#232323"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
             android:paddingTop="16dp"
+            android:paddingEnd="16dp"
             android:paddingBottom="16dp">
 
             <!-- Back Button -->
             <ImageView
                 android:id="@+id/go_back_view_event"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="10dp"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_back_arrow"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="10dp"
                 android:contentDescription="@string/back_button"
-                app:tint="@color/white"
+                android:src="@drawable/ic_back_arrow"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:tint="@color/white" />
 
             <!-- Title Text -->
             <TextView
                 android:id="@+id/view_details_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:alpha="0.8"
-                android:gravity="center"
-                android:text="@string/view_details"
-                android:textSize="20sp"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toEndOf="@id/go_back_view_event"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="12dp"
-                android:maxWidth="300dp" />
+                android:alpha="0.8"
+                android:gravity="center"
+                android:maxWidth="300dp"
+                android:text="@string/view_details"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/go_back_view_event"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Edit Event Button with Icon and Text -->
             <LinearLayout
-                android:id="@+id/EditEvent"
+                android:id="@+id/DeleteEvent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toStartOf="@id/draw_button"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="12dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/EditEvent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:layout_width="30dp"
@@ -74,9 +76,32 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="16dp"
                     android:background="#232323"
-                    app:tint="@color/white"
                     android:elevation="10dp"
-                    android:src="@drawable/ic_edit" />
+                    android:src="@drawable/baseline_delete_24"
+                    app:tint="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/EditEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/draw_button"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:background="#232323"
+                    android:elevation="10dp"
+                    android:src="@drawable/ic_edit"
+                    app:tint="@color/white" />
 
             </LinearLayout>
 
@@ -85,11 +110,11 @@
                 android:id="@+id/draw_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:gravity="center">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:layout_width="30dp"
@@ -97,9 +122,9 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="16dp"
                     android:background="#232323"
-                    app:tint="@color/white"
                     android:elevation="10dp"
-                    android:src="@drawable/baseline_people_alt_24" />
+                    android:src="@drawable/baseline_people_alt_24"
+                    app:tint="@color/white" />
 
             </LinearLayout>
 
@@ -114,7 +139,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:scaleType="centerCrop"
-            android:background="@color/white" />
+            android:src="@drawable/ic_upload" />
 
         <!-- Event Title -->
         <TextView
@@ -123,8 +148,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:padding="12dp"
             android:background="@drawable/view_text_background"
+            android:maxLines="1"
+            android:padding="12dp"
+            android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -134,10 +161,10 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E0E0E0"
             android:layout_marginVertical="8dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_marginEnd="16dp"
+            android:background="#E0E0E0" />
 
         <!-- Event Capacity -->
         <TextView
@@ -146,22 +173,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:background="@drawable/view_text_background"
             android:drawableStart="@drawable/person"
             android:drawablePadding="8dp"
+            android:gravity="center_vertical"
             android:padding="12dp"
-            android:background="@drawable/view_text_background"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:gravity="center_vertical"
             tools:text="Capacity: 100" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E0E0E0"
             android:layout_marginVertical="8dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_marginEnd="16dp"
+            android:background="#E0E0E0" />
 
         <!-- Event Description -->
         <TextView
@@ -170,43 +197,43 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:padding="12dp"
             android:background="@drawable/view_text_background"
             android:gravity="top|left"
+            android:maxLines="5"
+            android:padding="12dp"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:maxLines="5"
             tools:text="Event Description: This is a sample description for the event." />
 
         <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E0E0E0"
             android:layout_marginVertical="8dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_marginEnd="16dp"
+            android:background="#E0E0E0" />
 
         <!-- Event Date and Time -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/ViewEventTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawablePadding="8dp"
-                android:padding="12dp"
                 android:background="@drawable/view_text_background"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:padding="12dp"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                android:gravity="center_vertical"
                 app:drawableStartCompat="@drawable/ic_clock"
                 tools:text="Time: 7:00 PM" />
 
@@ -214,14 +241,14 @@
                 android:id="@+id/ViewEventDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawablePadding="8dp"
-                android:padding="12dp"
                 android:layout_marginStart="8dp"
+                android:layout_weight="1"
                 android:background="@drawable/view_text_background"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:padding="12dp"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                android:gravity="center_vertical"
                 app:drawableStartCompat="@drawable/ic_calendar"
                 tools:text="Date: 12/12/2023" />
         </LinearLayout>
@@ -229,10 +256,10 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E0E0E0"
             android:layout_marginVertical="8dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_marginEnd="16dp"
+            android:background="#E0E0E0" />
 
         <!-- Event Location -->
         <TextView
@@ -241,29 +268,29 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:drawablePadding="8dp"
-            android:padding="12dp"
             android:background="@drawable/view_text_background"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:padding="12dp"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:gravity="center_vertical"
             app:drawableStartCompat="@drawable/ic_location"
             tools:text="Location: University Hall" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E0E0E0"
             android:layout_marginVertical="8dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_marginEnd="16dp"
+            android:background="#E0E0E0" />
 
         <!-- Share and QR Button Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/share_button"
@@ -283,19 +310,24 @@
                 android:foreground="@drawable/baseline_qr_code_scanner_24"
                 android:foregroundGravity="center"
                 android:foregroundTint="@color/black" />
+
+            <Button
+                android:id="@+id/join_waitlist_button"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:padding="10dp"
+                android:text="@string/pending"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
         </LinearLayout>
 
 
-        <Button
-            android:id="@+id/join_waitlist_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:padding="10dp"
-            android:text="@string/pending"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+
 
     </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

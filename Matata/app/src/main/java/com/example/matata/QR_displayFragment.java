@@ -149,10 +149,4 @@ public class QR_displayFragment extends DialogFragment {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-    // Placeholder for future functionality to share QR code image
-    /*
-    public void shareQRpng() {
-        // Implementation will go here for sharing the QR image
-    }
-    */
 }

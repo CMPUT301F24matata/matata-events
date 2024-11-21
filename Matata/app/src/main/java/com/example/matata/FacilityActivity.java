@@ -1,7 +1,5 @@
 package com.example.matata;
 
-import static com.example.matata.ProfileActivity.createImageFromString;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,13 +10,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -33,12 +28,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * FacilityActivity allows users to enter and save facility information,
- * such as name, address, capacity, contact, and more.
- * This activity handles data retrieval from Firebase Firestore,
- * image handling, and saving data.
+ * The FacilityActivity class allows users to view, edit, and save facility information,
+ * such as name, address, capacity, contact, email, owner, and profile picture.
+ * This activity interacts with Firebase Firestore to fetch and store facility data,
+ * and uses Glide for image handling.
  */
 public class FacilityActivity extends AppCompatActivity {
 
@@ -63,17 +59,17 @@ public class FacilityActivity extends AppCompatActivity {
     private EditText facilityContact;
 
     /**
-     * EditText for entering the facility email.
+     * EditText for entering the facility email address.
      */
     private EditText facilityEmail;
 
     /**
-     * EditText for entering the facility owner’s name.
+     * EditText for entering the facility owner's name.
      */
     private EditText facilityOwner;
 
     /**
-     * Switch for enabling or disabling notifications.
+     * Switch for enabling or disabling notifications for the facility.
      */
     private Switch switchNotification;
 
@@ -83,10 +79,13 @@ public class FacilityActivity extends AppCompatActivity {
     private String imageUriString;
 
     /**
-     * String representing the unique user ID, initialized as an empty string.
+     * String representing the unique ID of the user.
      */
     private String USER_ID = "";
 
+    /**
+     * String representing the facility ID.
+     */
     private String facilityId;
 
     /**
@@ -95,12 +94,12 @@ public class FacilityActivity extends AppCompatActivity {
     private FirebaseFirestore db;
 
     /**
-     * ImageView for displaying the facility profile icon.
+     * ImageView for displaying the facility profile picture.
      */
     private ImageView profileIcon;
 
     /**
-     * Button for saving facility data.
+     * Button for saving facility data to Firestore.
      */
     private Button saveButton;
 
@@ -115,7 +114,9 @@ public class FacilityActivity extends AppCompatActivity {
     private ImageView btnBackProfile;
 
 
-    // ActivityResultLauncher for facility profile picture selection
+    /**
+     * ActivityResultLauncher for handling the result of profile picture selection.
+     */
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -126,10 +127,10 @@ public class FacilityActivity extends AppCompatActivity {
             });
 
     /**
-     * Called when the activity is first created. Sets up Firebase, initializes UI elements,
-     * and loads existing facility data if available.
+     * Called when the activity is created.
+     * Initializes Firebase, sets up UI elements, and loads facility data if available.
      *
-     * @param savedInstanceState Bundle containing the activity's previous state if it exists.
+     * @param savedInstanceState Bundle containing the activity's previous state, if it exists.
      */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -228,25 +229,26 @@ public class FacilityActivity extends AppCompatActivity {
      * @param capacity           Facility capacity.
      * @param contact            Facility contact information.
      * @param email              Facility email address.
-     * @param owner              Facility owner name.
-     * @param notificationsEnabled Notifications switch state.
-     * @param imageUriString     URI string of the facility image.
+     * @param owner              Facility owner's name.
+     * @param notificationsEnabled Whether notifications are enabled for the facility.
+     * @param imageUriString     URI string of the facility's profile picture.
      */
     private void saveFacilityData(String name, String address, String capacity, String contact, String email, String owner, boolean notificationsEnabled, String imageUriString) {
         loadFacilityPicture(imageUriString);
 
-        Map<String, Object> userProfile = new HashMap<>();
-        userProfile.put("name", name);
-        userProfile.put("address", address);
-        userProfile.put("email", email);
-        userProfile.put("notifications", notificationsEnabled);
-        userProfile.put("profileUri", imageUriString);
-        userProfile.put("capacity", capacity);
-        userProfile.put("contact", contact);
-        userProfile.put("owner", owner);
+        Map<String, Object> facilityProfile = new HashMap<>();
+        facilityProfile.put("name", name);
+        facilityProfile.put("address", address);
+        facilityProfile.put("email", email);
+        facilityProfile.put("notifications", notificationsEnabled);
+        facilityProfile.put("profileUri", imageUriString);
+        facilityProfile.put("capacity", capacity);
+        facilityProfile.put("contact", contact);
+        facilityProfile.put("owner", owner);
+        facilityProfile.put("freeze", "awake");
 
         db.collection("FACILITY_PROFILES").document(USER_ID)
-                .set(userProfile)
+                .set(facilityProfile)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(FacilityActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show();
                     finish();
@@ -255,9 +257,10 @@ public class FacilityActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads facility image from the provided URI or generates an image using initials.
+     * Loads the facility's profile picture from the provided URI.
+     * If no URI is available, generates a default image using the facility's name initials.
      *
-     * @param imageUriString URI of the facility profile image.
+     * @param imageUriString URI of the facility's profile picture.
      */
     void loadFacilityPicture(String imageUriString) {
         if (imageUriString != null && !imageUriString.isEmpty()) {
@@ -285,38 +288,47 @@ public class FacilityActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads facility data from Firebase Firestore and populates the fields.
+     * Loads facility data from Firebase Firestore and populates the respective fields.
+     * Displays a frozen dialog if the facility is marked as "frozen" in the database.
      */
     private void loadFacilityData() {
         DocumentReference docRef = db.collection("FACILITY_PROFILES").document(USER_ID);
         docRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("name");
-                        String address = documentSnapshot.getString("address");
-                        String email = documentSnapshot.getString("email");
-                        boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
-                        String sImageUri = documentSnapshot.getString("profileUri");
-                        String capacity = documentSnapshot.getString("capacity");
-                        String contact = documentSnapshot.getString("contact");
-                        String owner = documentSnapshot.getString("owner");
 
-                        facilityName.setText(name);
-                        facilityAddress.setText(address);
-                        facilityCapacity.setText(capacity);
-                        facilityContact.setText(contact);
-                        facilityEmail.setText(email);
-                        facilityOwner.setText(owner);
-                        switchNotification.setChecked(notificationsChecked);
+                        String freeze = documentSnapshot.getString("freeze");
 
-                        loadFacilityPicture(sImageUri);
+                        if (Objects.equals(freeze, "frozen")) {
+                            FacilityFrozenDialogFragment dialog = new FacilityFrozenDialogFragment();
+                            dialog.show(getSupportFragmentManager(), "FacilityFrozenDialog");
+                        } else if (Objects.equals(freeze, "awake")) {
+                            String name = documentSnapshot.getString("name");
+                            String address = documentSnapshot.getString("address");
+                            String email = documentSnapshot.getString("email");
+                            boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
+                            String sImageUri = documentSnapshot.getString("profileUri");
+                            String capacity = documentSnapshot.getString("capacity");
+                            String contact = documentSnapshot.getString("contact");
+                            String owner = documentSnapshot.getString("owner");
+
+                            facilityName.setText(name);
+                            facilityAddress.setText(address);
+                            facilityCapacity.setText(capacity);
+                            facilityContact.setText(contact);
+                            facilityEmail.setText(email);
+                            facilityOwner.setText(owner);
+                            switchNotification.setChecked(notificationsChecked);
+
+                            loadFacilityPicture(sImageUri);
+                        }
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(FacilityActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
     }
 
     /**
-     * Creates an image from a string of initials and returns a URI for display.
+     * Creates an image from a string of initials and returns a URI for the generated image.
      *
      * @param context The context in which the image is created.
      * @param text    The initials text to display in the image.

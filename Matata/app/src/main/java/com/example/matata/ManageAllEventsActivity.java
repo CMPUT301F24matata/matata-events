@@ -12,20 +12,38 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.List;
+
+/**
+ * The ManageAllEventsActivity class provides an interface for administrators to manage all events.
+ * It allows viewing, freezing/unfreezing, and deleting events, and displays event statistics such as
+ * the number of accepted, pending, rejected, and waitlisted participants.
+ * This activity interacts with Firebase Firestore to fetch and update event data.
+ */
 public class ManageAllEventsActivity extends AppCompatActivity {
 
-    private LinearLayout eventDetails;
-    private ImageView btnToggleDetails;
-    private final boolean isDropdownVisible = false;
-    private final boolean isEventFrozen = false;
+    /**
+     * Instance of FirebaseFirestore for database operations.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * LinearLayout container for dynamically adding event items.
+     */
     private LinearLayout eventsContainer;
 
+    /**
+     * Called when the activity is first created.
+     * Sets up UI components, configures click listeners for navigation buttons, and fetches events from Firestore.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,18 +54,39 @@ public class ManageAllEventsActivity extends AppCompatActivity {
         eventsContainer = findViewById(R.id.eventsContainer);
         ImageView btnBack = findViewById(R.id.btnBack);
         ImageView iconDashboard = findViewById(R.id.icon_dashboard);
+        ImageView iconUsers = findViewById(R.id.icon_users);
+        ImageView iconReports = findViewById(R.id.icon_reports);
+        ImageView iconNotifications = findViewById(R.id.icon_notifications);
+        ImageView iconSettings = findViewById(R.id.icon_settings);
 
         btnBack.setOnClickListener(v -> finish());
 
         iconDashboard.setOnClickListener(v -> {
             Intent intent = new Intent(ManageAllEventsActivity.this, AdminView.class);
             startActivity(intent);
+            finish();
+        });
+
+        iconSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(ManageAllEventsActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        iconReports.setOnClickListener(v -> {
+            Intent intent = new Intent(ManageAllEventsActivity.this, AdminReportActivity.class);
+            startActivity(intent);
+            finish();
         });
 
         fetchFromFirestore();
 
     }
 
+    /**
+     * Fetches all events from Firestore and adds them to the `eventsContainer`.
+     * Each event is displayed with its title, status, organizer name, creation date, and statistics.
+     */
     private void fetchFromFirestore() {
         eventsContainer.removeAllViews();
 
@@ -74,6 +113,18 @@ public class ManageAllEventsActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Adds a dynamically created event item to the `eventsContainer` with actions for viewing,
+     * freezing/unfreezing, and deleting the event. Displays event statistics such as accepted,
+     * pending, rejected, and waitlisted counts.
+     *
+     * @param title        Title of the event.
+     * @param eventId      Unique ID of the event.
+     * @param organizerName Name of the event organizer.
+     * @param creationDate Date the event was created.
+     * @param status       Status of the event ("Active" or "Inactive").
+     * @param orgId        Unique ID of the event organizer.
+     */
     private void addEventItem(String title, String eventId, String organizerName, String creationDate, String status, String orgId) {
 
         View eventView = getLayoutInflater().inflate(R.layout.event_item, eventsContainer, false);
@@ -87,8 +138,60 @@ public class ManageAllEventsActivity extends AppCompatActivity {
         TextView btnFreezeEvent = eventView.findViewById(R.id.btn_freeze_event);
         TextView btnViewEvent = eventView.findViewById(R.id.btn_view_event);
         TextView btnDeleteEvent = eventView.findViewById(R.id.btn_delete_event);
+        TextView acceptedCount = eventView.findViewById(R.id.accepted_count);
+        TextView pendingCount = eventView.findViewById(R.id.pending_count);
+        TextView waitlistCount = eventView.findViewById(R.id.waitlist_count);
+        TextView rejectedCount = eventView.findViewById(R.id.rejected_count);
+        LinearLayout toggle_tile = eventView.findViewById(R.id.toggle_tile);
 
-        Log.d("ManageAllEvents", "event_details found: " + (eventDetails != null));
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(eventId);
+
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Object acceptedField = documentSnapshot.get("accepted");
+                if (acceptedField instanceof List<?>) {
+                    List<?> acceptedList = (List<?>) acceptedField;
+                    acceptedCount.setText(String.valueOf(acceptedList.size()));
+                } else {
+                    acceptedCount.setText("0");
+                    Log.e("StatsActivity", "'accepted' field is not a List");
+                }
+
+                Object pendingField = documentSnapshot.get("pending");
+                if (pendingField instanceof List<?>) {
+                    List<?> pendingList = (List<?>) pendingField;
+                    pendingCount.setText(String.valueOf(pendingList.size()));
+                } else {
+                    pendingCount.setText("0");
+                    Log.e("StatsActivity", "'pending' field is not a List");
+                }
+
+                Object rejectedField = documentSnapshot.get("rejected");
+                if (rejectedField instanceof List<?>) {
+                    List<?> rejectedList = (List<?>) rejectedField;
+                    rejectedCount.setText(String.valueOf(rejectedList.size()));
+                } else {
+                    rejectedCount.setText("0");
+                    Log.e("StatsActivity", "'rejected' field is not a List");
+                }
+
+                Object waitlistField = documentSnapshot.get("waitlist");
+                if (waitlistField instanceof List<?>) {
+                    List<?> waitlistList = (List<?>) waitlistField;
+                    waitlistCount.setText(String.valueOf(waitlistList.size()));
+                } else {
+                    waitlistCount.setText("0");
+                    Log.e("StatsActivity", "'waitlist' field is not a List");
+                }
+
+            } else {
+                Log.e("StatsActivity", "Document does not exist");
+                acceptedCount.setText("0");
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("StatsActivity", "Failed to fetch accepted count: " + e.getMessage());
+            acceptedCount.setText("0");
+        });
 
         eventTitle.setText(title);
         organizerNameView.setText(organizerName);
@@ -105,7 +208,7 @@ public class ManageAllEventsActivity extends AppCompatActivity {
         eventDetails.setVisibility(View.GONE);
         toggleButton.setImageResource(R.drawable.ic_add);
 
-        toggleButton.setOnClickListener(view -> {
+        toggle_tile.setOnClickListener(view -> {
             if (eventDetails.getVisibility() == View.VISIBLE) {
                 eventDetails.setVisibility(View.GONE);
                 toggleButton.setImageResource(R.drawable.ic_add);
@@ -122,7 +225,6 @@ public class ManageAllEventsActivity extends AppCompatActivity {
             intent.putExtra("ORG_ID", orgId);
             startActivity(intent);
         });
-
 
         btnFreezeEvent.setOnClickListener(v -> {
             if (eventStatus.getText().toString().equalsIgnoreCase("Active")) {
@@ -153,6 +255,12 @@ public class ManageAllEventsActivity extends AppCompatActivity {
         eventsContainer.addView(eventView);
     }
 
+    /**
+     * Deletes the specified event from Firestore and removes its reference from the organizer's profile.
+     *
+     * @param eventId Unique ID of the event to be deleted.
+     * @param orgId   Unique ID of the organizer of the event.
+     */
     private void deleteEventFromDatabase(String eventId, String orgId) {
         db.collection("EVENT_PROFILES").document(eventId)
                 .delete()
@@ -165,6 +273,12 @@ public class ManageAllEventsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("ManageAllEvents", "Error removing event reference", e));
     }
 
+    /**
+     * Updates the status of the specified event in Firestore.
+     *
+     * @param eventId   Unique ID of the event.
+     * @param newStatus New status of the event ("Active" or "Inactive").
+     */
     private void updateEventStatusInDatabase(String eventId, String newStatus) {
         db.collection("EVENT_PROFILES").document(eventId)
                 .update("Status", newStatus)
@@ -172,7 +286,9 @@ public class ManageAllEventsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("ManageAllEvents", "Failed to update event status", e));
     }
 
-
+    /**
+     * Displays a toast message indicating failure to load events from Firestore.
+     */
     private void showToast() {
         Toast.makeText(this, "Failed to load events", Toast.LENGTH_SHORT).show();
     }

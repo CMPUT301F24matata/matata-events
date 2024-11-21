@@ -1,5 +1,4 @@
 package com.example.matata;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,13 +10,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -27,13 +28,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
+
 import java.util.List;
+import java.util.Map;
+
 
 /**
  * EventDetailActivity displays the details of a selected event and allows users to join or withdraw
  * from the event's waitlist. The activity interacts with Firebase Firestore to retrieve and update
  * event information, including checking the waitlist limit.
- *
  * Outstanding issues: The sample event ID is hardcoded, which could affect functionality if not set
  * dynamically. Some method calls such as `addToWaitList()` within the confirmation dialog are currently
  * commented out, meaning that they might need to be implemented for full functionality.
@@ -56,6 +59,8 @@ public class EventDetailActivity extends AppCompatActivity {
     private String USER_ID;
 
 
+    private RecyclerView recyclerView;
+    private Button viewCancelledButton;
     /**
      * Initializes the EventDetailActivity, sets up views, and retrieves event details from intent.
      *
@@ -78,6 +83,9 @@ public class EventDetailActivity extends AppCompatActivity {
         ImageView posterImageView = findViewById(R.id.poster_pic_Display);
         ImageView backButton = findViewById(R.id.go_back_view_event);
         Button joinWaitlistButton = findViewById(R.id.join_waitlist_button);
+        recyclerView = findViewById(R.id.recycler_view_cancelled_entrants);
+        viewCancelledButton = findViewById(R.id.view_cancelled_button);
+
 
         // Retrieve data from Intent
         Intent intent = getIntent();
@@ -145,6 +153,7 @@ public class EventDetailActivity extends AppCompatActivity {
                         }
                     });
                 }
+
             }
 
             /**
@@ -168,6 +177,7 @@ public class EventDetailActivity extends AppCompatActivity {
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
+
 
             /**
              * Removes the user from the waitlist in Firestore.
@@ -224,5 +234,45 @@ public class EventDetailActivity extends AppCompatActivity {
                 }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
             }
         });
+
+        viewCancelledButton.setOnClickListener(v -> fetchCancelledEntrants());
+
+    }
+    private void fetchCancelledEntrants() {
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(Event_id);
+
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                List<Map<String, Object>> cancelled = (List<Map<String, Object>>) documentSnapshot.get("cancelled");
+
+                if (cancelled != null && !cancelled.isEmpty()) {
+                    List<CancelledEntrant> cancelledEntrants = new ArrayList<>();
+                    for (Map<String, Object> map : cancelled) {
+                        String name = (String) map.get("name");
+                        String reason = (String) map.get("reason");
+                        cancelledEntrants.add(new CancelledEntrant(name, reason));
+                    }
+
+                    showCancelledEntrants(cancelledEntrants);
+                } else {
+                    Toast.makeText(this, "No cancelled entrants.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Firebase", "Error fetching cancelled entrants", e);
+            Toast.makeText(this, "Failed to fetch cancelled entrants.", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void showCancelledEntrants(List<CancelledEntrant> cancelledEntrants) {
+        recyclerView.setVisibility(View.VISIBLE);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        CancelledEntrantAdapter adapter = new CancelledEntrantAdapter(cancelledEntrants);
+        recyclerView.setAdapter(adapter);
     }
 }
+
+
+
+
+

@@ -3,10 +3,12 @@ package com.example.matata;
 import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
@@ -22,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AlertDialogLayout;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -92,8 +95,6 @@ public class ViewEvent extends AppCompatActivity {
      */
     private TextView location;
 
-// Firebase Firestore
-
     /**
      * Firestore instance used for database operations.
      */
@@ -119,6 +120,7 @@ public class ViewEvent extends AppCompatActivity {
      */
     private DocumentReference eventRef;
 
+
     /**
      * Firestore reference to the entrant document.
      */
@@ -129,10 +131,13 @@ public class ViewEvent extends AppCompatActivity {
      */
     private LinearLayout drawBtn;
     private LinearLayout editEvent;
+    private LinearLayout delEvent;
     /**
      * Unique identifier for the event.
      */
     private String uid;
+
+    private boolean geoRequirement;
 
     private boolean admin_view;
 
@@ -167,6 +172,7 @@ public class ViewEvent extends AppCompatActivity {
         waitlistBtn = findViewById(R.id.join_waitlist_button);
         drawBtn = findViewById(R.id.draw_button);
         editEvent= findViewById(R.id.EditEvent);
+        delEvent=findViewById(R.id.DeleteEvent);
 
         Intent intent = getIntent();
         admin_view = intent.getBooleanExtra("IS_ADMIN_VIEW", false);
@@ -181,20 +187,27 @@ public class ViewEvent extends AppCompatActivity {
         eventRef = db.collection("EVENT_PROFILES").document(uid);
         entrantRef = db.collection("USER_PROFILES").document(USER_ID);
 
+
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String parentActivity = getCallingActivity() != null ? getCallingActivity().getClassName() : "";
-                if (parentActivity.equals(AddEvent.class.getName())) {
-                    Intent intent = new Intent(ViewEvent.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
+                try{
+                    String ParentName=intent.getStringExtra("Parent");
+                    if (ParentName!=null && ParentName.equals("AddEvent")) {
+                        Intent intent = new Intent(ViewEvent.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                }catch (Exception e){
+                    throw e;
                 }
-                else{
-                    finish();
-                }
+                finish();
+
+
+
+
             }
         });
 
@@ -215,6 +228,40 @@ public class ViewEvent extends AppCompatActivity {
                 Intent intent=new Intent(view.getContext(),EditEvent.class);
                 intent.putExtra("Unique_id",uid);
                 view.getContext().startActivity(intent);
+            }
+        });
+
+        delEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder=new AlertDialog.Builder(ViewEvent.this);
+                builder.setMessage("Are you sure you want to delete this event?")
+                        .setCancelable(true)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                eventRef.delete()
+                                            .addOnSuccessListener(aVoid->{
+                                                Toast.makeText(ViewEvent.this,"Event Deleted",Toast.LENGTH_SHORT).show();
+                                                Intent intent_main=new Intent(ViewEvent.this,MainActivity.class);
+                                                startActivity(intent_main);
+                                                finish();
+                                            })
+                                            .addOnFailureListener(e->{
+                                                Toast.makeText(ViewEvent.this,"Failed to delete",Toast.LENGTH_SHORT).show();
+                                            });
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+                AlertDialog alert=builder.create();
+                alert.show();
+
             }
         });
 
@@ -286,9 +333,11 @@ public class ViewEvent extends AppCompatActivity {
         if (organizerId == null || !organizerId.equals(USER_ID)) {
             drawBtn.setVisibility(View.INVISIBLE);
             editEvent.setVisibility(View.INVISIBLE);
+            delEvent.setVisibility(View.INVISIBLE);
         }else {
             waitlistBtn.setVisibility(View.INVISIBLE);
             editEvent.setVisibility(View.VISIBLE);
+            delEvent.setVisibility(View.VISIBLE);
         }
     }
 
@@ -394,7 +443,16 @@ public class ViewEvent extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewEvent.this);
         builder.setCancelable(true);
         builder.setMessage("Confirm to join waitlist");
-        builder.setPositiveButton("Confirm", (dialog, which) -> showGeolocationWarning());
+        builder.setPositiveButton("Confirm", (dialog, which) -> {
+            loadEventDetails(uid);
+            new Handler().postDelayed(() -> {
+                if (geoRequirement) {
+                    showGeolocationWarning();
+                } else {
+                    addToWaitList();
+                }
+            }, 300);
+        });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -472,6 +530,7 @@ public class ViewEvent extends AppCompatActivity {
                 String Time = documentSnapshot.getString("Time");
                 String Date = documentSnapshot.getString("Date");
                 String Location = documentSnapshot.getString("Location");
+                Boolean GeoRequirement = documentSnapshot.getBoolean("GeoRequirement");
 
                 argbase64 = documentSnapshot.getString("bitmap");
                 try{
@@ -480,12 +539,11 @@ public class ViewEvent extends AppCompatActivity {
                         Glide.with(this).load(ImageUri).into(poster);
                     }
                     else{
-                        ;
+                        Glide.with(this).load(R.drawable.ic_upload).into(poster);
                     }
                 }catch(Exception e){
                     throw e;
                 }
-
 
                 Bitmap QR = decodeBase64toBmp(argbase64);
 
@@ -495,6 +553,7 @@ public class ViewEvent extends AppCompatActivity {
                 time.setText(Time != null ? Time : "");
                 date.setText(Date != null ? Date : "");
                 location.setText(Location != null ? Location : "");
+                geoRequirement = Boolean.TRUE.equals(GeoRequirement);
             } else {
                 Toast.makeText(ViewEvent.this, "No event found", Toast.LENGTH_SHORT).show();
             }

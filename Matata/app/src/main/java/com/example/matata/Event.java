@@ -58,6 +58,11 @@ public class Event implements Serializable {
      */
     private int waitlistLimit;
 
+    /**
+     * Whether the event requires geolocation
+     */
+    private Boolean geoRequirement;
+
 
     /**
      * Constructs an Event object with the specified details.
@@ -72,7 +77,7 @@ public class Event implements Serializable {
      * @param Organizerid the unique identifier for the event organizer
      * @param weightlistSize the maximum number of people allowed on the waitlist
      */
-    public Event(String title, String date, String time, String location, String description, int capacity, String Eventid, String Organizerid, int weightlistSize) {
+    public Event(String title, String date, String time, String location, String description, int capacity, String Eventid, String Organizerid, int weightlistSize, boolean geoRequirement) {
         this.title = title;
         this.Eventid = Eventid;
         this.date = date;
@@ -83,6 +88,7 @@ public class Event implements Serializable {
 
         this.Organizerid = Organizerid;
         this.waitlistLimit = weightlistSize;
+        this.geoRequirement = geoRequirement;
     }
 
     /**
@@ -164,6 +170,15 @@ public class Event implements Serializable {
      */
     public int getWaitlistLimit() {
         return waitlistLimit;
+    }
+
+    /**
+     * Gets the geolocation requirement for the event.
+     *
+     * @return whether the event require geolocation
+     */
+    public boolean getGeoRequirement() {
+        return geoRequirement;
     }
 
     /**

@@ -5,201 +5,284 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/black"
     tools:context=".MainActivity">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#232323"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:orientation="horizontal"
-            tools:ignore="MissingConstraints">
-
-            <ImageView
-                android:id="@+id/go_back_draw_event"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="10dp"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_back_arrow"
-                android:contentDescription="@string/back_button"
-                app:tint="@color/white"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:alpha="0.8"
-                android:fontFamily="@font/sansation_bold"
-                android:text="@string/matata_event_draw"
-                android:textSize="22sp"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toEndOf="@id/go_back_draw_event"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
-                android:maxWidth="300dp"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:paddingRight="9dp"
-            android:paddingBottom="16dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/draw_button"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Draw" />
+                android:background="#232323"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:orientation="horizontal"
+                tools:ignore="MissingConstraints">
+
+                <ImageView
+                    android:id="@+id/go_back_draw_event"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_back_arrow"
+                    android:contentDescription="@string/back_button"
+                    app:tint="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:alpha="0.8"
+                    android:fontFamily="@font/sansation_bold"
+                    android:text="@string/matata_event_draw"
+                    android:textSize="22sp"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toEndOf="@id/go_back_draw_event"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:maxWidth="300dp"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingTop="16dp"
+                android:paddingRight="9dp"
+                android:paddingBottom="16dp">
+
+                <Button
+                    android:id="@+id/draw_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Draw" />
+
+                <TextView
+                    android:id="@+id/total_entrant_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="From:"
+                    android:textColor="#FFFFFF" />
+
+                <Button
+                    android:id="@+id/map_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Map"
+                    android:visibility="invisible"/>
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/total_entrant_text"
+                android:id="@+id/remaining_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="From:"
-                android:textColor="#000000" />
+                android:text="Remaining: "
+                android:textColor="@color/white"/>
 
-            <Button
-                android:id="@+id/map_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Map" />
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                app:layout_constraintTop_toBottomOf="@id/remaining_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/button3"
+                android:paddingBottom="65dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Accepted Section -->
+                <TextView
+                    android:id="@+id/accepted_section_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Accepted"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="#FFFFFF"
+                    app:drawableEndCompat="@drawable/ic_expand_less"
+                    android:background="@drawable/section_divider"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:background="@android:color/transparent" />
+                <LinearLayout
+                    android:id="@+id/accepted_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/accepted_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/entrant_card"/>
+                </LinearLayout>
+
+                    <!-- Pending Section -->
+                <TextView
+                    android:id="@+id/pending_section_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pending"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="#FFFFFF"
+                    app:drawableEndCompat="@drawable/ic_expand_less"
+                    android:background="@drawable/section_divider"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:background="@android:color/transparent" />
+                <LinearLayout
+                    android:id="@+id/pending_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/pending_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/entrant_card"/>
+                    <Button
+                        android:id="@+id/clearPendingList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="240dp"
+                        android:text="Clear Pending list"/>
+                </LinearLayout>
+
+                <!-- Rejected Section -->
+                <TextView
+                    android:id="@+id/rejected_section_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rejected"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="#FFFFFF"
+                    app:drawableEndCompat="@drawable/ic_expand_less"
+                    android:background="@drawable/section_divider"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:background="@android:color/transparent" />
+                <LinearLayout
+                    android:id="@+id/rejected_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rejected_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/entrant_card"/>
+                </LinearLayout>
+
+                    <!-- Waiting list Section -->
+                <TextView
+                    android:id="@+id/waiting_section_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Waitlist"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="#FFFFFF"
+                    app:drawableEndCompat="@drawable/ic_expand_less"
+                    android:background="@drawable/section_divider"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:background="@android:color/transparent" />
+                <LinearLayout
+                    android:id="@+id/waitlist_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp">
+
+                    <Switch
+                        android:id="@+id/limitSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="Set waitlist limit"
+                        android:textColor="@color/white"/>
+                    <EditText
+                        android:id="@+id/waitlistLimit"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:inputType="number"
+                        android:hint="# of entrants allowed in waitlist"
+                        android:drawableEnd="@drawable/ic_edit"
+                        android:background="@drawable/edit_text_background" />
+                    <Button
+                        android:id="@+id/saveButton"
+                        android:visibility="gone"
+                        android:layout_marginLeft="300dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Save"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/waitlist_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/entrant_card"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/remaining_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Remaining: "
-            android:paddingTop="8dp"
-            android:visibility="gone"/>
-
-        <!-- Accepted Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Accepted"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp" />
-
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/accepted_recyclerView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            tools:listitem="@layout/entrant_card"/>-->
-
-        <!-- Pending Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pending"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp" />
-
-        <Button
-            android:id="@+id/clearPendingList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="240dp"
-            android:text="Clear Pending list"/>
-
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/pending_recyclerView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            tools:listitem="@layout/entrant_card"/>-->
-
-        <!-- Rejected Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rejected"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp" />
-
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/rejected_recyclerView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            tools:listitem="@layout/entrant_card"/>-->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Waitlist"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp" />
-
-        <Switch
-            android:id="@+id/limitSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="250dp"
-            android:text="Set waitlist limit"/>
-
-        <EditText
-            android:id="@+id/waitlistLimit"
-            android:paddingLeft="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_width="365dp"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:inputType="number"
-            android:hint="# of entrants allowed in waitlist"
-            android:drawableEnd="@drawable/ic_edit"
-            android:background="@drawable/edit_text_background" />
-
-        <Button
-            android:id="@+id/saveButton"
-            android:visibility="gone"
-            android:layout_marginLeft="300dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save"/>
-
-
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/waitlist_recyclerView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            tools:listitem="@layout/entrant_card"/>-->
-    </LinearLayout>
 
     <LinearLayout
 
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:background="@color/white"
         android:gravity="center"
         android:orientation="horizontal"
 

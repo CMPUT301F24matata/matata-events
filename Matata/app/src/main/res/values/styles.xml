@@ -11,6 +11,12 @@
         <item name="android:padding">12dp</item>
         <item name="android:layout_marginBottom">16dp</item>
         <item name="android:background">@drawable/rounded_edittext_background</item>
+        <item name="android:textColorHint">#CCCCCC</item>
+
+    </style>
+
+    <style name="CustomSearchHintAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColorHint">@color/white</item>
     </style>
 
 </resources>

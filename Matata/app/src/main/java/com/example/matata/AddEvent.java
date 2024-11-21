@@ -6,7 +6,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Base64;
 import java.io.ByteArrayOutputStream;
@@ -19,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -46,6 +50,7 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -53,23 +58,31 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
  * AddEvent Activity for creating new events within the Matata application.
  * This activity allows users to input event details, select a date and time,
  * upload an event poster, and generate a QR code. The event information is stored
- * in Firebase Firestore and the image in Firebase Storage.
+ * in Firebase Firestore, and the image is stored in Firebase Storage.
  * Implements TimePickerListener and DatePickerListener for selecting event date and time.
  */
 public class AddEvent extends AppCompatActivity implements TimePickerListener, DatePickerListener {
 
     /**
-     * ImageView for the back button in the event creation screen.
+     * ImageView for navigating back to the previous screen.
      */
     private ImageView backBtn;
 
+    /**
+     * TextView for displaying and selecting the event time.
+     */
     private TextView eventTime;
+
+    /**
+     * TextView for displaying and selecting the event date.
+     */
     private TextView eventDate;
 
     /**
@@ -83,12 +96,14 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
     private ImageView posterPic;
 
     /**
-     * FloatingActionButton for generating a QR code for the event.
+     * Button for generating a QR code for the event.
      */
     private Button genrQR;
-    private Button clearAllButton;
 
-    private boolean shouldRefreshOnResume = false;
+    /**
+     * Button for clearing all input fields in the activity.
+     */
+    private Button clearAllButton;
 
     /**
      * EditText for entering the title of the event.
@@ -120,26 +135,39 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      */
     private String USER_ID;
 
+    /**
+     * String representing the unique ID of the event.
+     */
     private String EVENT_ID;
+
     /**
      * String containing the URI of the uploaded poster image.
      */
     private String posterURI;
 
+
+    private Uri test_uri;
     /**
-     * Boolean indicating if the default image is used for the poster.
+     * Boolean indicating whether the default image is being used for the poster.
      */
     private boolean isDefaultImage = true;
 
     /**
-     * Request code for the image picker intent.
+     * Flag indicating if the activity should refresh upon resuming.
+     */
+    private boolean shouldRefreshOnResume = false;
+
+    /**
+     * Request code for selecting an image from the gallery.
      */
     private static final int PICK_IMAGE_REQUEST = 1;
 
+    private Switch geoRequirement;
+
 
     /**
-     * Initializes the activity, sets up the Firebase instances, and assigns view elements.
-     * Also, sets up click listeners for back button, date and time pickers, and QR generation.
+     * Initializes the activity, sets up Firebase instances, assigns view elements, and
+     * defines click listeners for various components.
      *
      * @param savedInstanceState Bundle object containing the activity's previously saved state.
      */
@@ -175,29 +203,37 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         docRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("name");
-                        String address = documentSnapshot.getString("address");
-                        String email = documentSnapshot.getString("email");
-                        boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
-                        String sImageUri = documentSnapshot.getString("profileUri");
-                        String capacity = documentSnapshot.getString("capacity");
-                        String contact = documentSnapshot.getString("contact");
-                        String owner = documentSnapshot.getString("owner");
+                        String freeze = documentSnapshot.getString("freeze");
 
-                        if (!name.isEmpty() &&
-                                !address.isEmpty() &&
-                                !contact.isEmpty() &&
-                                !capacity.isEmpty() &&
-                                !email.isEmpty() &&
-                                !owner.isEmpty()) {
-                            location.setText(address);
-                            showFacilityDialog(name, address, capacity, contact, email, owner, notificationsChecked, sImageUri);
-                        }
-                        else {
-                            Toast.makeText(AddEvent.this, "Please Provide Facility Information First", Toast.LENGTH_SHORT).show();
-                            shouldRefreshOnResume = true;
+                        if (Objects.equals(freeze, "frozen")) {
                             Intent intent = new Intent(AddEvent.this, FacilityActivity.class);
                             startActivity(intent);
+                            finish();
+                        }
+                        else if (Objects.equals(freeze, "awake")) {
+                            String name = documentSnapshot.getString("name");
+                            String address = documentSnapshot.getString("address");
+                            String email = documentSnapshot.getString("email");
+                            boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
+                            String sImageUri = documentSnapshot.getString("profileUri");
+                            String capacity = documentSnapshot.getString("capacity");
+                            String contact = documentSnapshot.getString("contact");
+                            String owner = documentSnapshot.getString("owner");
+
+                            if (!name.isEmpty() &&
+                                    !address.isEmpty() &&
+                                    !contact.isEmpty() &&
+                                    !capacity.isEmpty() &&
+                                    !email.isEmpty() &&
+                                    !owner.isEmpty()) {
+                                location.setText(address);
+                                showFacilityDialog(name, address, capacity, contact, email, owner, notificationsChecked, sImageUri);
+                            } else {
+                                Toast.makeText(AddEvent.this, "Please Provide Facility Information First", Toast.LENGTH_SHORT).show();
+                                shouldRefreshOnResume = true;
+                                Intent intent = new Intent(AddEvent.this, FacilityActivity.class);
+                                startActivity(intent);
+                            }
                         }
                     }
                 })
@@ -205,6 +241,9 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
 
     }
 
+    /**
+     * Refreshes the activity if required when it is restarted.
+     */
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -228,6 +267,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         capacity = findViewById(R.id.number_of_people_event);
         location = findViewById(R.id.editTextLocation);
         clearAllButton = findViewById(R.id.clearAllButton);
+        geoRequirement = findViewById(R.id.geoRequirement);
     }
 
     /**
@@ -242,18 +282,14 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                 if (document.exists()) {
                     finish();
                 } else {
-                    if (!eveTitle.getText().toString().isEmpty() ||
-                            !descriptionBox.getText().toString().isEmpty() ||
-                            !eventDate.getText().toString().isEmpty() ||
-                            !eventTime.getText().toString().isEmpty() ||
-                            !capacity.getText().toString().isEmpty()) {
-
+                    if (areFieldsNonEmpty()) {
                         ConfirmationFragment backpress = new ConfirmationFragment();
                         backpress.show(getSupportFragmentManager(), "BackPressFragment");
                     }
-                    else {
+                    else{
                         finish();
                     }
+
                 }
             }
             else {
@@ -262,6 +298,14 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         });
     }
 
+
+    private boolean areFieldsNonEmpty() {
+        return !eveTitle.getText().toString().isEmpty() ||
+                !descriptionBox.getText().toString().isEmpty() ||
+                !eventDate.getText().toString().isEmpty() ||
+                !eventTime.getText().toString().isEmpty() ||
+                !capacity.getText().toString().isEmpty();
+    }
     /**
      * Opens the time picker dialog.
      */
@@ -284,6 +328,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      * Validates input fields and initiates event QR generation and storage if fields are complete.
      *
      * @param EVENT_ID Unique identifier for the event.
+     * @param USER_ID Unique identifier for the user creating the event.
      * @param view Current view context.
      */
     private void handleGenerateQR(String EVENT_ID, String USER_ID, View view) {
@@ -297,6 +342,15 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         DocumentReference organizerRef = organizerProfilesRef.document(USER_ID);
         DocumentReference eventRef = eventProfilesRef.document(EVENT_ID);
 
+        userRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                userRef.update("admin", "organiser");
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("organiser", "yes");
+                                userRef.set(data, SetOptions.merge());
+                            }
+                        });
         organizerRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -329,7 +383,9 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                     location.getText().toString(),
                     descriptionBox.getText().toString(),
                     Integer.parseInt(capacity.getText().toString()),
-                    EVENT_ID, USER_ID, -1
+                    EVENT_ID, USER_ID,
+                    -1,
+                    geoRequirement.isChecked()
             );
 
             Intent intent = new Intent(view.getContext(), ViewEvent.class);
@@ -379,12 +435,18 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
     }
 
     ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
-                    posterPic.setImageURI(imageUri);
-                    isDefaultImage = false;
+                    Log.d(TAG, "Selected Image URI: " + imageUri);
+
+                    Glide.with(this).load(imageUri).into(posterPic);
+                    test_uri=imageUri;
+                    isDefaultImage = false; // Update the flag
+                } else {
+                    Log.e(TAG, "Image selection failed or canceled");
                 }
             }
     );
@@ -396,6 +458,8 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         pickImageLauncher.launch(intent);
+
+
     }
 
     /**
@@ -428,8 +492,9 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         Event_details.put("WaitlistLimit", event.getWaitlistLimit());
         Event_details.put("bitmap", compressedBMP);
         Event_details.put("OrganizerID", USER_ID);
-        Event_details.put("Status", "active");
+        Event_details.put("Status", "Active");
         Event_details.put("CreationDate", formattedDate);
+        Event_details.put("GeoRequirement", event.getGeoRequirement());
 
         db.collection("USER_PROFILES")
                 .document(USER_ID)
@@ -463,6 +528,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
             }
 
             Uri returned = Uri.fromFile(temp);
+
             imagesRef.putFile(returned)
                     .addOnSuccessListener(v -> imagesRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         posterURI = uri.toString();
@@ -477,6 +543,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         doc.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     executeDBchange(Event_details, EVENT_ID, intent, view);
+                    intent.putExtra("Parent","AddEvent");
                     intent.putExtra("Unique_id", EVENT_ID);
                     view.getContext().startActivity(intent);
                 })

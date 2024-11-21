@@ -1,9 +1,10 @@
+import java.util.regex.Pattern.compile
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
-
 
 
 android {
@@ -45,12 +46,19 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
+
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
+
+
+    implementation ("androidx.appcompat:appcompat:1.6.1")
+    implementation ("com.google.android.material:material:1.9.0")
+
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.activity:activity:1.9.2")
     implementation(libs.play.services.maps)
+
     testImplementation("junit:junit:4.13.2")
     testImplementation(libs.core)
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -79,6 +87,8 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     implementation("com.google.firebase:firebase-storage:20.1.0")
     testImplementation("org.robolectric:robolectric:4.10.3")
+
+    implementation ("androidx.viewpager2:viewpager2:1.0.0")
 
     implementation ("androidx.palette:palette:1.0.0")
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))

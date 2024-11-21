@@ -9,6 +9,7 @@
 
     <!-- Event Controls Section -->
     <LinearLayout
+        android:id="@+id/toggle_tile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -58,6 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:onClick="toggleEventDetails"
         android:padding="8dp">
 
         <!-- Organizer Name Row -->
@@ -139,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/accepted"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:fontFamily="@font/sansation_bold" />
 
                 <TextView
@@ -166,7 +168,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/pending"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:fontFamily="@font/sansation_bold" />
 
                 <TextView
@@ -193,7 +195,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/waitlist"
                     android:textColor="#FFFFFF"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:fontFamily="@font/sansation_bold" />
 
                 <TextView
@@ -205,7 +207,37 @@
                     android:textSize="18sp"
                     android:fontFamily="@font/sansation_bold" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/stats_background"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rejected_list"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/sansation_bold" />
+
+                <TextView
+                    android:id="@+id/rejected_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/sansation_bold" />
+            </LinearLayout>
+
         </LinearLayout>
+
+
         <!-- Control Buttons -->
         <LinearLayout
             android:layout_width="match_parent"

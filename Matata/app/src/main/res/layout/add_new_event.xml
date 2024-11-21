@@ -59,11 +59,9 @@
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/ic_upload"
             android:contentDescription="@string/poster_picture"
-            android:scaleType="centerCrop"
             android:src="@drawable/ic_upload"
-            app:tint="@color/white" />
+            android:scaleType="centerCrop" />
 
         <!-- Event Title and Capacity Input Section -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -183,13 +181,23 @@
             android:gravity="center_vertical"
             android:fontFamily="@font/sansation_regular" />
 
+        <Switch
+            android:id="@+id/geoRequirement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:paddingRight="15dp"
+            android:trackTint="@color/white"
+            android:textColor="@color/white"
+            android:text="Require Geolocation" />
+
         <Button
             android:id="@+id/genQR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="0dp"
             android:padding="14dp"
             android:text="@string/create_event"
             android:textColor="#F5F5F5"

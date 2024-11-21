@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,70 +34,124 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class EditEvent extends AppCompatActivity implements DatePickerListener,TimePickerListener {
 
+    /**
+     * ImageView for navigating back to the previous screen.
+     */
     private ImageView backBtn;
+
+    /**
+     * TextView for displaying and selecting the event time.
+     */
     private TextView eventTime;
+
+    /**
+     * TextView for displaying and selecting the event date.
+     */
     private TextView eventDate;
+
     /**
      * TextView displaying the location of the event.
      */
     private TextView location;
+
     /**
      * ImageView for uploading or displaying the event poster image.
      */
     private ImageView posterPic;
+
     /**
-     * FloatingActionButton for generating a QR code for the event.
+     * Button for updating the event details.
      */
     private Button genrQR;
 
+    /**
+     * TextView for the header text, indicating "Edit Event."
+     */
     private TextView headerText;
+
+    /**
+     * Button for clearing all input fields in the activity.
+     */
     private Button clearAllButton;
 
-    private boolean shouldRefreshOnResume = false;
     /**
      * EditText for entering the title of the event.
      */
     private EditText eveTitle;
+
     /**
      * EditText for entering a description of the event.
      */
     private EditText descriptionBox;
+
     /**
      * EditText for specifying the capacity of the event.
      */
     private EditText capacity;
+
     /**
      * FirebaseFirestore instance for accessing Firestore database.
      */
     private FirebaseFirestore db;
+
     /**
      * StorageReference instance for accessing Firebase Storage.
      */
     private StorageReference ref;
+
+    /**
+     * String representing the unique ID of the event.
+     */
+    private String EVENT_ID;
+
     /**
      * String representing the unique ID of the user.
      */
-    private String EVENT_ID;
     private String USER_ID;
+
     /**
      * String containing the URI of the uploaded poster image.
      */
     private String posterURI;
+
+    private Uri global_Uri;
+    private String downloadUrl;
     /**
      * Boolean indicating if the default image is used for the poster.
      */
-
-    private Event event;
     private boolean isDefaultImage = true;
 
+    /**
+     * Encoded Base64 string representing the QR code bitmap.
+     */
     private String argbase64;
+
+    /**
+     * Event object containing the details of the event being edited.
+     */
+    private Event event;
+
     /**
      * Request code for the image picker intent.
      */
     private static final int PICK_IMAGE_REQUEST = 1;
 
+    /**
+     * Switch indicating if the event requires geolocation
+     */
+    private Switch geoRequirement;
+
+    /**
+     * Called when the activity is created.
+     * Initializes UI components, loads event details from Firestore, and sets up click listeners.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     public void onCreate( @Nullable Bundle savedInstanceState) {
         db = FirebaseFirestore.getInstance();
@@ -150,7 +205,9 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                     location.getText().toString(),
                     descriptionBox.getText().toString(),
                     Integer.parseInt(capacity.getText().toString()),
-                    EVENT_ID, USER_ID, -1
+                    EVENT_ID, USER_ID,
+                     -1,
+                     false
             );
 
         } else {
@@ -163,6 +220,9 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
 
     }
 
+    /**
+     * Loads the details of the event being edited from Firestore and populates the input fields.
+     */
     public void loadDetails(){
         DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);
         doc.get().addOnSuccessListener(documentSnapshot -> {
@@ -173,20 +233,20 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                 String Time = documentSnapshot.getString("Time");
                 String Date = documentSnapshot.getString("Date");
                 String Location = documentSnapshot.getString("Location");
+                boolean GeoRequirement = documentSnapshot.getBoolean("GeoRequirement");
 
-                argbase64=documentSnapshot.getString("bitmap");
-                try{
+                argbase64 = documentSnapshot.getString("bitmap");
+                try {
                     String ImageUri = documentSnapshot.getString("Poster");
-                    if (ImageUri!=null) {
+                    if (ImageUri != null) {
                         Glide.with(this).load(ImageUri).into(posterPic);
                     }
-                    else{
-                        ;
+                    else {
+                        Glide.with(this).load(R.drawable.ic_upload).into(posterPic);
                     }
-                }catch(Exception e){
+                } catch(Exception e){
                     throw e;
                 }
-
 
                 Bitmap QR = decodeBase64toBmp(argbase64);
 
@@ -196,13 +256,16 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                 eventTime.setText(Time != null ? Time : "");
                 eventDate.setText(Date != null ? Date : "");
                 location.setText(Location != null ? Location : "");
+                geoRequirement.setChecked(GeoRequirement);
             } else {
                 Toast.makeText(EditEvent.this, "No event found", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(e -> Toast.makeText(EditEvent.this, "Failed to load event", Toast.LENGTH_SHORT).show());
     }
 
-
+    /**
+     * Initializes UI components by finding views and assigning them to instance variables.
+     */
     private void initializeViews() {
         headerText=findViewById(R.id.headerText);
         backBtn = findViewById(R.id.btnBackCreateEvent);
@@ -215,6 +278,7 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         capacity = findViewById(R.id.number_of_people_event);
         location = findViewById(R.id.editTextLocation);
         clearAllButton = findViewById(R.id.clearAllButton);
+        geoRequirement = findViewById(R.id.geoRequirement);
     }
 
     /**
@@ -276,13 +340,20 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         datePicker.show(getSupportFragmentManager(), "datePicker");
     }
 
+
     ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
-                    posterPic.setImageURI(imageUri);
+                    Log.d(TAG, "Selected Image URI: " + imageUri);
+                    global_Uri= imageUri;
+                    Glide.with(this).load(imageUri).into(posterPic);
                     isDefaultImage = false;
+                    Log.wtf(TAG,"false");
+                } else {
+                    Log.e(TAG, "Image selection failed or canceled");
                 }
             }
     );
@@ -296,12 +367,72 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         pickImageLauncher.launch(intent);
     }
 
-    public void updateEvent(Event event, Intent intent, View view){
+    /**
+     * Updates the event details in Firestore and reflects the changes in the application.
+     *
+     * @param event Event object containing updated details.
+     * @param intent Intent for navigating to another activity after updating.
+     * @param view The current view context.
+     */
+    public void updateEvent(Event event, Intent intent, View view) {
         CollectionReference eventProfilesRef = db.collection("EVENT_PROFILES");
         DocumentReference docRef = eventProfilesRef.document(EVENT_ID);
+        StorageReference posterRef = ref.child("EventPosters/" + EVENT_ID + ".jpg");
 
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("Date", eventDate.getText().toString());
+        updates.put("Time", eventTime.getText().toString());
+        updates.put("Title", eveTitle.getText().toString());
+        updates.put("Capacity", Integer.parseInt(capacity.getText().toString()));
+        updates.put("Description", descriptionBox.getText().toString());
+        updates.put("Location", location.getText().toString());
+        updates.put("GeoRequirement", geoRequirement.isChecked());
 
+        if (!isDefaultImage) {
+            posterRef.putFile(global_Uri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        posterRef.getDownloadUrl()
+                                .addOnSuccessListener(uri -> {
+                                    String downloadUrl = uri.toString();
+                                    updates.put("Poster", downloadUrl);
+                                    docRef.update(updates)
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
+                                                Intent intentHome = new Intent(EditEvent.this, MainActivity.class);
+                                                startActivity(intentHome);
+                                                finish();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e(TAG, "Error updating event in Firestore", e);
+                                                Toast.makeText(EditEvent.this, "Event Update Error", Toast.LENGTH_SHORT).show();
+                                            });
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e(TAG, "Error getting download URL", e);
+                                    Toast.makeText(EditEvent.this, "Failed to update poster URL", Toast.LENGTH_SHORT).show();
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error uploading poster", e);
+                        Toast.makeText(EditEvent.this, "Poster upload failed", Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            updates.put("Poster", posterURI);
+            docRef.update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
+                        Intent intentHome = new Intent(EditEvent.this, MainActivity.class);
+                        startActivity(intentHome);
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error updating event in Firestore", e);
+                        Toast.makeText(EditEvent.this, "Event Update Error", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 }
+
+
 
 

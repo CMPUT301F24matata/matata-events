@@ -1,5 +1,7 @@
 package com.example.matata;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -12,6 +14,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,42 +39,40 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * MainActivity serves as the main hub of the app, displaying available events in a RecyclerView,
- * allowing users to navigate to different sections, and setting up notifications for waitlist updates.
- * This activity also initializes a user profile if it doesn't already exist in Firestore.
- *
- * Outstanding issues: The `addEventsInit()` method retrieves events without any pagination,
- * which may impact performance if the event list grows significantly. Additionally, the notification
- * logic assumes the app has permission to post notifications, which may not be granted by the user.
+ * MainActivity serves as the central hub of the Matata app, displaying a list of events,
+ * allowing users to navigate to different sections, and managing notifications.
+ * This activity initializes a user profile in Firestore if it does not already exist,
+ * handles event-related actions, and manages user permissions for notifications.
  */
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * ImageView for displaying the profile icon.
+     * ImageView for displaying the user profile icon.
      */
     private ImageView profileIcon;
 
     /**
-     * ImageView for navigating to the new event creation screen.
+     * ImageView for navigating to the "Add Event" screen.
      */
     private ImageView new_event;
 
     /**
-     * ImageView for accessing event history.
+     * LinearLayout for accessing the event history section.
      */
     private LinearLayout eventHistory;
 
     /**
-     * EditText for searching events.
+     * LinearLayout for exploring events on the map.
      */
     private LinearLayout explore;
 
     /**
      * RecyclerView for displaying a list of events.
      */
-    private RecyclerView recyclerView;
+    //private RecyclerView recyclerView;
 
     /**
      * Adapter for managing the display and interaction with event items in the RecyclerView.
@@ -85,12 +90,12 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton QR_scanner;
 
     /**
-     * Instance of FirebaseFirestore used for database access.
+     * Instance of FirebaseFirestore for database access.
      */
     private FirebaseFirestore db;
 
     /**
-     * User ID string for accessing user-specific data.
+     * String representing the unique user ID for Firestore operations.
      */
     private String USER_ID = "";
 
@@ -100,16 +105,19 @@ public class MainActivity extends AppCompatActivity {
     private String uid = null;
 
     /**
-     * List of statuses related to events.
+     * List of statuses for the events (e.g., "Accepted," "Pending," "Waitlist").
      */
     private List<String> statusList = new ArrayList<>();
 
-    private Map<String,String> posterUrls= new HashMap<>();
+    /**
+     * Map storing event poster URLs associated with their event IDs.
+     */
+    private Map<String, String> posterUrls = new HashMap<>();
 
     /**
      * ImageButton for accessing notifications.
      */
-    private ImageButton notificationButton;
+    private ImageView notificationButton;
 
     /**
      * Launcher for requesting notification permissions.
@@ -122,20 +130,29 @@ public class MainActivity extends AppCompatActivity {
     private Notification notificationManager;
 
     /**
-     * Channel ID used for waitlist notifications.
+     * Static channel ID used for managing waitlist notifications.
      */
     private static final String CHANNEL_ID = "waitlist_notification_channel";
 
+    /**
+     * ImageView for accessing the facility profile section.
+     */
     private ImageView FacilityProfile;
 
-    private ImageButton admin;
-
-
     /**
-     * Initializes the MainActivity and sets up UI components, database references, and event data.
-     * Configures notification channels and permissions for handling waitlist notifications.
+     * ImageButton for accessing the admin section.
+     */
+    private ImageView admin;
+
+
+    private RadioButton list_toggle;
+    private RadioButton scroll_toggle;
+    private RadioGroup Toggle;
+    /**
+     * Called when the activity is first created. Initializes the user profile in Firestore if necessary,
+     * sets up UI components, handles notification permissions, and loads event data.
      *
-     * @param savedInstanceState if the activity is being re-initialized, this contains the data it most recently supplied
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,53 +160,93 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-
-
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        // Initialize user profile if not exists
         DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
         userRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null && !task.getResult().exists()) {
-                Map<String, Object> userProfile = new HashMap<>();
-                userProfile.put("username", USER_ID);
-                userProfile.put("phone", "");
-                userProfile.put("email", "");
-                userProfile.put("notifications", false);
-                userProfile.put("profileUri", "");
-                userRef.set(userProfile);
+            if (task.isSuccessful() && task.getResult() != null) {
+                if (!task.getResult().exists()) {
+
+                    Map<String, Object> userProfile = new HashMap<>();
+                    userProfile.put("username", USER_ID);
+                    userProfile.put("phone", "");
+                    userProfile.put("email", "");
+                    userProfile.put("notifications", false);
+                    userProfile.put("profileUri", "");
+                    userProfile.put("freeze", "awake");
+                    userProfile.put("admin", "entrant");
+                    userProfile.put("organiser", "no");
+                    userRef.set(userProfile);
+
+                    initializeApp();
+                } else {
+                    // Check the freeze status
+                    String freezeStatus = task.getResult().getString("freeze");
+                    String admin = task.getResult().getString("admin");
+                    if ("awake".equalsIgnoreCase(freezeStatus)) {
+                        if("admin".equalsIgnoreCase(admin)) {
+                            initializeApp();
+                        }
+                        else {
+                            initializeEntrantApp();
+                        }
+                    } else {
+                        showFrozenDialog();
+                    }
+                }
+            } else {
+                Log.e("MainActivity", "Error fetching user profile", task.getException());
             }
         });
+
+    }
+
+
+
+
+    /**
+     * Displays a frozen dialog when the user's account is marked as frozen.
+     */
+    private void showFrozenDialog() {
+        FrozenDialogFragment dialogFragment = new FrozenDialogFragment();
+        dialogFragment.setCancelable(false);
+        dialogFragment.show(getSupportFragmentManager(), "FrozenDialogFragment");
+    }
+
+    /**
+     * Initializes the app in entrant mode, which hides admin-specific features.
+     * Configures notifications and loads event data for the user.
+     */
+    private void initializeEntrantApp() {
 
         initializeUI();
         setOnClickListeners();
 
-        // Set up permission launcher and notification manager
-        notificationPermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                isGranted -> Log.d("NotificationPermission", isGranted ? "Permission granted" : "Permission denied")
-        );
-        notificationManager = new Notification();
-        notificationManager.setNotificationPermissionLauncher(notificationPermissionLauncher);
-
-        // Initialize notification channel
-        Notification.initNotificationChannel(this);
-
-        // Load events
-        addEventsInit();
+//        addEventsInit();
     }
 
     /**
-     * Initializes UI elements and sets up the RecyclerView for displaying event data.
+     * Initializes the app with admin features, configuring notifications and loading event data.
+     */
+    private void initializeApp() {
+
+        initializeUI();
+        setOnClickListeners();
+        admin.setVisibility(View.VISIBLE);
+
+//        addEventsInit();
+    }
+
+    /**
+     * Sets up the UI components, including the RecyclerView for displaying events.
      */
     private void initializeUI() {
         profileIcon = findViewById(R.id.profile_picture);
@@ -200,23 +257,51 @@ public class MainActivity extends AppCompatActivity {
         notificationButton = findViewById(R.id.notifiy_button);
         FacilityProfile = findViewById(R.id.FacilityProfile);
         admin = findViewById(R.id.admin);
-        recyclerView = findViewById(R.id.recycler_view_events);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        list_toggle=findViewById(R.id.ListToggle);
+        scroll_toggle=findViewById(R.id.ExploreToggle);
+        Toggle=findViewById(R.id.toggle);
+        Log.wtf(TAG, "hello hello");
 
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, R.anim.anim_slide_in);
-        recyclerView.setLayoutAnimation(animation);
+        if (findViewById(R.id.ListToggle).isSelected() || ((RadioButton) findViewById(R.id.ListToggle)).isChecked()) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.scrollListFragment, new Recycler_fragment())
+                    .commit();
+        }
+        Toggle.setOnCheckedChangeListener((button,checkedID)->{
+            Log.wtf(TAG, "Checked ID: " + checkedID);
+            Fragment fragment;
+            if (checkedID==R.id.ListToggle){
+                Log.wtf(TAG,"List checked");
+                fragment=new Recycler_fragment();
 
-        eventList = new ArrayList<>();
-        eventAdapter = new EventAdapter(this, eventList, statusList,posterUrls);
-        recyclerView.setAdapter(eventAdapter);
+            }
+            else if(checkedID==R.id.ExploreToggle){
+                fragment=new SwipeView();
+            }
+            else{
+                fragment=null;
+            }
 
+            getSupportFragmentManager().beginTransaction().replace(R.id.scrollListFragment,fragment).commit();
+        });
 
+//        recyclerView = findViewById(R.id.recycler_view_events);
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setItemViewCacheSize(20);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//
+//        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, R.anim.anim_slide_in);
+//        recyclerView.setLayoutAnimation(animation);
+//
+//        eventList = new ArrayList<>();
+//        eventAdapter = new EventAdapter(this, eventList, statusList,posterUrls);
+//        recyclerView.setAdapter(eventAdapter);
     }
 
     /**
-     * Sets click listeners for various UI elements to handle navigation and actions.
+     * Sets up click listeners for various UI elements, such as profile navigation, adding events,
+     * QR scanner, and exploring events on the map.
      */
     private void setOnClickListeners() {
         profileIcon.setOnClickListener(view -> {
@@ -231,11 +316,6 @@ public class MainActivity extends AppCompatActivity {
 
         eventHistory.setOnClickListener(view -> startActivity(new Intent(view.getContext(), EventHistory.class)));
 
-        notificationButton.setOnClickListener(view -> {
-            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
-            Log.d("NotificationTest", "Sending notifications to waitlist...");
-            retrieveWaitlistAndNotify();
-        });
 
         explore.setOnClickListener(v -> {
             Intent intent=new Intent(MainActivity.this,ExploreEvents.class);
@@ -255,83 +335,62 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads and listens for changes to events in Firestore, updating the RecyclerView accordingly.
+     * Loads and listens for changes to event data in Firestore.
+     * Updates the RecyclerView dynamically when data changes.
      */
-    private void addEventsInit() {
+//    private void addEventsInit() {
+//
+//        db.collection("EVENT_PROFILES")
+//                .addSnapshotListener((snapshots, e) -> {
+//                    if (snapshots != null) {
+//                        eventList.clear();
+//                        statusList.clear();
+//                        posterUrls.clear();
+//
+//                        for (QueryDocumentSnapshot document : snapshots) {
+//                            DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
+//                            List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
+//                            List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
+//                            List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+//
+//                            if (accepted != null && accepted.contains(entrantRef)) {
+//                                statusList.add("Accepted");
+//                            } else if (pending != null && pending.contains(entrantRef)) {
+//                                statusList.add("Pending");
+//                            } else if (waitlist != null && waitlist.contains(entrantRef)) {
+//                                statusList.add("Waitlist");
+//                            } else {
+//                                statusList.add("");
+//                            }
+//
+//                            String uid = document.getId();
+//                            String title = document.getString("Title");
+//                            String date = document.getString("Date");
+//                            String time = document.getString("Time");
+//                            String location = document.getString("Location");
+//                            String description = document.getString("Description");
+//                            String organizerId = document.getString("OrganizerId");
+//                            int capacity = document.getLong("Capacity").intValue();
+//                            String status = document.getString("Status");
+//
+//                            if (Objects.equals(status, "Active")) {
+//                                eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
+//                                String posterUrl = document.getString("Poster");
+//                                if (posterUrl != null) {
+//                                    posterUrls.put(uid, posterUrl);
+//                                }
+//                            }
+//
+//                        }
+//
+//                        eventAdapter.notifyDataSetChanged();
+//
+//
+//                    } else if (e != null) {
+//                        Log.e("FirestoreError", "Error fetching events: ", e);
+//                    }
+//                });
+//        recyclerView.scheduleLayoutAnimation();
+//    }
 
-        db.collection("EVENT_PROFILES")
-                .addSnapshotListener((snapshots, e) -> {
-                    if (snapshots != null) {
-                        eventList.clear();
-                        statusList.clear();
-                        posterUrls.clear();
-
-                        for (QueryDocumentSnapshot document : snapshots) {
-                            DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
-                            List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
-                            List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
-                            List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
-
-                            if (accepted != null && accepted.contains(entrantRef)) {
-                                statusList.add("Accepted");
-                            } else if (pending != null && pending.contains(entrantRef)) {
-                                statusList.add("Pending");
-                            } else if (waitlist != null && waitlist.contains(entrantRef)) {
-                                statusList.add("Waitlist");
-                            } else {
-                                statusList.add("");
-                            }
-
-                            String uid = document.getId();
-                            String title = document.getString("Title");
-                            String date = document.getString("Date");
-                            String time = document.getString("Time");
-                            String location = document.getString("Location");
-                            String description = document.getString("Description");
-                            String organizerId = document.getString("OrganizerId");
-                            int capacity = document.getLong("Capacity").intValue();
-
-                            eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
-
-                            String posterUrl = document.getString("Poster");
-                            if (posterUrl != null) {
-                                posterUrls.put(uid, posterUrl);
-                            }
-                        }
-
-                        eventAdapter.notifyDataSetChanged();
-
-
-                    } else if (e != null) {
-                        Log.e("FirestoreError", "Error fetching events: ", e);
-                    }
-                });
-        recyclerView.scheduleLayoutAnimation();
-    }
-
-    /**
-     * Retrieves the waitlist for each event organized by the user and sends notifications to those on the waitlist.
-     */
-    private void retrieveWaitlistAndNotify() {
-        db.collection("EVENT_PROFILES")
-                .whereEqualTo("OrganizerID", USER_ID)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String organizerId = document.getString("OrganizerID");
-                            Log.d("OrganizerId", "OrganizerId: " + organizerId);  // Log each OrganizerId
-
-                            List<Object> waitlistIds = (List<Object>) document.get("waitlist");
-                            if (waitlistIds != null && !waitlistIds.isEmpty()) {
-                                String title = "Event Update";
-                                String message = "You have been selected for an event!";
-                                notificationManager.sendNotificationsToWaitlist(this, waitlistIds, title, message);
-                            } else {
-                                Log.d("Waitlist Acquisition", "No waitlist entries found.");
-                            }
-                        }
-                    }
-                });
-    }
 }

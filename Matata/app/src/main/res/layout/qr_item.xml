@@ -1,0 +1,86 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@color/black">
+
+    <!-- Event Controls Section -->
+    <LinearLayout
+        android:id="@+id/toggle_tile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/section_divider"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:onClick="toggleEventDetails">
+
+        <TextView
+            android:id="@+id/event_title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/event_title"
+            android:textColor="#FFFFFF"
+            android:fontFamily="@font/sansation_bold"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/add_qr"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_add"
+            android:contentDescription="@string/add_event"
+            app:tint="@color/sky_blue"
+            android:onClick="toggleEventDetails"/>
+    </LinearLayout>
+
+    <!-- List of Events with Control Options -->
+    <LinearLayout
+        android:id="@+id/qr_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:onClick="toggleEventDetails"
+        android:padding="8dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/qr_code"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:contentDescription="@string/event_poster"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/placeholder_image_background" />
+
+        <!-- Control Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <TextView
+                android:id="@+id/btn_delete_event"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/delete"
+                android:background="@drawable/button_delete_background"
+                android:textColor="#D32F2F"
+                android:paddingHorizontal="24dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingVertical="8dp"
+                android:gravity="center_horizontal" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
