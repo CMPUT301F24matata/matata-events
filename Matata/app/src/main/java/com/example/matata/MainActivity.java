@@ -34,6 +34,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -157,16 +158,18 @@ public class MainActivity extends AppCompatActivity {
                     userRef.set(userProfile);
 
                     initializeApp();
+                    saveFCMTokenToDatabase();
                 } else {
                     // Check the freeze status
                     String freezeStatus = task.getResult().getString("freeze");
                     String admin = task.getResult().getString("admin");
                     if ("awake".equalsIgnoreCase(freezeStatus)) {
-                        if("admin".equalsIgnoreCase(admin)) {
+                        if ("admin".equalsIgnoreCase(admin)) {
                             initializeApp();
-                        }
-                        else {
+                            saveFCMTokenToDatabase();
+                        } else {
                             initializeEntrantApp();
+                            saveFCMTokenToDatabase();
                         }
                     } else {
                         showFrozenDialog();
@@ -222,9 +225,9 @@ public class MainActivity extends AppCompatActivity {
         notificationButton = findViewById(R.id.notifiy_button);
         FacilityProfile = findViewById(R.id.FacilityProfile);
         admin = findViewById(R.id.admin);
-        list_toggle=findViewById(R.id.ListToggle);
-        scroll_toggle=findViewById(R.id.ExploreToggle);
-        Toggle=findViewById(R.id.toggle);
+        list_toggle = findViewById(R.id.ListToggle);
+        scroll_toggle = findViewById(R.id.ExploreToggle);
+        Toggle = findViewById(R.id.toggle);
         Log.wtf(TAG, "hello hello");
 
         if (findViewById(R.id.ListToggle).isSelected() || ((RadioButton) findViewById(R.id.ListToggle)).isChecked()) {
@@ -233,22 +236,20 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.scrollListFragment, new Recycler_fragment())
                     .commit();
         }
-        Toggle.setOnCheckedChangeListener((button,checkedID)->{
+        Toggle.setOnCheckedChangeListener((button, checkedID) -> {
             Log.wtf(TAG, "Checked ID: " + checkedID);
             Fragment fragment;
-            if (checkedID==R.id.ListToggle){
-                Log.wtf(TAG,"List checked");
-                fragment=new Recycler_fragment();
+            if (checkedID == R.id.ListToggle) {
+                Log.wtf(TAG, "List checked");
+                fragment = new Recycler_fragment();
 
-            }
-            else if(checkedID==R.id.ExploreToggle){
-                fragment=new SwipeView();
-            }
-            else{
-                fragment=null;
+            } else if (checkedID == R.id.ExploreToggle) {
+                fragment = new SwipeView();
+            } else {
+                fragment = null;
             }
 
-            getSupportFragmentManager().beginTransaction().replace(R.id.scrollListFragment,fragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.scrollListFragment, fragment).commit();
         });
 
     }
@@ -272,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         explore.setOnClickListener(v -> {
-            Intent intent=new Intent(MainActivity.this,ExploreEvents.class);
+            Intent intent = new Intent(MainActivity.this, ExploreEvents.class);
             startActivity(intent);
             // Add event search logic here
         });
@@ -288,4 +289,96 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Loads and listens for changes to event data in Firestore.
+     * Updates the RecyclerView dynamically when data changes.
+     */
+//    private void addEventsInit() {
+//
+//        db.collection("EVENT_PROFILES")
+//                .addSnapshotListener((snapshots, e) -> {
+//                    if (snapshots != null) {
+//                        eventList.clear();
+//                        statusList.clear();
+//                        posterUrls.clear();
+//
+//                        for (QueryDocumentSnapshot document : snapshots) {
+//                            DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
+//                            List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
+//                            List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
+//                            List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
+//
+//                            if (accepted != null && accepted.contains(entrantRef)) {
+//                                statusList.add("Accepted");
+//                            } else if (pending != null && pending.contains(entrantRef)) {
+//                                statusList.add("Pending");
+//                            } else if (waitlist != null && waitlist.contains(entrantRef)) {
+//                                statusList.add("Waitlist");
+//                            } else {
+//                                statusList.add("");
+//                            }
+//
+//                            String uid = document.getId();
+//                            String title = document.getString("Title");
+//                            String date = document.getString("Date");
+//                            String time = document.getString("Time");
+//                            String location = document.getString("Location");
+//                            String description = document.getString("Description");
+//                            String organizerId = document.getString("OrganizerId");
+//                            int capacity = document.getLong("Capacity").intValue();
+//                            String status = document.getString("Status");
+//
+//                            if (Objects.equals(status, "Active")) {
+//                                eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
+//                                String posterUrl = document.getString("Poster");
+//                                if (posterUrl != null) {
+//                                    posterUrls.put(uid, posterUrl);
+//                                }
+//                            }
+//
+//                        }
+//
+//                        eventAdapter.notifyDataSetChanged();
+//
+//
+//                    } else if (e != null) {
+//                        Log.e("FirestoreError", "Error fetching events: ", e);
+//                    }
+//                });
+//        recyclerView.scheduleLayoutAnimation();
+//    }
+
+    // Declare the launcher at the top of your Activity/Fragment:
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // FCM SDK (and your app) can post notifications.
+                } else {
+                    // TODO: Inform user that that your app will not show notifications.
+                }
+            });
+
+    /**
+     * Saves the FCM token to the Firestore database.
+     */
+    private void saveFCMTokenToDatabase() {
+        Log.d("Accessing FCM method", "Saving FCM token to database");
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                String fcmToken = task.getResult();
+                // Save FCM token to Firestore
+                FirebaseFirestore.getInstance().collection("USER_PROFILES").document(USER_ID)
+                        .update("fcmToken", fcmToken)
+                        .addOnSuccessListener(aVoid -> {
+                            System.out.println("FCM token saved successfully: " + fcmToken);
+                        })
+                        .addOnFailureListener(e -> {
+                            System.err.println("Error saving FCM token: " + e.getMessage());
+                        });
+            } else {
+                System.err.println("Failed to retrieve FCM token: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"));
+            }
+        });
+    }
 }
