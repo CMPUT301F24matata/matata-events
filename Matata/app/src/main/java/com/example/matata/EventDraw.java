@@ -358,7 +358,7 @@ public class EventDraw extends AppCompatActivity {
                         }else{
                             drawNum = 0;
                         }
-                        remainingPosition.setText("Remaining Position: " + remainNum);it
+                        remainingPosition.setText("Remaining Position: " + remainNum);
 
                         if (accepted!= null && accepted.size()==capacity){
                             acceptedSectionText.setText("Final List");

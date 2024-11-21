@@ -14,15 +14,6 @@
         android:orientation="horizontal"
         tools:ignore="MissingConstraints">
 
-
-        <SearchView
-            android:id="@+id/search_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:queryHint="Search Event"
-            android:iconifiedByDefault="false"/>
-
-        <!--
         <ImageView
             android:id="@+id/search_icon"
             android:layout_width="24dp"
@@ -55,7 +46,7 @@
             android:src="@drawable/ic_clear"
             android:visibility="gone"
             app:tint="#D3D3D3" />
--->
+
 
 
     </LinearLayout>

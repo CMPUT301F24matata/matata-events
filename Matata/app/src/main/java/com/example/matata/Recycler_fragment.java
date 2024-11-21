@@ -7,10 +7,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.SearchView;
 
 import com.google.firebase.firestore.DocumentReference;
@@ -34,7 +37,7 @@ public class Recycler_fragment extends Fragment {
     private String uid = null;
     private List<String> statusList = new ArrayList<>();
     private Map<String, String> posterUrls = new HashMap<>();
-    private SearchView searchView;
+    private EditText eventSearch;
 
 
 
@@ -43,7 +46,7 @@ public class Recycler_fragment extends Fragment {
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_events, container, false);
         recyclerView=view.findViewById(R.id.recycler_view_events);
-        searchView = view.findViewById(R.id.search_view);
+        eventSearch = view.findViewById(R.id.event_search);
 
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -54,17 +57,20 @@ public class Recycler_fragment extends Fragment {
         eventAdapter = new EventAdapter(getContext(), eventList, statusList, posterUrls);
         recyclerView.setAdapter(eventAdapter);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        eventSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                eventAdapter.filter(query);
-                return false;
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                eventAdapter.filter(newText);
-                return true;
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                eventAdapter.filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
