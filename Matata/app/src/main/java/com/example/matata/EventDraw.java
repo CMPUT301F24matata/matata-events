@@ -344,12 +344,23 @@ public class EventDraw extends AppCompatActivity {
                         loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
 
                         capacity = document.getLong("Capacity").intValue();
-                        remainNum = Math.max(capacity - pending.size() - accepted.size(),0);
-                        drawNum = Math.min(remainNum, waitlist.size());
-                        remainingPosition.setText("Remaining Position: " + remainNum);
-                        totalEntrant.setText("From: " + waitlist.size());
+                        remainNum = capacity;
+                        if(pending != null){
+                            remainNum -= pending.size();
+                        }
+                        if(accepted != null){
+                            remainNum -= accepted.size();
+                        }
+                        remainNum = Math.max(remainNum,0);
+                        if (waitlist != null){
+                            drawNum = Math.min(remainNum, waitlist.size());
+                            totalEntrant.setText("From: " + waitlist.size());
+                        }else{
+                            drawNum = 0;
+                        }
+                        remainingPosition.setText("Remaining Position: " + remainNum);it
 
-                        if (accepted.size()==capacity){
+                        if (accepted!= null && accepted.size()==capacity){
                             acceptedSectionText.setText("Final List");
                             totalEntrant.setText("Event Full");
                             pendingLinearLayout.setVisibility(View.GONE);
