@@ -36,10 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The ViewEvent class represents the activity to view details of a specific event.
- * It allows users to join or withdraw from a waitlist, respond to invitations, and view event details.
- * The activity also includes options for event organizers to manage entrant status.
- * Note: Geolocation consent is required to join the waitlist.
+ * The `ViewEvent` class represents the activity for viewing detailed information about an event.
+ * It provides functionality for attendees to join or withdraw from the event's waitlist, accept or decline invitations,
+ * and view event details such as title, description, time, date, location, and capacity.
+ * Organizers can manage event settings, including editing, deleting the event, or performing a draw.
  */
 public class ViewEvent extends AppCompatActivity {
 
@@ -53,7 +53,7 @@ public class ViewEvent extends AppCompatActivity {
      */
     private String posterBase64;
 
-// UI elements
+    // UI Elements
 
     /**
      * ImageView for navigating back from the event details screen.
@@ -96,61 +96,69 @@ public class ViewEvent extends AppCompatActivity {
     private TextView location;
 
     /**
+     * FloatingActionButton for displaying the QR code of the event.
+     */
+    private FloatingActionButton showQR;
+
+    /**
+     * Button for joining or withdrawing from the event waitlist.
+     */
+    private Button waitlistBtn;
+
+    /**
+     * Layout button for managing event draws.
+     */
+    private LinearLayout drawBtn;
+
+    /**
+     * Layout button for editing event details.
+     */
+    private LinearLayout editEvent;
+
+    /**
+     * Layout button for deleting the event.
+     */
+    private LinearLayout delEvent;
+
+    /**
+     * Unique identifier for the user.
+     */
+    private String USER_ID;
+
+    /**
      * Firestore instance used for database operations.
      */
     private FirebaseFirestore db;
 
     /**
-     * Floating action button to display the QR code for the event.
-     */
-    private FloatingActionButton showQR;
-
-    /**
-     * Button to join the waitlist for the event.
-     */
-    private Button waitlistBtn;
-
-    /**
-     * Unique device ID used to identify the user in the system.
-     */
-    private String USER_ID;
-
-    /**
-     * Firestore reference to the event document.
+     * Firestore reference for the event document.
      */
     private DocumentReference eventRef;
 
-
     /**
-     * Firestore reference to the entrant document.
+     * Firestore reference for the user document.
      */
     private DocumentReference entrantRef;
 
-    /**
-     * Button for managing event draw operations.
-     */
-    private LinearLayout drawBtn;
-    private LinearLayout editEvent;
-    private LinearLayout delEvent;
     /**
      * Unique identifier for the event.
      */
     private String uid;
 
+    /**
+     * Boolean indicating whether geolocation consent is required to join the event's waitlist.
+     */
     private boolean geoRequirement;
 
+    /**
+     * Boolean indicating whether the view is accessed by an administrator.
+     */
     private boolean admin_view;
 
-
     /**
-     * Called when the activity is first created.
-     * Sets up initial configurations, initializes Firebase and UI elements,
-     * and loads the event details based on the unique event ID.
+     * Initializes the activity, sets up Firebase, UI components, and loads event details.
      *
-     * @param savedInstanceState If the activity is being re-initialized after
-     *                           previously being shut down then this Bundle contains the data it most
-     *                           recently supplied in onSaveInstanceState.
-     *                           Otherwise, it is null.
+     * @param savedInstanceState If the activity is being re-initialized after being shut down, this contains the data it most recently supplied.
      */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

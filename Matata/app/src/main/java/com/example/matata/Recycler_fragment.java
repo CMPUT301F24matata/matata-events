@@ -26,21 +26,60 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Recycler_fragment is a fragment used to display a list of events in a RecyclerView.
+ * It retrieves event data from Firebase Firestore and provides a search bar to filter events by their titles.
+ */
 public class Recycler_fragment extends Fragment {
 
-
+    /**
+     * RecyclerView for displaying a list of events.
+     */
     private RecyclerView recyclerView;
+
+    /**
+     * Adapter for managing and displaying event data in the RecyclerView.
+     */
     private EventAdapter eventAdapter;
+
+    /**
+     * List to store all retrieved events.
+     */
     private List<Event> eventList;
+
+    /**
+     * Instance of FirebaseFirestore for database operations.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * Unique user identifier obtained from device settings or other sources.
+     */
     private String USER_ID = "";
-    private String uid = null;
-    private List<String> statusList = new ArrayList<>();
+
+    /**
+     * Map storing event poster URLs associated with their event IDs.
+     */
     private Map<String, String> posterUrls = new HashMap<>();
+
+    /**
+     * List storing the status of events (e.g., "Accepted," "Pending," "Waitlist").
+     */
+    private List<String> statusList = new ArrayList<>();
+
+    /**
+     * EditText for entering search queries to filter events.
+     */
     private EditText eventSearch;
 
-
-
+    /**
+     * Called to inflate the fragment's view hierarchy and initialize components.
+     *
+     * @param inflater           The LayoutInflater object used to inflate views.
+     * @param container          The parent container in which the fragment is displayed.
+     * @param savedInstanceState A Bundle containing the fragment's previously saved state.
+     * @return The root view of the fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,6 +116,10 @@ public class Recycler_fragment extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches event data from Firestore and initializes the RecyclerView with the retrieved events.
+     * This method listens for changes in the Firestore database and updates the UI dynamically.
+     */
     private void addEventsInit() {
         db.collection("EVENT_PROFILES")
                 .addSnapshotListener((snapshots, e) -> {

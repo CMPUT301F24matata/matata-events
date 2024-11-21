@@ -9,11 +9,31 @@ import android.widget.Toast;
 
 //import com.google.firebase.messaging.FirebaseMessaging;
 
+/**
+ * The Notification class provides utility methods for managing and sending notifications.
+ * It includes support for creating notification channels (required for Android 8.0 and above),
+ * subscribing to and unsubscribing from topics, and sending notifications to users.
+ */
 public class Notification {
 
+    /**
+     * Tag used for logging.
+     */
     private static final String TAG = "NotificationHelper";
+
+    /**
+     * Unique ID for the notification channel.
+     */
     private static final String CHANNEL_ID = "waitlist_notifications";
+
+    /**
+     * Name of the notification channel.
+     */
     private static final String CHANNEL_NAME = "Waitlist Notifications";
+
+    /**
+     * Description of the notification channel.
+     */
     private static final String CHANNEL_DESCRIPTION = "Notifications for event waitlists";
 
     /**

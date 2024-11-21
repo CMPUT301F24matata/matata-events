@@ -2,6 +2,7 @@ package com.example.matata;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -37,6 +38,13 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * EditEvent activity allows users to edit details of an existing event.
+ * It provides options to update event details, upload a new poster image,
+ * and save changes to Firebase Firestore.
+ * Implements {@link DatePickerListener} and {@link TimePickerListener} interfaces
+ * for selecting event date and time.
+ */
 public class EditEvent extends AppCompatActivity implements DatePickerListener,TimePickerListener {
 
     /**
@@ -120,7 +128,7 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
     private String posterURI;
 
     private Uri global_Uri;
-    private String downloadUrl;
+
     /**
      * Boolean indicating if the default image is used for the poster.
      */
@@ -144,6 +152,7 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
     /**
      * Switch indicating if the event requires geolocation
      */
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch geoRequirement;
 
     /**
@@ -154,12 +163,11 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
      */
     @Override
     public void onCreate( @Nullable Bundle savedInstanceState) {
-        db = FirebaseFirestore.getInstance();
-        ref = FirebaseStorage.getInstance("gs://matata-d53da.firebasestorage.app").getReference();
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_event);
+
+        db = FirebaseFirestore.getInstance();
+        ref = FirebaseStorage.getInstance("gs://matata-d53da.firebasestorage.app").getReference();
 
         initializeViews();
         headerText.setText("Edit Event");
@@ -191,7 +199,6 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
             }
         });
 
-
         if (!eveTitle.getText().toString().isEmpty() &&
                 !descriptionBox.getText().toString().isEmpty() &&
                 !eventDate.getText().toString().isEmpty() &&
@@ -216,8 +223,6 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         genrQR.setOnClickListener(view->updateEvent(event,intent,view));
 
         backBtn.setOnClickListener(v->finish());
-
-
     }
 
     /**
@@ -340,7 +345,6 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         datePicker.show(getSupportFragmentManager(), "datePicker");
     }
 
-
     ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
 
             new ActivityResultContracts.StartActivityForResult(),
@@ -432,7 +436,3 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         }
     }
 }
-
-
-
-

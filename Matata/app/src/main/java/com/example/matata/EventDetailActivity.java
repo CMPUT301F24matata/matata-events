@@ -1,4 +1,5 @@
 package com.example.matata;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,14 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * EventDetailActivity displays the details of a selected event and allows users to join or withdraw
- * from the event's waitlist. The activity interacts with Firebase Firestore to retrieve and update
- * event information, including checking the waitlist limit.
- * Outstanding issues: The sample event ID is hardcoded, which could affect functionality if not set
- * dynamically. Some method calls such as `addToWaitList()` within the confirmation dialog are currently
- * commented out, meaning that they might need to be implemented for full functionality.
+ * from the event's waitlist. Users can also view a list of cancelled entrants.
+ * This activity interacts with Firebase Firestore for retrieving and updating event data.
  */
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -58,9 +55,16 @@ public class EventDetailActivity extends AppCompatActivity {
      */
     private String USER_ID;
 
-
+    /**
+     * RecyclerView for displaying a list of cancelled entrants.
+     */
     private RecyclerView recyclerView;
+
+    /**
+     * Button to fetch and display cancelled entrants.
+     */
     private Button viewCancelledButton;
+
     /**
      * Initializes the EventDetailActivity, sets up views, and retrieves event details from intent.
      *
@@ -85,7 +89,6 @@ public class EventDetailActivity extends AppCompatActivity {
         Button joinWaitlistButton = findViewById(R.id.join_waitlist_button);
         recyclerView = findViewById(R.id.recycler_view_cancelled_entrants);
         viewCancelledButton = findViewById(R.id.view_cancelled_button);
-
 
         // Retrieve data from Intent
         Intent intent = getIntent();
@@ -238,6 +241,10 @@ public class EventDetailActivity extends AppCompatActivity {
         viewCancelledButton.setOnClickListener(v -> fetchCancelledEntrants());
 
     }
+
+    /**
+     * Fetches the list of cancelled entrants for the event from Firestore.
+     */
     private void fetchCancelledEntrants() {
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(Event_id);
 
@@ -264,6 +271,11 @@ public class EventDetailActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Displays the list of cancelled entrants in a RecyclerView.
+     *
+     * @param cancelledEntrants List of cancelled entrants to display.
+     */
     private void showCancelledEntrants(List<CancelledEntrant> cancelledEntrants) {
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -271,8 +283,3 @@ public class EventDetailActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 }
-
-
-
-
-

@@ -1,5 +1,6 @@
 package com.example.matata;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -71,6 +72,7 @@ public class FacilityActivity extends AppCompatActivity {
     /**
      * Switch for enabling or disabling notifications for the facility.
      */
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch switchNotification;
 
     /**

@@ -17,8 +17,6 @@ import java.util.Calendar;
  * Once a time is selected, it communicates the chosen time back to the hosting activity
  * through the TimePickerListener interface.
  *
- * Outstanding issues: None identified; however, it assumes that the hosting activity
- * implements TimePickerListener. Additional error handling may be required if this is not the case.
  */
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 

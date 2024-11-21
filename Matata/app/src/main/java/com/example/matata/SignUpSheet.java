@@ -28,8 +28,6 @@ import java.util.Map;
  * Users can input their personal and emergency contact information, dietary preferences,
  * arrival time, and accessibility needs. Once submitted, this data is saved to Firestore.
  *
- * Outstanding issues: Error handling for Firestore interactions could be improved. Currently,
- * feedback is limited to log messages and simple Toast notifications.
  */
 public class SignUpSheet extends AppCompatActivity {
 

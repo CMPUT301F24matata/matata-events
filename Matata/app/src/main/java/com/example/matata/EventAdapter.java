@@ -31,35 +31,42 @@ import java.util.Map;
 
 /**
  * EventAdapter is a RecyclerView adapter that binds a list of Event objects to views displayed in a RecyclerView.
- * Each Event is displayed in an item layout defined by event_card.xml, and clicking on an event item opens
- * the ViewEvent activity to display detailed information about the selected event.
- *
- * Outstanding issues: Currently, the adapter only displays a truncated version of the event description if it
- * exceeds 100 characters. Additional customization might be required to dynamically adjust this limit
- * or expand the text based on user interaction.
+ * Each Event is represented in an item layout defined by event_card.xml. The adapter also supports dynamic
+ * background color generation using image palettes and animations for a better user experience.
  */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
 
     /**
-     * A list of status strings representing the current status of each event.
+     * List of status strings representing the status of each event.
      */
     private List<String> statusList;
 
-    private String EVENT_ID;
-    private FirebaseFirestore db;
     /**
-     * The context in which the adapter or activity is operating.
+     * Context in which the adapter is used.
      */
     private Context context;
 
-    private int lastPosition = -1;
     /**
-     * A list of events containing details of each event.
+     * Index of the last animated item to prevent duplicate animations.
+     */
+    private int lastPosition = -1;
+
+    /**
+     * List of all Event objects.
      */
     private List<Event> eventList;
+
+    /**
+     * Filtered list of Event objects based on user search input.
+     */
     private List<Event> searchList;
+
+    /**
+     * Map of event poster URLs keyed by event ID.
+     */
     private Map<String, String> posterUrls;
+
     /**
      * Constructs an EventAdapter with a specified context, list of events, and list of statuses.
      *
@@ -141,13 +148,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.timeTextView.setText(event.getTime());
         holder.locationTextView.setText(event.getLocation());
 
-
-
-//        String description = event.getDescription();
-//        if (description.length() > 100) {
-//            description = description.substring(0, 100) + "...";
-//        }
-        //holder.descriptionTextView.setText(description);
         holder.eventStatus.setText(statusList.get(position));
 
         setAnimation(holder.itemView, position);
@@ -176,15 +176,45 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     /**
-     * EventViewHolder is a view holder for Event items in the RecyclerView. It holds references to
-     * the TextViews in the event_card layout to display event information such as title, date, time,
-     * location, description, and status.
+     * EventViewHolder holds references to the views for each Event item in the RecyclerView.
      */
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
+        /**
+         * LinearLayout for the card background.
+         */
         LinearLayout card_bg;
-        TextView  titleTextView, dateTextView, timeTextView, locationTextView, eventStatus;
+
+        /**
+         * TextView for the event title.
+         */
+        TextView titleTextView;
+
+        /**
+         * TextView for the event date.
+         */
+        TextView dateTextView;
+
+        /**
+         * TextView for the event time.
+         */
+        TextView timeTextView;
+
+        /**
+         * TextView for the event location.
+         */
+        TextView locationTextView;
+
+        /**
+         * TextView for the event status.
+         */
+        TextView eventStatus;
+
+        /**
+         * ImageView for the event poster.
+         */
         ImageView poster;
+
         /**
          * Constructs an EventViewHolder with the specified itemView, binding its views to the layout elements.
          *
@@ -203,6 +233,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
     }
 
+    /**
+     * Animates the appearance of the RecyclerView item.
+     *
+     * @param animateView The view to animate.
+     * @param pos         The position of the item in the list.
+     */
     public void setAnimation(View animateView,int pos) {
         if (pos > lastPosition) {
             Animation animation =AnimationUtils.loadAnimation(context, R.anim.slide_in);
@@ -211,6 +247,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
     }
 
+    /**
+     * Filters the event list based on a search query and updates the RecyclerView.
+     *
+     * @param query The search query to filter events.
+     */
     public void filter(String query) {
         searchList.clear();
         if (query.isEmpty()) {

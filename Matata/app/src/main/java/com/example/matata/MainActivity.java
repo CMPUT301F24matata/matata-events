@@ -42,15 +42,20 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * MainActivity serves as the central hub of the Matata app, displaying a list of events,
- * allowing users to navigate to different sections, and managing notifications.
- * This activity initializes a user profile in Firestore if it does not already exist,
- * handles event-related actions, and manages user permissions for notifications.
+ * MainActivity serves as the central hub for the Matata app. It provides navigation to key features, such as:
+ * - User profiles
+ * - Event creation
+ * - Event exploration
+ * - Event history
+ * - Admin and facility-specific sections
+ *
+ * The activity dynamically initializes user profiles in Firestore if they don't exist and adapts UI
+ * based on the user's role (admin or entrant).
  */
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * ImageView for displaying the user profile icon.
+     * ImageView for navigating to the user profile.
      */
     private ImageView profileIcon;
 
@@ -60,79 +65,34 @@ public class MainActivity extends AppCompatActivity {
     private ImageView new_event;
 
     /**
-     * LinearLayout for accessing the event history section.
+     * LinearLayout for accessing the event history.
      */
     private LinearLayout eventHistory;
 
     /**
-     * LinearLayout for exploring events on the map.
+     * LinearLayout for exploring events on a map.
      */
     private LinearLayout explore;
 
     /**
-     * RecyclerView for displaying a list of events.
-     */
-    //private RecyclerView recyclerView;
-
-    /**
-     * Adapter for managing the display and interaction with event items in the RecyclerView.
-     */
-    private EventAdapter eventAdapter;
-
-    /**
-     * List of events to be displayed in the RecyclerView.
-     */
-    private List<Event> eventList;
-
-    /**
-     * FloatingActionButton for initiating a QR scanner.
+     * FloatingActionButton for launching the QR scanner.
      */
     private FloatingActionButton QR_scanner;
 
     /**
-     * Instance of FirebaseFirestore for database access.
+     * FirebaseFirestore instance for Firestore operations.
      */
     private FirebaseFirestore db;
 
     /**
-     * String representing the unique user ID for Firestore operations.
+     * User ID retrieved from the device's unique ID settings.
      */
     private String USER_ID = "";
 
     /**
-     * UID string for uniquely identifying the user.
-     */
-    private String uid = null;
-
-    /**
-     * List of statuses for the events (e.g., "Accepted," "Pending," "Waitlist").
-     */
-    private List<String> statusList = new ArrayList<>();
-
-    /**
-     * Map storing event poster URLs associated with their event IDs.
-     */
-    private Map<String, String> posterUrls = new HashMap<>();
-
-    /**
-     * ImageButton for accessing notifications.
+     * ImageView for accessing notifications.
      */
     private ImageView notificationButton;
-
-    /**
-     * Launcher for requesting notification permissions.
-     */
-    private ActivityResultLauncher<String> notificationPermissionLauncher;
-
-    /**
-     * Manager for handling notifications.
-     */
-    private Notification notificationManager;
-
-    /**
-     * Static channel ID used for managing waitlist notifications.
-     */
-    private static final String CHANNEL_ID = "waitlist_notification_channel";
 
     /**
      * ImageView for accessing the facility profile section.
@@ -140,14 +100,25 @@ public class MainActivity extends AppCompatActivity {
     private ImageView FacilityProfile;
 
     /**
-     * ImageButton for accessing the admin section.
+     * ImageView for accessing the admin section.
      */
     private ImageView admin;
 
-
+    /**
+     * RadioButton for toggling to the event list view.
+     */
     private RadioButton list_toggle;
+
+    /**
+     * RadioButton for toggling to the event swipe view.
+     */
     private RadioButton scroll_toggle;
+
+    /**
+     * RadioGroup for managing view toggles.
+     */
     private RadioGroup Toggle;
+
     /**
      * Called when the activity is first created. Initializes the user profile in Firestore if necessary,
      * sets up UI components, handles notification permissions, and loads event data.
@@ -165,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
 
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -209,9 +179,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
     /**
      * Displays a frozen dialog when the user's account is marked as frozen.
      */
@@ -230,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
         initializeUI();
         setOnClickListeners();
 
-//        addEventsInit();
     }
 
     /**
@@ -242,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
         setOnClickListeners();
         admin.setVisibility(View.VISIBLE);
 
-//        addEventsInit();
     }
 
     /**
@@ -286,17 +251,6 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.scrollListFragment,fragment).commit();
         });
 
-//        recyclerView = findViewById(R.id.recycler_view_events);
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.setItemViewCacheSize(20);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//
-//        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, R.anim.anim_slide_in);
-//        recyclerView.setLayoutAnimation(animation);
-//
-//        eventList = new ArrayList<>();
-//        eventAdapter = new EventAdapter(this, eventList, statusList,posterUrls);
-//        recyclerView.setAdapter(eventAdapter);
     }
 
     /**
@@ -333,64 +287,5 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
-
-    /**
-     * Loads and listens for changes to event data in Firestore.
-     * Updates the RecyclerView dynamically when data changes.
-     */
-//    private void addEventsInit() {
-//
-//        db.collection("EVENT_PROFILES")
-//                .addSnapshotListener((snapshots, e) -> {
-//                    if (snapshots != null) {
-//                        eventList.clear();
-//                        statusList.clear();
-//                        posterUrls.clear();
-//
-//                        for (QueryDocumentSnapshot document : snapshots) {
-//                            DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
-//                            List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
-//                            List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
-//                            List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
-//
-//                            if (accepted != null && accepted.contains(entrantRef)) {
-//                                statusList.add("Accepted");
-//                            } else if (pending != null && pending.contains(entrantRef)) {
-//                                statusList.add("Pending");
-//                            } else if (waitlist != null && waitlist.contains(entrantRef)) {
-//                                statusList.add("Waitlist");
-//                            } else {
-//                                statusList.add("");
-//                            }
-//
-//                            String uid = document.getId();
-//                            String title = document.getString("Title");
-//                            String date = document.getString("Date");
-//                            String time = document.getString("Time");
-//                            String location = document.getString("Location");
-//                            String description = document.getString("Description");
-//                            String organizerId = document.getString("OrganizerId");
-//                            int capacity = document.getLong("Capacity").intValue();
-//                            String status = document.getString("Status");
-//
-//                            if (Objects.equals(status, "Active")) {
-//                                eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
-//                                String posterUrl = document.getString("Poster");
-//                                if (posterUrl != null) {
-//                                    posterUrls.put(uid, posterUrl);
-//                                }
-//                            }
-//
-//                        }
-//
-//                        eventAdapter.notifyDataSetChanged();
-//
-//
-//                    } else if (e != null) {
-//                        Log.e("FirestoreError", "Error fetching events: ", e);
-//                    }
-//                });
-//        recyclerView.scheduleLayoutAnimation();
-//    }
 
 }

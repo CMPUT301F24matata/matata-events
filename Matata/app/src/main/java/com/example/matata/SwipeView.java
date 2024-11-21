@@ -26,17 +26,56 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * The `SwipeView` class is a fragment that provides a swipe-based interface
+ * for viewing event details. Events are retrieved from Firebase Firestore
+ * and displayed using a `ViewPager2` with an `EventPagerAdapter`.
+ */
 public class SwipeView extends Fragment {
 
+    /**
+     * ViewPager2 for displaying event details with swipe navigation.
+     */
     private ViewPager2 viewPager2;
+
+    /**
+     * Instance of FirebaseFirestore for database access.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * Adapter for managing and displaying event data in the ViewPager2.
+     */
     private EventAdapter eventAdapter;
+
+    /**
+     * List of events to be displayed in the ViewPager2.
+     */
     private List<Event> eventList;
+
+    /**
+     * Unique identifier for the user obtained from device settings.
+     */
     private String USER_ID = "";
-    private String uid = null;
-    private List<String> statusList = new ArrayList<>();
+
+    /**
+     * Map storing event poster URLs associated with their event IDs.
+     */
     private Map<String, String> posterUrls = new HashMap<>();
 
+    /**
+     * List storing the status of events (e.g., "Accepted," "Pending," "Waitlist").
+     */
+    private List<String> statusList = new ArrayList<>();
+
+    /**
+     * Inflates the layout for the fragment and initializes the `ViewPager2`.
+     *
+     * @param inflater           The LayoutInflater object to inflate views.
+     * @param container          The parent container for the fragment's UI.
+     * @param savedInstanceState A Bundle containing the fragment's previously saved state.
+     * @return The root view of the fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,6 +91,10 @@ public class SwipeView extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches event data from Firestore and populates the `ViewPager2` with the event details.
+     * The data is dynamically updated when Firestore detects changes.
+     */
     private void addEventsInit() {
         db.collection("EVENT_PROFILES")
                 .addSnapshotListener((snapshots, e) -> {
@@ -102,14 +145,9 @@ public class SwipeView extends Fragment {
                         viewPager2.setAdapter(adapter);
                         viewPager2.setOffscreenPageLimit(1);
 
-
-
-
                     } else if (e != null) {
                         Log.e("FirestoreError", "Error fetching events: ", e);
                     }
                 });
-
-
     }
 }

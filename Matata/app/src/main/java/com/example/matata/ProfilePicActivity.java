@@ -25,8 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * The activity also includes options for handling the back button and notifying other activities
  * about profile picture changes.
  *
- * Outstanding issues: The activity currently does not handle large image sizes or provide resizing.
- * It also does not explicitly handle storage quotas or Firebase Storage configurations.
  */
 public class ProfilePicActivity extends AppCompatActivity {
 

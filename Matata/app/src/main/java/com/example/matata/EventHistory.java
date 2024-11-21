@@ -23,12 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * EventHistory activity displays a list of past events created by the user, allowing them to view details of each event.
- * This activity retrieves data from Firebase Firestore and populates it into a RecyclerView using an EventAdapter.
- *
- * Outstanding issues: This class fetches events based on the device's ID, which may lead to inconsistent results
- * if users switch devices. Additionally, only the title, date, time, location, description, and capacity are retrieved,
- * while some event details, such as the status list, are currently not fully utilized.
+ * The `EventHistory` activity displays a list of past events created by the user.
+ * It retrieves event data from Firebase Firestore and populates it in a RecyclerView using an `EventAdapter`.
  */
 public class EventHistory extends AppCompatActivity {
 
@@ -72,7 +68,10 @@ public class EventHistory extends AppCompatActivity {
      */
     private List<String> statusList = new ArrayList<>();
 
-    private Map<String,String>posterUrls=new HashMap<>();
+    /**
+     * Map storing poster URLs for events, with the event ID as the key.
+     */
+    private Map<String, String> posterUrls = new HashMap<>();
 
     /**
      * Initializes the EventHistory activity, setting up the RecyclerView and loading event data from Firestore.

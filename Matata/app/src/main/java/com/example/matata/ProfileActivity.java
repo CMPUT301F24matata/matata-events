@@ -1,5 +1,6 @@
 package com.example.matata;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -59,6 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * Switch to enable or disable notifications for the user.
      */
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch notifications;
 
     /**
