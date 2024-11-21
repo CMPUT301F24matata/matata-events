@@ -25,7 +25,7 @@ import java.util.Map;
  * It includes support for creating notification channels (required for Android 8.0 and above),
  * subscribing to and unsubscribing from topics, and sending notifications to users.
  */
-public class Notification {
+public class Notifications {
 
     /**
      * Tag used for logging.
@@ -77,16 +77,14 @@ public class Notification {
      * Subscribes the user to a specific topic.
      *
      * @param topic   The topic to subscribe to (e.g., event waitlist ID).
-     * @param context Application context for displaying messages.
      */
-    public static void subscribeToTopic(String topic, Context context) {
+    public void subscribeToTopic(String topic) {
+        Log.d("Subcribe", "Subscribe method called");
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(context, "Subscribed to topic: " + topic, Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Subscribed to topic: " + topic);
                     } else {
-                        Toast.makeText(context, "Failed to subscribe to topic.", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Failed to subscribe to topic: " + topic, task.getException());
                    }
                 });
@@ -96,16 +94,13 @@ public class Notification {
      * Unsubscribes the user from a specific topic.
      *
      * @param topic   The topic to unsubscribe from (e.g., event waitlist ID).
-     * @param context Application context for displaying messages.
      */
-    public static void unsubscribeFromTopic(String topic, Context context) {
+    public void unsubscribeFromTopic(String topic) {
         FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(context, "Unsubscribed from topic: " + topic, Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Unsubscribed from topic: " + topic);
                     } else {
-                        Toast.makeText(context, "Failed to unsubscribe from topic.", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Failed to unsubscribe from topic: " + topic, task.getException());
                     }
                 });
