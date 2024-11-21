@@ -14,6 +14,13 @@
         android:orientation="horizontal"
         tools:ignore="MissingConstraints">
 
+        <SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:queryHint="Search Title" />
+
+        <!--
         <ImageView
             android:id="@+id/search_icon"
             android:layout_width="24dp"
@@ -46,8 +53,11 @@
             android:src="@drawable/ic_clear"
             android:visibility="gone"
             app:tint="#D3D3D3" />
+-->
+
 
     </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_events"

@@ -1,7 +1,5 @@
 package com.example.matata;
 
-import static android.content.ContentValues.TAG;
-
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,9 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.SearchView;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,6 +34,7 @@ public class Recycler_fragment extends Fragment {
     private String uid = null;
     private List<String> statusList = new ArrayList<>();
     private Map<String, String> posterUrls = new HashMap<>();
+    private SearchView searchView;
 
 
 
@@ -46,6 +43,7 @@ public class Recycler_fragment extends Fragment {
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_events, container, false);
         recyclerView=view.findViewById(R.id.recycler_view_events);
+        searchView = view.findViewById(R.id.search_view);
 
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -56,6 +54,19 @@ public class Recycler_fragment extends Fragment {
         eventAdapter = new EventAdapter(getContext(), eventList, statusList, posterUrls);
         recyclerView.setAdapter(eventAdapter);
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                eventAdapter.filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                eventAdapter.filter(newText);
+                return true;
+            }
+        });
 
         return view;
     }
@@ -107,6 +118,7 @@ public class Recycler_fragment extends Fragment {
                         }
 
                         eventAdapter.notifyDataSetChanged();
+                        eventAdapter.filter("");
 
 
                     } else if (e != null) {

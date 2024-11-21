@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import android.graphics.drawable.GradientDrawable;
 import androidx.palette.graphics.Palette;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      * A list of events containing details of each event.
      */
     private List<Event> eventList;
+    private List<Event> searchList;
     private Map<String, String> posterUrls;
     /**
      * Constructs an EventAdapter with a specified context, list of events, and list of statuses.
@@ -70,6 +72,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         this.eventList = eventList;
         this.statusList = status;
         this.posterUrls= posterUrls;
+        this.searchList = new ArrayList<>(eventList);
     }
 
     /**
@@ -95,8 +98,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      */
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-
-        Event event = eventList.get(position);
+        Event event = searchList.get(position);
         String posterUrl = posterUrls.get(event.getEventid());
 
         if (posterUrl != null) {
@@ -170,7 +172,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
      */
     @Override
     public int getItemCount() {
-        return eventList.size();
+        return searchList.size();
     }
 
     /**
@@ -207,5 +209,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             animateView.startAnimation(animation);
             lastPosition=pos;
         }
+    }
+
+    public void filter(String query) {
+        searchList.clear();
+        if (query.isEmpty()) {
+            searchList.addAll(eventList);
+        } else {
+            for (Event event : eventList) {
+                if (event.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                    searchList.add(event);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }
