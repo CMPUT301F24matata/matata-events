@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Transaction;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
@@ -190,6 +191,9 @@ public class EventDetailActivity extends AppCompatActivity {
                         .addOnSuccessListener(aVoid -> {
                             Log.d("Firebase", "Entrant removed from waitlist successfully");
                             joinWaitlistButton.setText("Join Waitlist");
+
+                            // Unsubscribe from topic
+                            unsubscribeFromTopic(Event_id);
                         })
                         .addOnFailureListener(e -> Log.e("Firebase", "Error removing entrant from waitlist", e));
             }
@@ -205,7 +209,11 @@ public class EventDetailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Uncomment the following line to enable waitlist addition
-                        // addToWaitList();
+                        addToWaitList();
+
+                        Log.d("Subcribe", "Subscribe method called");
+                        // Subscribe to topic
+                        subscribeToTopic(Event_id);
                     }
                 });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -232,8 +240,9 @@ public class EventDetailActivity extends AppCompatActivity {
                     transaction.update(eventRef, "waitlist", waitlist);
                     return null;
                 }).addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "Entrant added to waitlist successfully");
+                    Log.d("Added", "Entrant added to waitlist successfully!!!");
                     joinWaitlistButton.setText("Withdraw");
+
                 }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
             }
         });
@@ -281,5 +290,39 @@ public class EventDetailActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         CancelledEntrantAdapter adapter = new CancelledEntrantAdapter(cancelledEntrants);
         recyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * Subscribes the user to a specific topic.
+     *
+     * @param topic   The topic to subscribe to (e.g., event waitlist ID).
+     */
+    private void subscribeToTopic(String topic) {
+        Log.d("Subcribe", "Subscribe method called");
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("Subscribe", "Subscribed to topic: " + topic);
+                    } else {
+                        Log.e("Failure", "Failed to subscribe to topic: " + topic, task.getException());
+                    }
+                });
+    }
+
+    /**
+     * Unsubscribes the user from a specific topic.
+     *
+     * @param topic   The topic to unsubscribe from (e.g., event waitlist ID).
+     */
+    private void unsubscribeFromTopic(String topic) {
+        Log.d("Unsubcribe", "Unsubscribe method called");
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("Unsubscribe", "Unsubscribed from topic: " + topic);
+                    } else {
+                        Log.e("Failure", "Failed to unsubscribe from topic: " + topic, task.getException());
+                    }
+                });
     }
 }
