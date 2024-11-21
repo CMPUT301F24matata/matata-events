@@ -315,7 +315,7 @@ public class EventDraw extends AppCompatActivity {
 
         // Save button to set a waitlist limit
         saveButton.setOnClickListener(v -> {
-            if (waitlistLimit != null) {
+            if (!waitlistLimit.getText().toString().isEmpty()) {
                 setLimit(uid);
             }
         });

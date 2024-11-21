@@ -185,7 +185,8 @@
             android:id="@+id/geoRequirement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="230dp"
+            android:layout_gravity="end"
+            android:paddingRight="15dp"
             android:trackTint="@color/white"
             android:textColor="@color/white"
             android:text="Require Geolocation" />

@@ -244,14 +244,14 @@
                         android:id="@+id/limitSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="250dp"
+                        android:layout_gravity="end"
                         android:text="Set waitlist limit"
                         android:textColor="@color/white"/>
                     <EditText
                         android:id="@+id/waitlistLimit"
                         android:paddingLeft="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_width="365dp"
+                        android:paddingRight="10dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
                         android:inputType="number"
