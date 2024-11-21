@@ -137,11 +137,12 @@ public class EventHistoryFragment extends Fragment {
                                 String location = document.getString("Location");
                                 String description = document.getString("Description");
                                 int capacity = document.getLong("Capacity").intValue();
+                                String poster=document.getString("Poster");
                                 int waitlistLimit = document.getLong("WaitlistLimit").intValue();
                                 boolean geoRequirement = document.getBoolean("GeoRequirement");
 
                                 eventList.add(new Event(title, date, time, location, description, capacity, uid, USER_ID, waitlistLimit, geoRequirement));
-
+                                posterUrls.put(uid,poster);
                             }
                             eventAdapter.notifyDataSetChanged();
                             eventAdapter.filter("");
