@@ -281,7 +281,7 @@ public class EventDraw extends AppCompatActivity {
         entrantMap = new LinkedHashMap<>();
         selectedIdList = new ArrayList<>();
 
-        //loadLimit(uid);
+        loadLimit(uid);
 
         // Back button to close the activity
         backBtn.setOnClickListener(v -> finish());
