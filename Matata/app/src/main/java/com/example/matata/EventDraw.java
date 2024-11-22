@@ -399,13 +399,9 @@ public class EventDraw extends AppCompatActivity {
     }
 
     private void checkDrawStatus() {
-        // an organizer can draw when: 1. not drawn yet (no accepted/rejected/pending)
-        // 2. drew before but organizer cancelled some entrants/some entrants rejected (accepted+pending < capacity)
         if (entrantList.isEmpty()){
             Toast.makeText(EventDraw.this, "No one is in the waiting list", Toast.LENGTH_SHORT).show();
-            //return;
         }else if (acceptedList.size() + selectedList.size() < capacity ){
-            // if there's still a spot and entrantList not empty, organizer can draw
             drawConfirmDialog();
         }else{
             Toast.makeText(EventDraw.this, "You cannot draw now because there is no remaining position", Toast.LENGTH_SHORT).show();
@@ -426,7 +422,6 @@ public class EventDraw extends AppCompatActivity {
      * Opens a confirmation dialog for drawing entrants.
      */
     private void drawConfirmDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(EventDraw.this);
         builder.setCancelable(true);
         builder.setMessage("You are about to draw " + drawNum + " out of " + entrantList.size() + " people.\nProceed?");
@@ -477,17 +472,21 @@ public class EventDraw extends AppCompatActivity {
                 pending.add(entrantRef);
                 waitlist.remove(entrantRef);
                 entrantList.remove(entrant.getValue());
+                entrantMap.remove(entrant.getKey());
             }
             transaction.update(eventRef, "pending", pending);
             transaction.update(eventRef, "waitlist", waitlist);
             remainNum -= drawNum;
+            remainNum = Math.max(remainNum,0);
             return null;
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Entrant added to pending list successfully");
             pendingAdapter.notifyDataSetChanged();
             waitlistAdapter.notifyDataSetChanged();
             remainingPosition.setText("Remaining Position: " + remainNum);
+            totalEntrant.setText("From: " + entrantList.size());
             Toast.makeText(EventDraw.this, "Successfully sampled " + drawNum + " entrants to pending list", Toast.LENGTH_SHORT).show();
+            drawNum = Math.min(drawNum,entrantList.size());
         }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to pending list", e));
     }
 
@@ -496,7 +495,6 @@ public class EventDraw extends AppCompatActivity {
      */
     private void clearSelectedEntrant() {
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
-
         selectedList.clear();
         selectedIdList.clear();
 
