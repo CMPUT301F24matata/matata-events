@@ -79,7 +79,6 @@ public class Notifications {
      * @param topic   The topic to subscribe to (e.g., event waitlist ID).
      */
     public void subscribeToTopic(String topic) {
-        Log.d("Subcribe", "Subscribe method called");
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

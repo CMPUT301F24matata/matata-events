@@ -64,9 +64,6 @@
             android:name=".EditEvent"
             android:parentActivityName=".ViewEvent" />
         <activity
-            android:name=".EventDetailActivity"
-            android:exported="false" />
-        <activity
             android:name=".ViewEvent"
             android:exported="false" />
         <activity

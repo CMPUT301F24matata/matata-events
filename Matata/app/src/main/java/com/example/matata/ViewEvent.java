@@ -491,6 +491,10 @@ public class ViewEvent extends AppCompatActivity {
             }
             waitlist.add(entrantRef);
             transaction.update(eventRef, "waitlist", waitlist);
+
+            // Subscribe to topic for the user
+            Notifications notifications = new Notifications();
+            notifications.subscribeToTopic("Waitlist-" + uid);
             return null;
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Entrant added to waitlist successfully");
@@ -520,6 +524,10 @@ public class ViewEvent extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "Entrant withdrew from waitlist successfully");
                     waitlistBtn.setText("Join Waitlist");
+
+                    // Unsubscribe from topic
+                    Notifications notifications = new Notifications();
+                    notifications.unsubscribeFromTopic("Waitlist-" + uid);
                 }).addOnFailureListener(e -> Log.e("Firebase", "Error deleting entrant from waitlist", e));
     }
 
