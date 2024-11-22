@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SearchView;
 
 import com.google.firebase.firestore.DocumentReference;
@@ -72,6 +73,8 @@ public class Recycler_fragment extends Fragment {
      */
     private EditText eventSearch;
 
+    private ImageButton clearSearch;
+
     /**
      * Called to inflate the fragment's view hierarchy and initialize components.
      *
@@ -86,6 +89,7 @@ public class Recycler_fragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_events, container, false);
         recyclerView=view.findViewById(R.id.recycler_view_events);
         eventSearch = view.findViewById(R.id.event_search);
+        clearSearch =  view.findViewById(R.id.clear_search_button);
 
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -105,11 +109,20 @@ public class Recycler_fragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 eventAdapter.filter(s.toString());
+                clearSearch.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        clearSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventSearch.setText("");
+                clearSearch.setVisibility(View.GONE);
             }
         });
 
