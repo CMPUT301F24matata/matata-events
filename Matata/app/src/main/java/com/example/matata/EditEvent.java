@@ -243,7 +243,9 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                 argbase64 = documentSnapshot.getString("bitmap");
                 try {
                     String ImageUri = documentSnapshot.getString("Poster");
-                    if (ImageUri != null) {
+                    assert ImageUri != null;
+                    if (!ImageUri.isEmpty()) {
+                        Log.d("Image", "loadDetails: ImgaeUri = (" + ImageUri + ")");
                         Glide.with(this).load(ImageUri).into(posterPic);
                     }
                     else {
