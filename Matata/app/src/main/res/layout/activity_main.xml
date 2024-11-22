@@ -161,7 +161,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:background="#101010"
+        android:background="@drawable/nav_gradient"
         android:paddingTop="10dp"
         android:gravity="center"
         android:alpha="1"

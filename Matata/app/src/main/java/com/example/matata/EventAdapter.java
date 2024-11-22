@@ -24,6 +24,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import android.graphics.drawable.GradientDrawable;
 import androidx.palette.graphics.Palette;
+import com.bumptech.glide.request.RequestOptions;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,41 +109,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = searchList.get(position);
         String posterUrl = posterUrls.get(event.getEventid());
-
-        if (posterUrl != null) {
-            Glide.with(holder.itemView.getContext())
-                    .asBitmap()
-                    .load(posterUrl)
-                    .placeholder(R.drawable.placeholder_image)
-                    .error(R.drawable.failed_image)
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            holder.poster.setImageBitmap(resource);
-
-                            // Generate palette from the loaded bitmap
-                            Palette.from(resource).generate(palette -> {
-                                if (palette != null) {
-                                    int vibrantColor = palette.getVibrantColor(0xFF000000);
-                                    int dominantColor = palette.getDominantColor(0xFF000000);
-
-                                    GradientDrawable gradientDrawable = new GradientDrawable(
-                                            GradientDrawable.Orientation.LEFT_RIGHT,
-                                            new int[]{vibrantColor, dominantColor}
-                                    );
-
-                                    holder.card_bg.setBackground(gradientDrawable);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
-                    });
-        } else {
-            holder.poster.setImageResource(R.drawable.placeholder_image);
-        }
+        holder.poster.setClipToOutline(true);
+        Glide.with(holder.itemView.getContext())
+                .load(posterUrl)
+                .error(R.drawable.placeholder_image)
+                .into(holder.poster);
 
         holder.titleTextView.setText(event.getTitle());
         holder.dateTextView.setText(event.getDate());
