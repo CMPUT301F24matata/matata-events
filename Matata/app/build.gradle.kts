@@ -76,6 +76,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.protobuf:protobuf-javalite:3.21.12")
 
+    implementation ("jp.wasabeef:glide-transformations:4.3.0")
+
 //    implementation(files("C:/Users/chiro/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
 
 
