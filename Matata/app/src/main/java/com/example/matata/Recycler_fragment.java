@@ -109,7 +109,11 @@ public class Recycler_fragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 eventAdapter.filter(s.toString());
-                clearSearch.setVisibility(View.VISIBLE);
+                if (s.toString().isEmpty()) {
+                    clearSearch.setVisibility(View.GONE);
+                } else {
+                    clearSearch.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -122,7 +126,6 @@ public class Recycler_fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 eventSearch.setText("");
-                clearSearch.setVisibility(View.GONE);
             }
         });
 
