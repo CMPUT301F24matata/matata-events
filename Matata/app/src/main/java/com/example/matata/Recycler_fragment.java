@@ -1,7 +1,9 @@
 package com.example.matata;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,12 +12,18 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.SearchView;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -75,6 +83,11 @@ public class Recycler_fragment extends Fragment {
 
     private ImageButton clearSearch;
 
+    private ListView searchHistoryList;
+
+    private List<String> searchHistory = new ArrayList<>();
+    private static final int MAX_KEYWORDS = 5;
+
     /**
      * Called to inflate the fragment's view hierarchy and initialize components.
      *
@@ -90,6 +103,12 @@ public class Recycler_fragment extends Fragment {
         recyclerView=view.findViewById(R.id.recycler_view_events);
         eventSearch = view.findViewById(R.id.event_search);
         clearSearch =  view.findViewById(R.id.clear_search_button);
+        searchHistoryList = view.findViewById(R.id.search_history_list);
+        searchHistory.add("^ Collapse");
+
+        ArrayAdapter<String> searchHistoryAdapter = new ArrayAdapter<>(getContext(), R.layout.search_history, searchHistory);
+        searchHistoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        searchHistoryList.setAdapter(searchHistoryAdapter);
 
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -111,8 +130,12 @@ public class Recycler_fragment extends Fragment {
                 eventAdapter.filter(s.toString());
                 if (s.toString().isEmpty()) {
                     clearSearch.setVisibility(View.GONE);
+                    if (searchHistory.size() > 1){
+                        searchHistoryList.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     clearSearch.setVisibility(View.VISIBLE);
+                    searchHistoryList.setVisibility(View.GONE);
                 }
             }
 
@@ -122,10 +145,53 @@ public class Recycler_fragment extends Fragment {
             }
         });
 
+        eventSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String keyword = eventSearch.getText().toString().trim();
+                if (!keyword.isEmpty() && !keyword.equals("^ Collapse")) {
+                    searchHistory.remove(keyword);
+                    searchHistory.add(0, keyword);
+
+                    if (searchHistory.size() - 1 > MAX_KEYWORDS) {
+                        searchHistory.remove(searchHistory.size() - 2);
+                    }
+
+                    searchHistoryAdapter.notifyDataSetChanged();
+                }
+                return true;
+            }
+        });
+
+        searchHistoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get the selected search term from your search history list
+                String selectedSearchTerm = searchHistory.get(position);
+
+                if (selectedSearchTerm.equals("^ Collapse")) {
+                    // Hide the search history ListView
+                    searchHistoryList.setVisibility(View.GONE);
+                } else {
+                    // Set the selected search term in the search EditText
+                    eventSearch.setText(selectedSearchTerm);
+
+                    // Perform the search/filter action on the RecyclerView
+                    eventAdapter.filter(selectedSearchTerm);
+
+                    // Hide the search history ListView after selection
+                    searchHistoryList.setVisibility(View.GONE);
+                }
+            }
+        });
+
         clearSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 eventSearch.setText("");
+                if (searchHistory.size() > 1){
+                    searchHistoryList.setVisibility(View.VISIBLE);
+                }
             }
         });
 
