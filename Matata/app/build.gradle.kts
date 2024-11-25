@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.matata"
-        minSdk = 24
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -117,4 +117,5 @@ dependencies {
     testImplementation(libs.junit)
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-functions")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }

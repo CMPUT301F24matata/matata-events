@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="NoTextAppearance" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:textSize">0sp</item>
     </style>
@@ -24,4 +24,14 @@
         <item name="cornerSize">10dp</item>
     </style>
 
+    <!-- Splash Screen Theme -->
+    <style name="Theme.MySplashScreen" parent="Theme.SplashScreen">
+        <!-- Set the splash screen background -->
+        <item name="windowSplashScreenBackground">@color/black</item>
+        <!-- Set the splash screen icon -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/admin_icon</item>
+        <!-- Set the duration -->
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/Theme.Matata</item>
+    </style>
 </resources>
