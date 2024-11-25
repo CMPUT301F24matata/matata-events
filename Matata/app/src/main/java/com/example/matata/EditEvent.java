@@ -27,6 +27,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.CollectionReference;
@@ -35,7 +37,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -152,6 +156,11 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
     /**
      * Switch indicating if the event requires geolocation
      */
+
+
+
+
+
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch geoRequirement;
 
@@ -168,6 +177,9 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
 
         db = FirebaseFirestore.getInstance();
         ref = FirebaseStorage.getInstance("gs://matata-d53da.firebasestorage.app").getReference();
+
+
+
 
         initializeViews();
         headerText.setText("Edit Event");
@@ -223,6 +235,8 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         genrQR.setOnClickListener(view->updateEvent(event,intent,view));
 
         backBtn.setOnClickListener(v->finish());
+
+
     }
 
     /**
@@ -435,4 +449,6 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                     });
         }
     }
+
+
 }

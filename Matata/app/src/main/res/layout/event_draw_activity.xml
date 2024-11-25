@@ -215,6 +215,37 @@
                         tools:listitem="@layout/entrant_card"/>
                 </LinearLayout>
 
+                    <!-- Cancelled Section -->
+                    <TextView
+                        android:id="@+id/cancelled_section_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Cancelled"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:textColor="#FFFFFF"
+                        app:drawableEndCompat="@drawable/ic_expand_less"
+                        android:background="@drawable/section_divider"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:background="@android:color/transparent" />
+                    <LinearLayout
+                        android:id="@+id/cancelled_section"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="8dp">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/cancelled_recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:listitem="@layout/entrant_card"/>
+                    </LinearLayout>
+
                     <!-- Waiting list Section -->
                 <TextView
                     android:id="@+id/waiting_section_text"
@@ -239,6 +270,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
+
+
 
                     <Switch
                         android:id="@+id/limitSwitch"
@@ -289,7 +322,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
 
         <Button
             android:id="@+id/button3"

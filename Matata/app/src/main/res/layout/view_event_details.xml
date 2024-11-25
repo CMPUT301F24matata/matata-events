@@ -314,7 +314,6 @@
             <Button
                 android:id="@+id/join_waitlist_button"
                 android:layout_width="wrap_content"
-
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
@@ -322,7 +321,11 @@
                 android:text="@string/pending"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
+
+
         </LinearLayout>
+
+
 
 
 

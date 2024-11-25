@@ -75,6 +75,12 @@ public class EventDraw extends AppCompatActivity {
      */
     private List<Entrant> rejectedList;
 
+
+    /**
+     * List of cancelled entrants.
+     */
+    private List<Entrant> cancelledList;
+
     /**
      * Adapter for displaying pending entrants.
      */
@@ -96,6 +102,11 @@ public class EventDraw extends AppCompatActivity {
     private EntrantAdapter rejectedAdapter;
 
     /**
+     * Adapter for displaying rejected entrants.
+     */
+    private EntrantAdapter cancelledAdapter;
+
+    /**
      * RecyclerView for displaying the waitlist.
      */
     private RecyclerView waitlistRecyclerView;
@@ -114,6 +125,11 @@ public class EventDraw extends AppCompatActivity {
      * RecyclerView for displaying rejected entrants.
      */
     private RecyclerView rejectedRecyclerView;
+
+    /**
+     * RecyclerView for displaying cancelled entrants.
+     */
+    private RecyclerView cancelledRecyclerView;
 
     /**
      * TextView showing the total number of entrants.
@@ -146,6 +162,11 @@ public class EventDraw extends AppCompatActivity {
     private TextView waitlistSectionText;
 
     /**
+     * TextView representing the cancelled section header.
+     */
+    private TextView cancelledSectionText;
+
+    /**
      * LinearLayout for the accepted entrants section.
      */
     private LinearLayout acceptedLinearLayout;
@@ -164,6 +185,11 @@ public class EventDraw extends AppCompatActivity {
      * LinearLayout for the waitlist entrants section.
      */
     private LinearLayout waitlistLinearLayout;
+
+    /**
+     * LinearLayout for the cancelled entrants section.
+     */
+    private LinearLayout cancelledLinearLayout;
 
     /**
      * Map linking each entrant to their status (e.g., accepted, rejected).
@@ -259,11 +285,13 @@ public class EventDraw extends AppCompatActivity {
         rejectedSectionText = findViewById(R.id.rejected_section_text);
         pendingSectionText = findViewById(R.id.pending_section_text);
         waitlistSectionText = findViewById(R.id.waiting_section_text);
+        cancelledSectionText = findViewById(R.id.cancelled_section_text);
 
         acceptedLinearLayout = findViewById(R.id.accepted_section);
         rejectedLinearLayout = findViewById(R.id.rejected_section);
         pendingLinearLayout = findViewById(R.id.pending_section);
         waitlistLinearLayout = findViewById(R.id.waitlist_section);
+        cancelledLinearLayout = findViewById(R.id.cancelled_section);
 
         drawBtn = findViewById(R.id.draw_button);
         ImageView backBtn = findViewById(R.id.go_back_draw_event);
@@ -272,6 +300,7 @@ public class EventDraw extends AppCompatActivity {
         acceptedRecyclerView = findViewById(R.id.accepted_recyclerView);
         rejectedRecyclerView = findViewById(R.id.rejected_recyclerView);
         waitlistRecyclerView = findViewById(R.id.waitlist_recyclerView);
+        cancelledRecyclerView = findViewById(R.id.cancelled_recyclerView);
 
         entrantList = new ArrayList<>();
         waitlistAdapter = new EntrantAdapter(this, entrantList);
@@ -292,6 +321,11 @@ public class EventDraw extends AppCompatActivity {
         acceptedAdapter = new EntrantAdapter(this, acceptedList);
         acceptedRecyclerView.setAdapter(acceptedAdapter);
         acceptedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        cancelledList = new ArrayList<>();
+        cancelledAdapter = new EntrantAdapter(this, cancelledList);
+        cancelledRecyclerView.setAdapter(cancelledAdapter);
+        cancelledRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         entrantMap = new LinkedHashMap<>();
         selectedIdList = new ArrayList<>();
@@ -497,12 +531,19 @@ public class EventDraw extends AppCompatActivity {
     private void clearSelectedEntrant() {
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
 
+
+        List<Entrant> clearedEntrants = new ArrayList<>(selectedList);
+
         selectedList.clear();
         selectedIdList.clear();
 
         db.runTransaction((Transaction.Function<Void>) transaction -> {
+
+
             transaction.update(eventRef, "pending", new ArrayList<>());
             return null;
+
+
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Clearing pending list successfully");
             pendingAdapter.notifyDataSetChanged();
