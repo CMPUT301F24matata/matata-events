@@ -179,7 +179,7 @@
                         android:id="@+id/clearPendingList"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="240dp"
+                        android:layout_gravity="end"
                         android:text="Clear Pending list"/>
                 </LinearLayout>
 
@@ -294,7 +294,7 @@
                     <Button
                         android:id="@+id/saveButton"
                         android:visibility="gone"
-                        android:layout_marginLeft="300dp"
+                        android:layout_gravity="end"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Save"/>

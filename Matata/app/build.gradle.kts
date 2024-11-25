@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.matata"
-        minSdk = 24
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -76,6 +76,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.protobuf:protobuf-javalite:3.21.12")
 
+    implementation ("jp.wasabeef:glide-transformations:4.3.0")
+
 //    implementation(files("C:/Users/chiro/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
 
 
@@ -115,4 +117,5 @@ dependencies {
     testImplementation(libs.junit)
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-functions")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }
