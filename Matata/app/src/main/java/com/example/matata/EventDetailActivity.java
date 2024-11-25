@@ -88,8 +88,7 @@ public class EventDetailActivity extends AppCompatActivity {
         ImageView posterImageView = findViewById(R.id.poster_pic_Display);
         ImageView backButton = findViewById(R.id.go_back_view_event);
         Button joinWaitlistButton = findViewById(R.id.join_waitlist_button);
-        recyclerView = findViewById(R.id.recycler_view_cancelled_entrants);
-        viewCancelledButton = findViewById(R.id.view_cancelled_button);
+
 
         // Retrieve data from Intent
         Intent intent = getIntent();
@@ -247,50 +246,13 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
 
-        viewCancelledButton.setOnClickListener(v -> fetchCancelledEntrants());
+      
 
     }
 
-    /**
-     * Fetches the list of cancelled entrants for the event from Firestore.
-     */
-    private void fetchCancelledEntrants() {
-        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(Event_id);
 
-        eventRef.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                List<Map<String, Object>> cancelled = (List<Map<String, Object>>) documentSnapshot.get("cancelled");
 
-                if (cancelled != null && !cancelled.isEmpty()) {
-                    List<CancelledEntrant> cancelledEntrants = new ArrayList<>();
-                    for (Map<String, Object> map : cancelled) {
-                        String name = (String) map.get("name");
-                        String reason = (String) map.get("reason");
-                        cancelledEntrants.add(new CancelledEntrant(name, reason));
-                    }
 
-                    showCancelledEntrants(cancelledEntrants);
-                } else {
-                    Toast.makeText(this, "No cancelled entrants.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).addOnFailureListener(e -> {
-            Log.e("Firebase", "Error fetching cancelled entrants", e);
-            Toast.makeText(this, "Failed to fetch cancelled entrants.", Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    /**
-     * Displays the list of cancelled entrants in a RecyclerView.
-     *
-     * @param cancelledEntrants List of cancelled entrants to display.
-     */
-    private void showCancelledEntrants(List<CancelledEntrant> cancelledEntrants) {
-        recyclerView.setVisibility(View.VISIBLE);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        CancelledEntrantAdapter adapter = new CancelledEntrantAdapter(cancelledEntrants);
-        recyclerView.setAdapter(adapter);
-    }
 
     /**
      * Subscribes the user to a specific topic.
