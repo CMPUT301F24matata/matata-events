@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.functions.FirebaseFunctionsException;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -139,30 +140,4 @@ public class Notifications {
                 });
     }
 
-
-    /**
-     * Handles incoming messages from Firebase Cloud Messaging.
-     */
-    public static class WaitlistMessagingService extends FirebaseMessagingService {
-        @Override
-        public void onMessageReceived(com.google.firebase.messaging.RemoteMessage remoteMessage) {
-            super.onMessageReceived(remoteMessage);
-
-            // Extract data
-            String title = remoteMessage.getNotification() != null
-                    ? remoteMessage.getNotification().getTitle()
-                    : "Waitlist Update";
-
-            String message = remoteMessage.getNotification() != null
-                    ? remoteMessage.getNotification().getBody()
-                    : "You have a new notification for your waitlist.";
-        }
-
-        @Override
-        public void onNewToken(String token) {
-            super.onNewToken(token);
-            Log.d(TAG, "New FCM Token: " + token);
-            // Optionally send token to backend
-        }
-    }
 }
