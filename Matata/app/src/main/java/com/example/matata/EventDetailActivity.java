@@ -246,7 +246,7 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         });
 
-      
+
 
     }
 

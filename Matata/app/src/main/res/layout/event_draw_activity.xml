@@ -215,36 +215,6 @@
                         tools:listitem="@layout/entrant_card"/>
                 </LinearLayout>
 
-                    <!-- Cancelled Section -->
-                    <TextView
-                        android:id="@+id/cancelled_section_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Cancelled"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp"
-                        android:textColor="#FFFFFF"
-                        app:drawableEndCompat="@drawable/ic_expand_less"
-                        android:background="@drawable/section_divider"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:background="@android:color/transparent" />
-                    <LinearLayout
-                        android:id="@+id/cancelled_section"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingBottom="8dp">
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/cancelled_recyclerView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            tools:listitem="@layout/entrant_card"/>
-                    </LinearLayout>
 
                     <!-- Waiting list Section -->
                 <TextView
@@ -270,6 +240,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
+
 
 
 
@@ -312,26 +283,33 @@
         </LinearLayout>
 
     <LinearLayout
-
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-
+        android:gravity="center"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/view_combined_list_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="View Cancelled List"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="20dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
             android:layout_weight="1"
-            android:text="Send Notification" />
-
-
+            android:layout_marginStart="8dp"
+            android:text="Send Notification"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

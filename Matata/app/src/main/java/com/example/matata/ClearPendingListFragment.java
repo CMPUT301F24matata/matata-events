@@ -9,6 +9,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.List;
+
 /**
  * ClearPendingListFragment class is a DialogFragment that provides a dialog prompt to the user, asking if they want to
  * cancel all entrants who haven't accepted the invitation yet. This class creates a dialog with "Yes" and "No" options.
@@ -18,6 +20,22 @@ import androidx.fragment.app.DialogFragment;
  * clear pending invitations if this is required in future development.
  */
 public class ClearPendingListFragment extends DialogFragment {
+
+
+
+    private List<Entrant> cancelledEntrants;
+
+
+    /**
+     * Sets the list of cancelled entrants to display in the fragment.
+     *
+     * @param entrants the list of cancelled entrants
+     */
+    public void setCancelledEntrants(List<Entrant> entrants) {
+        this.cancelledEntrants = entrants;
+    }
+
+
 
     /**
      * Creates and returns the dialog box to confirm the user's action to cancel pending entrants.

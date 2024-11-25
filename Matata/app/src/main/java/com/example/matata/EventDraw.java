@@ -75,6 +75,9 @@ public class EventDraw extends AppCompatActivity {
      */
     private List<Entrant> rejectedList;
 
+
+
+
     /**
      * Adapter for displaying pending entrants.
      */
@@ -95,6 +98,8 @@ public class EventDraw extends AppCompatActivity {
      */
     private EntrantAdapter rejectedAdapter;
 
+
+
     /**
      * RecyclerView for displaying the waitlist.
      */
@@ -114,6 +119,8 @@ public class EventDraw extends AppCompatActivity {
      * RecyclerView for displaying rejected entrants.
      */
     private RecyclerView rejectedRecyclerView;
+
+
 
     /**
      * TextView showing the total number of entrants.
@@ -145,6 +152,8 @@ public class EventDraw extends AppCompatActivity {
      */
     private TextView waitlistSectionText;
 
+
+
     /**
      * LinearLayout for the accepted entrants section.
      */
@@ -164,6 +173,8 @@ public class EventDraw extends AppCompatActivity {
      * LinearLayout for the waitlist entrants section.
      */
     private LinearLayout waitlistLinearLayout;
+
+
 
     /**
      * Map linking each entrant to their status (e.g., accepted, rejected).
@@ -230,6 +241,9 @@ public class EventDraw extends AppCompatActivity {
      */
     private static String injectedUid;
 
+
+    private List<Entrant> cancelledList;
+
     /**
      * Initializes the EventDraw activity and sets up Firebase, RecyclerViews, and various controls.
      *
@@ -259,6 +273,7 @@ public class EventDraw extends AppCompatActivity {
         rejectedSectionText = findViewById(R.id.rejected_section_text);
         pendingSectionText = findViewById(R.id.pending_section_text);
         waitlistSectionText = findViewById(R.id.waiting_section_text);
+
 
         acceptedLinearLayout = findViewById(R.id.accepted_section);
         rejectedLinearLayout = findViewById(R.id.rejected_section);
@@ -293,6 +308,11 @@ public class EventDraw extends AppCompatActivity {
         acceptedRecyclerView.setAdapter(acceptedAdapter);
         acceptedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
+        cancelledList = new ArrayList<>();
+
+
+
         entrantMap = new LinkedHashMap<>();
         selectedIdList = new ArrayList<>();
 
@@ -308,6 +328,11 @@ public class EventDraw extends AppCompatActivity {
         clearPendingList = findViewById(R.id.clearPendingList);
         clearPendingList.setOnClickListener(v -> {
             clearConfirmDialog();
+
+            // Track the current pending list as cancelled entrants
+            cancelledList.addAll(selectedList);
+
+
             Log.d("Selected List", "Selected List Cleared");
             pendingAdapter.notifyDataSetChanged();
         });
@@ -387,6 +412,17 @@ public class EventDraw extends AppCompatActivity {
                         }
                     }
                 });
+
+        // Handle View Combined List button
+        Button viewCombinedListButton = findViewById(R.id.view_combined_list_button);
+        viewCombinedListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EventDraw.this, CancelledListActivity.class);
+
+            // Pass cancelled and rejected lists to the new activity
+            intent.putExtra("cancelledList", new ArrayList<>(cancelledList));
+            intent.putExtra("rejectedList", new ArrayList<>(rejectedList));
+            startActivity(intent);
+        });
     }
 
 
