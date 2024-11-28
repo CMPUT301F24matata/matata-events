@@ -248,6 +248,8 @@ public class EventDraw extends AppCompatActivity {
 
     private List<Entrant> cancelledList;
 
+    private Button sendNotificationBtn;
+
     /**
      * Initializes the EventDraw activity and sets up Firebase, RecyclerViews, and various controls.
      *
@@ -315,7 +317,7 @@ public class EventDraw extends AppCompatActivity {
 
         cancelledList = new ArrayList<>();
 
-
+        sendNotificationBtn = findViewById(R.id.button3);
 
         entrantMap = new LinkedHashMap<>();
         selectedIdList = new ArrayList<>();
@@ -438,6 +440,12 @@ public class EventDraw extends AppCompatActivity {
             intent.putExtra("cancelledList", new ArrayList<>(cancelledList));
             intent.putExtra("rejectedList", new ArrayList<>(rejectedList));
             startActivity(intent);
+        });
+
+        sendNotificationBtn.setOnClickListener(v -> {
+            Notifications notifications = new Notifications();
+            notifications.sendNotification(this, "Waitlist-" + uid, "Test Title", "Test message");
+            Log.d("Notification", "Sent topic: " + "Waitlist-" + uid);
         });
     }
 

@@ -114,13 +114,13 @@ public class Notifications {
      * @param message The body of the notification.
      * @param context Application context.
      */
-    public static void sendTopicNotification(Context context, String topic, String title, String message) {
+    public void sendNotification(Context context, String topic, String title, String message) {
         Map<String, Object> data = new HashMap<>();
         data.put("topic", topic);
         data.put("title", title);
         data.put("message", message);
 
-        firebaseFunctions.getHttpsCallable("sendTopicNotification")
+        firebaseFunctions.getHttpsCallable("sendNotification")
                 .call(data)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
