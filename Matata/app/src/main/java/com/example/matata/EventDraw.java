@@ -443,9 +443,12 @@ public class EventDraw extends AppCompatActivity {
         });
 
         sendNotificationBtn.setOnClickListener(v -> {
-            Notifications notifications = new Notifications();
-            notifications.sendNotification(this, "Waitlist-" + uid, "Test Title", "Test message");
-            Log.d("Notification", "Sent topic: " + "Waitlist-" + uid);
+            NotificationDialogFragment dialog = new NotificationDialogFragment();
+            // Pass the uid as an argument to the fragment
+            Bundle args = new Bundle();
+            args.putString("uid", uid);
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), "NotificationDialog");
         });
     }
 
