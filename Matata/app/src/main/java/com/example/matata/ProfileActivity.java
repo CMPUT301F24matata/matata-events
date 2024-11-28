@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -191,6 +192,17 @@ public class ProfileActivity extends AppCompatActivity {
             datePickerDialog.show();
         });
 
+        // Opt in and out of notifications.
+        notifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                Toast.makeText(ProfileActivity.this, "Notifications enabled", Toast.LENGTH_SHORT).show();
+
+            } else {
+                Toast.makeText(ProfileActivity.this, "Notifications disabled", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
         saveButton.setOnClickListener(v -> {
             String name = nameEditText.getText().toString().trim();
             String email = emailEditText.getText().toString().trim();
@@ -205,6 +217,11 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "No Email Found", Toast.LENGTH_SHORT).show();
             } else {
                 saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString, selectedGender, dobText);
+
+                SharedPreferences preferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("notifications_enabled", notificationsChecked);
+                editor.apply();
             }
         });
 

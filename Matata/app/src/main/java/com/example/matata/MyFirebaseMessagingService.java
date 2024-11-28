@@ -5,8 +5,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -15,9 +17,18 @@ import com.google.firebase.messaging.RemoteMessage;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Log.d("Notification Received", "From: " + remoteMessage.getFrom());
+
+        // Check if notifications are enabled
+        SharedPreferences preferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
+        boolean isNotificationsEnabled = preferences.getBoolean("notifications_enabled", true); // Default is true
+
+        if (!isNotificationsEnabled) {
+            Log.d("Notification", "Notifications are disabled. Skipping notification.");
+            return;
+        }
 
         // Extract message data
         String title = remoteMessage.getNotification() != null ? remoteMessage.getNotification().getTitle() : "Default Title";
