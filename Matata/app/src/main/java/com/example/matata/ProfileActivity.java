@@ -217,7 +217,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "No Email Found", Toast.LENGTH_SHORT).show();
             } else {
                 saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString, selectedGender, dobText);
-
+                // Save the notification check to be used for MyFirebaseMessagingService
                 SharedPreferences preferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean("notifications_enabled", notificationsChecked);
