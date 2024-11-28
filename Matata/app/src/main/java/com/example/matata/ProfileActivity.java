@@ -243,6 +243,12 @@ public class ProfileActivity extends AppCompatActivity {
 
             saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString, gender, dobText);
 
+            // Save the notification check to be used for MyFirebaseMessagingService
+            SharedPreferences preferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("notifications_enabled", notificationsChecked);
+            editor.apply();
+
         });
 
     }

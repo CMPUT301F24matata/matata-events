@@ -14,8 +14,16 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+/**
+ *The MyFirebaseMessagingService class extends FirebaseMessagingService and is responsible for handling incoming Firebase Cloud Messaging (FCM) messages.
+ *It overrides the onMessageReceived method to handle incoming FCM messages and show notifications based on the received data.
+ */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-
+    /**
+     * onMessageReceived is called when a new FCM message is received.
+     * This provided method is overridden from the FirebaseMessagingService class.
+     * @param remoteMessage Remote message that has been received through FCM.
+     */
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
@@ -38,6 +46,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         showNotification(title, body);
     }
 
+    /**
+     * Show a notification with the provided title and message.
+     * @param title
+     * @param message
+     */
     private void showNotification(String title, String message) {
         String channelId = "default_channel";
         String channelName = "Default Channel";
