@@ -28,9 +28,6 @@ import java.io.OutputStream;
  * and displays the bitmap in an ImageView. It also includes a download button to save
  * the displayed QR code image to the device's external storage.
  *
- * Outstanding issues: Currently, no functionality to share the QR code is implemented.
- * Additionally, the save functionality does not handle all potential exceptions,
- * such as cases where external storage may not be available.
  */
 public class QR_displayFragment extends DialogFragment {
 

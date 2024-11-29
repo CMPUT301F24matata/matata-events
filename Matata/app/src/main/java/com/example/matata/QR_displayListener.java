@@ -8,9 +8,6 @@ import java.sql.Time;
  * Implementations of this interface should define the behavior for processing
  * event details such as title, description, poster ID, date, and time when a QR code is scanned.
  *
- * Outstanding issues: This interface currently uses java.sql.Date and java.sql.Time types,
- * which may not be ideal for Android development. Consider using java.util.Date or other
- * Android-compatible date/time types if further compatibility issues arise.
  */
 public interface QR_displayListener {
 

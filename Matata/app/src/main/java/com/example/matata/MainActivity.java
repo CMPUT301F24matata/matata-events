@@ -3,6 +3,7 @@ package com.example.matata;
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -23,6 +24,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -32,8 +34,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,15 +47,20 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * MainActivity serves as the central hub of the Matata app, displaying a list of events,
- * allowing users to navigate to different sections, and managing notifications.
- * This activity initializes a user profile in Firestore if it does not already exist,
- * handles event-related actions, and manages user permissions for notifications.
+ * MainActivity serves as the central hub for the Matata app. It provides navigation to key features, such as:
+ * - User profiles
+ * - Event creation
+ * - Event exploration
+ * - Event history
+ * - Admin and facility-specific sections
+ *
+ * The activity dynamically initializes user profiles in Firestore if they don't exist and adapts UI
+ * based on the user's role (admin or entrant).
  */
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * ImageView for displaying the user profile icon.
+     * ImageView for navigating to the user profile.
      */
     private ImageView profileIcon;
 
@@ -60,79 +70,34 @@ public class MainActivity extends AppCompatActivity {
     private ImageView new_event;
 
     /**
-     * LinearLayout for accessing the event history section.
+     * LinearLayout for accessing the event history.
      */
     private LinearLayout eventHistory;
 
     /**
-     * LinearLayout for exploring events on the map.
+     * LinearLayout for exploring events on a map.
      */
     private LinearLayout explore;
 
     /**
-     * RecyclerView for displaying a list of events.
-     */
-    //private RecyclerView recyclerView;
-
-    /**
-     * Adapter for managing the display and interaction with event items in the RecyclerView.
-     */
-    private EventAdapter eventAdapter;
-
-    /**
-     * List of events to be displayed in the RecyclerView.
-     */
-    private List<Event> eventList;
-
-    /**
-     * FloatingActionButton for initiating a QR scanner.
+     * FloatingActionButton for launching the QR scanner.
      */
     private FloatingActionButton QR_scanner;
 
     /**
-     * Instance of FirebaseFirestore for database access.
+     * FirebaseFirestore instance for Firestore operations.
      */
     private FirebaseFirestore db;
 
     /**
-     * String representing the unique user ID for Firestore operations.
+     * User ID retrieved from the device's unique ID settings.
      */
     private String USER_ID = "";
 
     /**
-     * UID string for uniquely identifying the user.
-     */
-    private String uid = null;
-
-    /**
-     * List of statuses for the events (e.g., "Accepted," "Pending," "Waitlist").
-     */
-    private List<String> statusList = new ArrayList<>();
-
-    /**
-     * Map storing event poster URLs associated with their event IDs.
-     */
-    private Map<String, String> posterUrls = new HashMap<>();
-
-    /**
-     * ImageButton for accessing notifications.
+     * ImageView for accessing notifications.
      */
     private ImageView notificationButton;
-
-    /**
-     * Launcher for requesting notification permissions.
-     */
-    private ActivityResultLauncher<String> notificationPermissionLauncher;
-
-    /**
-     * Manager for handling notifications.
-     */
-    private Notification notificationManager;
-
-    /**
-     * Static channel ID used for managing waitlist notifications.
-     */
-    private static final String CHANNEL_ID = "waitlist_notification_channel";
 
     /**
      * ImageView for accessing the facility profile section.
@@ -140,14 +105,30 @@ public class MainActivity extends AppCompatActivity {
     private ImageView FacilityProfile;
 
     /**
-     * ImageButton for accessing the admin section.
+     * ImageView for accessing the admin section.
      */
     private ImageView admin;
 
-
+    /**
+     * RadioButton for toggling to the event list view.
+     */
     private RadioButton list_toggle;
+
+    /**
+     * RadioButton for toggling to the event swipe view.
+     */
     private RadioButton scroll_toggle;
+
+    /**
+     * RadioGroup for managing view toggles.
+     */
     private RadioGroup Toggle;
+
+    /**
+     * A Hash Map to store previous states of groups (Waitlist, Pending, Accepted, Rejected).
+     */
+    private final Map<String, Map<String, List<DocumentReference>>> previousStates = new HashMap<>();
+
     /**
      * Called when the activity is first created. Initializes the user profile in Firestore if necessary,
      * sets up UI components, handles notification permissions, and loads event data.
@@ -156,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -165,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
 
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -187,16 +169,18 @@ public class MainActivity extends AppCompatActivity {
                     userRef.set(userProfile);
 
                     initializeApp();
+                    saveFCMTokenToDatabase();
                 } else {
                     // Check the freeze status
                     String freezeStatus = task.getResult().getString("freeze");
                     String admin = task.getResult().getString("admin");
                     if ("awake".equalsIgnoreCase(freezeStatus)) {
-                        if("admin".equalsIgnoreCase(admin)) {
+                        if ("admin".equalsIgnoreCase(admin)) {
                             initializeApp();
-                        }
-                        else {
+                            saveFCMTokenToDatabase();
+                        } else {
                             initializeEntrantApp();
+                            saveFCMTokenToDatabase();
                         }
                     } else {
                         showFrozenDialog();
@@ -208,9 +192,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
-
 
     /**
      * Displays a frozen dialog when the user's account is marked as frozen.
@@ -230,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
         initializeUI();
         setOnClickListeners();
 
-//        addEventsInit();
     }
 
     /**
@@ -242,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
         setOnClickListeners();
         admin.setVisibility(View.VISIBLE);
 
-//        addEventsInit();
     }
 
     /**
@@ -257,9 +236,9 @@ public class MainActivity extends AppCompatActivity {
         notificationButton = findViewById(R.id.notifiy_button);
         FacilityProfile = findViewById(R.id.FacilityProfile);
         admin = findViewById(R.id.admin);
-        list_toggle=findViewById(R.id.ListToggle);
-        scroll_toggle=findViewById(R.id.ExploreToggle);
-        Toggle=findViewById(R.id.toggle);
+        list_toggle = findViewById(R.id.ListToggle);
+        scroll_toggle = findViewById(R.id.ExploreToggle);
+        Toggle = findViewById(R.id.toggle);
         Log.wtf(TAG, "hello hello");
 
         if (findViewById(R.id.ListToggle).isSelected() || ((RadioButton) findViewById(R.id.ListToggle)).isChecked()) {
@@ -268,35 +247,22 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.scrollListFragment, new Recycler_fragment())
                     .commit();
         }
-        Toggle.setOnCheckedChangeListener((button,checkedID)->{
+        Toggle.setOnCheckedChangeListener((button, checkedID) -> {
             Log.wtf(TAG, "Checked ID: " + checkedID);
             Fragment fragment;
-            if (checkedID==R.id.ListToggle){
-                Log.wtf(TAG,"List checked");
-                fragment=new Recycler_fragment();
+            if (checkedID == R.id.ListToggle) {
+                Log.wtf(TAG, "List checked");
+                fragment = new Recycler_fragment();
 
-            }
-            else if(checkedID==R.id.ExploreToggle){
-                fragment=new SwipeView();
-            }
-            else{
-                fragment=null;
+            } else if (checkedID == R.id.ExploreToggle) {
+                fragment = new SwipeView();
+            } else {
+                fragment = null;
             }
 
-            getSupportFragmentManager().beginTransaction().replace(R.id.scrollListFragment,fragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.scrollListFragment, fragment).commit();
         });
 
-//        recyclerView = findViewById(R.id.recycler_view_events);
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.setItemViewCacheSize(20);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//
-//        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(this, R.anim.anim_slide_in);
-//        recyclerView.setLayoutAnimation(animation);
-//
-//        eventList = new ArrayList<>();
-//        eventAdapter = new EventAdapter(this, eventList, statusList,posterUrls);
-//        recyclerView.setAdapter(eventAdapter);
     }
 
     /**
@@ -318,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         explore.setOnClickListener(v -> {
-            Intent intent=new Intent(MainActivity.this,ExploreEvents.class);
+            Intent intent = new Intent(MainActivity.this, ExploreEvents.class);
             startActivity(intent);
             // Add event search logic here
         });
@@ -332,7 +298,20 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, AdminView.class);
             startActivity(intent);
         });
+
+        // Fetch all event documents in EVENT_PROFILES
+        db.collection("EVENT_PROFILES")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                        String eventId = document.getId();
+                        listenToEventProfileChanges(eventId);
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("MainActivity", "Failed to fetch event profiles", e));
+
     }
+
 
     /**
      * Loads and listens for changes to event data in Firestore.
@@ -393,4 +372,99 @@ public class MainActivity extends AppCompatActivity {
 //        recyclerView.scheduleLayoutAnimation();
 //    }
 
+    // Declare the launcher at the top of your Activity/Fragment:
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // FCM SDK (and your app) can post notifications.
+                } else {
+                    // TODO: Inform user that that your app will not show notifications.
+                }
+            });
+
+    /**
+     * Saves the FCM token to the Firestore database.
+     */
+    private void saveFCMTokenToDatabase() {
+        Log.d("Accessing FCM method", "Saving FCM token to database");
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                String fcmToken = task.getResult();
+                // Save FCM token to Firestore
+                FirebaseFirestore.getInstance().collection("USER_PROFILES").document(USER_ID)
+                        .update("fcmToken", fcmToken)
+                        .addOnSuccessListener(aVoid -> {
+                            System.out.println("FCM token saved successfully: " + fcmToken);
+                        })
+                        .addOnFailureListener(e -> {
+                            System.err.println("Error saving FCM token: " + e.getMessage());
+                        });
+            } else {
+                System.err.println("Failed to retrieve FCM token: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"));
+            }
+        });
+    }
+
+    private void listenToEventProfileChanges(String eventId) {
+        DocumentReference eventDocRef = db.collection("EVENT_PROFILES").document(eventId);
+
+        eventDocRef.addSnapshotListener((snapshot, error) -> {
+            if (error != null) {
+                Log.e("MainActivity", "Error listening to event profile changes", error);
+                return;
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                Map<String, Object> data = snapshot.getData();
+                if (data != null) {
+                    // Extract current state of groups
+                    List<DocumentReference> currentWaitlist = (List<DocumentReference>) data.get("Waitlist");
+                    List<DocumentReference> currentPending = (List<DocumentReference>) data.get("Pending");
+                    List<DocumentReference> currentAccepted = (List<DocumentReference>) data.get("Accepted");
+                    List<DocumentReference> currentRejected = (List<DocumentReference>) data.get("Rejected");
+
+                    // Initialize or fetch previous states
+                    Map<String, List<DocumentReference>> previousEventState = previousStates.computeIfAbsent(eventId, k -> new HashMap<>());
+
+                    processGroupChanges(eventId, "Waitlist", previousEventState.get("Waitlist"), currentWaitlist);
+                    processGroupChanges(eventId, "Pending", previousEventState.get("Pending"), currentPending);
+                    processGroupChanges(eventId, "Accepted", previousEventState.get("Accepted"), currentAccepted);
+                    processGroupChanges(eventId, "Rejected", previousEventState.get("Rejected"), currentRejected);
+
+                    // Update the previous state with the current state
+                    previousEventState.put("Waitlist", currentWaitlist);
+                    previousEventState.put("Pending", currentPending);
+                    previousEventState.put("Accepted", currentAccepted);
+                    previousEventState.put("Rejected", currentRejected);
+                }
+            }
+        });
+    }
+
+    private void processGroupChanges(String eventId, String groupName, List<DocumentReference> previousGroup, List<DocumentReference> currentGroup) {
+        if (currentGroup == null) currentGroup = new ArrayList<>();
+        if (previousGroup == null) previousGroup = new ArrayList<>();
+
+        FirebaseMessaging messaging = FirebaseMessaging.getInstance();
+        String topic = groupName + "-" + eventId;
+
+        // Determine which users to unsubscribe (in previousGroup but not in currentGroup)
+        for (DocumentReference userRef : previousGroup) {
+            if (!currentGroup.contains(userRef)) {
+                messaging.unsubscribeFromTopic(topic)
+                        .addOnSuccessListener(aVoid -> Log.d("MainActivity", "Unsubscribed from " + topic))
+                        .addOnFailureListener(e -> Log.e("MainActivity", "Failed to unsubscribe from " + topic, e));
+            }
+        }
+
+        // Determine which users to subscribe (in currentGroup but not in previousGroup)
+        for (DocumentReference userRef : currentGroup) {
+            if (!previousGroup.contains(userRef)) {
+                messaging.subscribeToTopic(topic)
+                        .addOnSuccessListener(aVoid -> Log.d("MainActivity", "Subscribed to " + topic))
+                        .addOnFailureListener(e -> Log.e("MainActivity", "Failed to subscribe to " + topic, e));
+            }
+        }
+    }
 }
+

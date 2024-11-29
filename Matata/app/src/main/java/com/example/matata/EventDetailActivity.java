@@ -1,4 +1,5 @@
 package com.example.matata;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,20 +27,17 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Transaction;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * EventDetailActivity displays the details of a selected event and allows users to join or withdraw
- * from the event's waitlist. The activity interacts with Firebase Firestore to retrieve and update
- * event information, including checking the waitlist limit.
- * Outstanding issues: The sample event ID is hardcoded, which could affect functionality if not set
- * dynamically. Some method calls such as `addToWaitList()` within the confirmation dialog are currently
- * commented out, meaning that they might need to be implemented for full functionality.
+ * from the event's waitlist. Users can also view a list of cancelled entrants.
+ * This activity interacts with Firebase Firestore for retrieving and updating event data.
  */
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -58,9 +56,16 @@ public class EventDetailActivity extends AppCompatActivity {
      */
     private String USER_ID;
 
-
+    /**
+     * RecyclerView for displaying a list of cancelled entrants.
+     */
     private RecyclerView recyclerView;
+
+    /**
+     * Button to fetch and display cancelled entrants.
+     */
     private Button viewCancelledButton;
+
     /**
      * Initializes the EventDetailActivity, sets up views, and retrieves event details from intent.
      *
@@ -83,8 +88,6 @@ public class EventDetailActivity extends AppCompatActivity {
         ImageView posterImageView = findViewById(R.id.poster_pic_Display);
         ImageView backButton = findViewById(R.id.go_back_view_event);
         Button joinWaitlistButton = findViewById(R.id.join_waitlist_button);
-        recyclerView = findViewById(R.id.recycler_view_cancelled_entrants);
-        viewCancelledButton = findViewById(R.id.view_cancelled_button);
 
 
         // Retrieve data from Intent
@@ -187,6 +190,9 @@ public class EventDetailActivity extends AppCompatActivity {
                         .addOnSuccessListener(aVoid -> {
                             Log.d("Firebase", "Entrant removed from waitlist successfully");
                             joinWaitlistButton.setText("Join Waitlist");
+
+                            // Unsubscribe from topic
+                            unsubscribeFromTopic(Event_id);
                         })
                         .addOnFailureListener(e -> Log.e("Firebase", "Error removing entrant from waitlist", e));
             }
@@ -202,7 +208,11 @@ public class EventDetailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Uncomment the following line to enable waitlist addition
-                        // addToWaitList();
+                        addToWaitList();
+
+                        Log.d("Subcribe", "Subscribe method called");
+                        // Subscribe to topic
+                        subscribeToTopic(Event_id);
                     }
                 });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -229,50 +239,52 @@ public class EventDetailActivity extends AppCompatActivity {
                     transaction.update(eventRef, "waitlist", waitlist);
                     return null;
                 }).addOnSuccessListener(aVoid -> {
-                    Log.d("Firebase", "Entrant added to waitlist successfully");
+                    Log.d("Added", "Entrant added to waitlist successfully!!!");
                     joinWaitlistButton.setText("Withdraw");
+
                 }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
             }
         });
 
-        viewCancelledButton.setOnClickListener(v -> fetchCancelledEntrants());
+
 
     }
-    private void fetchCancelledEntrants() {
-        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(Event_id);
 
-        eventRef.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                List<Map<String, Object>> cancelled = (List<Map<String, Object>>) documentSnapshot.get("cancelled");
 
-                if (cancelled != null && !cancelled.isEmpty()) {
-                    List<CancelledEntrant> cancelledEntrants = new ArrayList<>();
-                    for (Map<String, Object> map : cancelled) {
-                        String name = (String) map.get("name");
-                        String reason = (String) map.get("reason");
-                        cancelledEntrants.add(new CancelledEntrant(name, reason));
+
+
+
+    /**
+     * Subscribes the user to a specific topic.
+     *
+     * @param topic   The topic to subscribe to (e.g., event waitlist ID).
+     */
+    private void subscribeToTopic(String topic) {
+        Log.d("Subcribe", "Subscribe method called");
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("Subscribe", "Subscribed to topic: " + topic);
+                    } else {
+                        Log.e("Failure", "Failed to subscribe to topic: " + topic, task.getException());
                     }
-
-                    showCancelledEntrants(cancelledEntrants);
-                } else {
-                    Toast.makeText(this, "No cancelled entrants.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).addOnFailureListener(e -> {
-            Log.e("Firebase", "Error fetching cancelled entrants", e);
-            Toast.makeText(this, "Failed to fetch cancelled entrants.", Toast.LENGTH_SHORT).show();
-        });
+                });
     }
 
-    private void showCancelledEntrants(List<CancelledEntrant> cancelledEntrants) {
-        recyclerView.setVisibility(View.VISIBLE);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        CancelledEntrantAdapter adapter = new CancelledEntrantAdapter(cancelledEntrants);
-        recyclerView.setAdapter(adapter);
+    /**
+     * Unsubscribes the user from a specific topic.
+     *
+     * @param topic   The topic to unsubscribe from (e.g., event waitlist ID).
+     */
+    private void unsubscribeFromTopic(String topic) {
+        Log.d("Unsubcribe", "Unsubscribe method called");
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("Unsubscribe", "Unsubscribed from topic: " + topic);
+                    } else {
+                        Log.e("Failure", "Failed to unsubscribe from topic: " + topic, task.getException());
+                    }
+                });
     }
 }
-
-
-
-
-

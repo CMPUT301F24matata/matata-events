@@ -18,14 +18,30 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 /**
- * The ManageAllQRActivity class provides an interface for administrators to manage event posters.
- * Administrators can view and delete posters linked to specific events.
+ * The ManageAllImagesActivity class provides an interface for administrators to manage event posters.
+ * Administrators can:
+ * - View event posters linked to specific events.
+ * - Delete event posters from Firebase Firestore.
+ * - Navigate to other sections like dashboard, reports, and settings.
  */
 public class ManageAllImagesActivity extends AppCompatActivity {
 
+    /**
+     * LinearLayout container for displaying all event posters dynamically.
+     */
     private LinearLayout imagesContainer;
+
+    /**
+     * Firebase Firestore instance for accessing event data.
+     */
     private FirebaseFirestore db;
 
+    /**
+     * Called when the activity is created.
+     * Initializes the UI components, sets up navigation listeners, and loads event posters.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,4 +165,5 @@ public class ManageAllImagesActivity extends AppCompatActivity {
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
 }

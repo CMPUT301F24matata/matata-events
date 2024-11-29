@@ -162,6 +162,10 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      */
     private static final int PICK_IMAGE_REQUEST = 1;
 
+    /**
+     * Switch for toggling geolocation requirement for the event.
+     */
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch geoRequirement;
 
 
@@ -298,7 +302,11 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         });
     }
 
-
+    /**
+     * Checks if any input fields are non-empty.
+     *
+     * @return true if fields are non-empty, false otherwise.
+     */
     private boolean areFieldsNonEmpty() {
         return !eveTitle.getText().toString().isEmpty() ||
                 !descriptionBox.getText().toString().isEmpty() ||
@@ -306,6 +314,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                 !eventTime.getText().toString().isEmpty() ||
                 !capacity.getText().toString().isEmpty();
     }
+
     /**
      * Opens the time picker dialog.
      */
@@ -458,8 +467,6 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         pickImageLauncher.launch(intent);
-
-
     }
 
     /**
@@ -479,7 +486,6 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         Date currentDate = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String formattedDate = dateFormat.format(currentDate);
-
 
         Map<String, Object> Event_details = new HashMap<>();
         Event_details.put("Poster", posterURI);
@@ -512,7 +518,6 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                         Log.e("Firestore", "Failed to fetch user profile", task.getException());
                     }
                 });
-
 
         if (isDefaultImage) {
             Event_details.put("Poster", "");

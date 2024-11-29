@@ -47,7 +47,6 @@ public class FacilityPicActivity extends AppCompatActivity {
      */
     private String USER_ID;
 
-
     /**
      * Launcher to handle image picking from the gallery.
      */

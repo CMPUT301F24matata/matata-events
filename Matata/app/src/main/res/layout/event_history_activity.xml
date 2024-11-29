@@ -45,15 +45,11 @@
             android:maxWidth="300dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_event_history"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/history_recycler_fragment"
+        android:name="com.example.matata.EventHistoryFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
-        android:padding="8dp"
-        app:layout_constraintBottom_toTopOf="@id/linearLayout"
-        app:layout_constraintTop_toBottomOf="@id/profile_picture"
-        tools:listitem="@layout/event_card"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
 

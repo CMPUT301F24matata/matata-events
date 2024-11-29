@@ -20,16 +20,35 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
+/**
+ * The ManageAllQRActivity class provides administrators with the ability to manage QR codes associated with events.
+ * Administrators can:
+ * - View QR codes linked to events.
+ * - Delete QR codes from Firebase Firestore.
+ * - Navigate to other sections like dashboard, reports, and settings.
+ */
 public class ManageAllQRActivity extends AppCompatActivity {
 
     /**
-     * Event details encoded as a Base64 string.
+     * Encoded Base64 string representing the QR code of an event.
      */
     private String argbase64;
+
+    /**
+     * LinearLayout container for dynamically displaying QR codes.
+     */
     private LinearLayout qrContainer;
+
+    /**
+     * Firebase Firestore instance for accessing and managing event data.
+     */
     private FirebaseFirestore db;
 
+    /**
+     * Called when the activity is created. Initializes UI components, sets up navigation listeners, and loads event QR codes.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +87,9 @@ public class ManageAllQRActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Fetches QR codes for all events from Firebase Firestore and dynamically displays them in the `qrContainer`.
+     */
     private void fetchEventQR() {
         qrContainer.removeAllViews();
 
@@ -104,6 +126,13 @@ public class ManageAllQRActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Dynamically adds a QR code item to the `qrContainer`.
+     *
+     * @param eventId    ID of the event.
+     * @param eventTitle Title of the event.
+     * @param QR         Bitmap representation of the QR code.
+     */
     private void addQRItem(String eventId, String eventTitle, Bitmap QR) {
         View qrView = getLayoutInflater().inflate(R.layout.qr_item, qrContainer, false);
 
@@ -157,4 +186,5 @@ public class ManageAllQRActivity extends AppCompatActivity {
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
 }

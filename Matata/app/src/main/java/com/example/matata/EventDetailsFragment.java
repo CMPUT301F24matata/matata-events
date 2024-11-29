@@ -18,12 +18,52 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.matata.R;
 
+/**
+ * A fragment that displays details of an event, including its title, date, time, and poster image.
+ * Clicking on the card opens the detailed event page.
+ */
 public class EventDetailsFragment extends Fragment {
 
-    private String title,  date, time, eventId,posterUrl;
+    /**
+     * Title of the event.
+     */
+    private String title;
+
+    /**
+     * Date of the event.
+     */
+    private String date;
+
+    /**
+     * Time of the event.
+     */
+    private String time;
+
+    /**
+     * Unique identifier of the event.
+     */
+    private String eventId;
+
+    /**
+     * URL of the event poster image.
+     */
+    private String posterUrl;
+
+    /**
+     * LinearLayout representing the tappable card for navigating to the event details page.
+     */
     private LinearLayout cardTap;
 
-
+    /**
+     * Factory method to create a new instance of this fragment using the provided parameters.
+     *
+     * @param title     The title of the event.
+     * @param date      The date of the event.
+     * @param time      The time of the event.
+     * @param eventId   The unique identifier of the event.
+     * @param posterUrl The URL of the event poster image.
+     * @return A new instance of EventDetailsFragment.
+     */
     public static EventDetailsFragment newInstance(String title, String date, String time,
                                                     String eventId,String posterUrl) {
         EventDetailsFragment fragment = new EventDetailsFragment();
@@ -38,6 +78,12 @@ public class EventDetailsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Called when the fragment is created.
+     * Retrieves arguments passed during fragment creation.
+     *
+     * @param savedInstanceState If the fragment is being re-created, this contains the data it most recently supplied.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,26 +95,27 @@ public class EventDetailsFragment extends Fragment {
 
             eventId = getArguments().getString("eventId");
             posterUrl=getArguments().getString("posterUrl");
-
-
         }
-
-
-
     }
 
+    /**
+     * Called to create the view hierarchy for the fragment.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The root view of the fragment's layout.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.event_card_swipe, container, false);
-
-
         // Bind views
         TextView eventTitle = view.findViewById(R.id.SwipeTitle);
-
         TextView eventDate = view.findViewById(R.id.SwipeDate);
         TextView eventTime = view.findViewById(R.id.SwipeTime);
         ImageView poster=view.findViewById(R.id.SwipePoster);
+
         cardTap=view.findViewById(R.id.swipe_preview);
         cardTap.setOnClickListener(v-> {
             Intent intent = new Intent(requireContext(), ViewEvent.class);
@@ -76,12 +123,12 @@ public class EventDetailsFragment extends Fragment {
             startActivity(intent);
         });
 
-
         eventTitle.setText(title);
         eventDate.setText(date);
         eventTime.setText(time);
 
         Glide.with(this).load(posterUrl).placeholder(R.drawable.placeholder_image).error(R.drawable.failed_image).into(poster);
+
         return view;
     }
 }

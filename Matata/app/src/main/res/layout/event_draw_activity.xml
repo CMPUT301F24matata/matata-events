@@ -179,7 +179,7 @@
                         android:id="@+id/clearPendingList"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="240dp"
+                        android:layout_gravity="end"
                         android:text="Clear Pending list"/>
                 </LinearLayout>
 
@@ -215,6 +215,7 @@
                         tools:listitem="@layout/entrant_card"/>
                 </LinearLayout>
 
+
                     <!-- Waiting list Section -->
                 <TextView
                     android:id="@+id/waiting_section_text"
@@ -240,6 +241,9 @@
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
 
+
+
+
                     <Switch
                         android:id="@+id/limitSwitch"
                         android:layout_width="wrap_content"
@@ -261,7 +265,7 @@
                     <Button
                         android:id="@+id/saveButton"
                         android:visibility="gone"
-                        android:layout_marginLeft="300dp"
+                        android:layout_gravity="end"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Save"/>
@@ -279,27 +283,33 @@
         </LinearLayout>
 
     <LinearLayout
-
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-
+        android:gravity="center"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <Button
+            android:id="@+id/view_combined_list_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="View Cancelled List"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="20dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
             android:layout_weight="1"
-            android:text="Send Notification" />
-
-
+            android:layout_marginStart="8dp"
+            android:text="Send Notification"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
