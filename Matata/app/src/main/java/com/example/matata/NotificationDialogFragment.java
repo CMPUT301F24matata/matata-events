@@ -56,7 +56,6 @@ public class NotificationDialogFragment extends DialogFragment {
                 String fillerText = "Filler text, I'm working on this";
             }
 
-
             // Send notification based on selected group
             Toast.makeText(getActivity(), "Sending notification to: " + selectedGroup, Toast.LENGTH_SHORT).show();
             dismiss(); // Close the dialog
