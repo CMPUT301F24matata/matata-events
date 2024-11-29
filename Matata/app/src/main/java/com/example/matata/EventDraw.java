@@ -248,6 +248,8 @@ public class EventDraw extends AppCompatActivity {
 
     private List<Entrant> cancelledList;
 
+    private Button sendNotificationBtn;
+
     /**
      * Initializes the EventDraw activity and sets up Firebase, RecyclerViews, and various controls.
      *
@@ -315,7 +317,7 @@ public class EventDraw extends AppCompatActivity {
 
         cancelledList = new ArrayList<>();
 
-
+        sendNotificationBtn = findViewById(R.id.button3);
 
         entrantMap = new LinkedHashMap<>();
         selectedIdList = new ArrayList<>();
@@ -433,15 +435,35 @@ public class EventDraw extends AppCompatActivity {
 
         // Handle View Combined List button
         Button viewCombinedListButton = findViewById(R.id.view_combined_list_button);
-        viewCombinedListButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDraw.this, CancelledListActivity.class);
 
-            // Pass cancelled and rejected lists to the new activity
-            intent.putExtra("cancelledList", new ArrayList<>(cancelledList));
-            intent.putExtra("rejectedList", new ArrayList<>(rejectedList));
-            startActivity(intent);
+        viewCombinedListButton.setOnClickListener(v -> {
+            navigateToCancelledListActivity();
+        });
+
+        sendNotificationBtn.setOnClickListener(v -> {
+            NotificationDialogFragment dialog = new NotificationDialogFragment();
+            // Pass the uid as an argument to the fragment
+            Bundle args = new Bundle();
+            args.putString("uid", uid);
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), "NotificationDialog");
         });
     }
+
+    private void navigateToCancelledListActivity() {
+        // Check if both lists are empty
+        if (cancelledList.isEmpty() && rejectedList.isEmpty()) {
+            Toast.makeText(this, "No entrants to display in the Cancelled List.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Pass the Cancelled and Rejected lists to the CancelledListActivity
+        Intent intent = new Intent(EventDraw.this, CancelledListActivity.class);
+        intent.putExtra("cancelledList", new ArrayList<>(cancelledList)); // Pass the cancelled list
+        intent.putExtra("rejectedList", new ArrayList<>(rejectedList)); // Pass the rejected list
+        startActivity(intent); // Start the CancelledListActivity
+    }
+
 
 
     public static void injectFirestore(FirebaseFirestore firestore) {

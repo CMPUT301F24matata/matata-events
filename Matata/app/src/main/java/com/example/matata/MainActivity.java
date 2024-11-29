@@ -3,6 +3,7 @@ package com.example.matata;
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -33,7 +34,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -122,6 +125,13 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup Toggle;
 
     /**
+     * A Hash Map to store previous states of groups (Waitlist, Pending, Accepted, Rejected).
+     */
+    private final Map<String, Map<String, List<DocumentReference>>> previousStates = new HashMap<>();
+
+    private boolean completeLoad = false;
+
+    /**
      * Called when the activity is first created. Initializes the user profile in Firestore if necessary,
      * sets up UI components, handles notification permissions, and loads event data.
      *
@@ -129,11 +139,12 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SplashScreen.installSplashScreen(this);
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        splashScreen.setKeepOnScreenCondition(() -> !completeLoad);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -143,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+
 
         DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
         userRef.get().addOnCompleteListener(task -> {
@@ -291,6 +304,19 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Fetch all event documents in EVENT_PROFILES
+        db.collection("EVENT_PROFILES")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    Log.d("realTimeListener", "Fetched " + queryDocumentSnapshots.size() + " event profiles");
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                        String eventId = document.getId();
+                        listenToEventProfileChanges(eventId);
+                    }
+                    completeLoad = true;
+                })
+                .addOnFailureListener(e -> Log.e("MainActivity", "Failed to fetch event profiles", e));
+
     }
 
 
@@ -385,4 +411,69 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void listenToEventProfileChanges(String eventId) {
+        DocumentReference eventDocRef = db.collection("EVENT_PROFILES").document(eventId);
+
+        eventDocRef.addSnapshotListener((snapshot, error) -> {
+            if (error != null) {
+                Log.e("MainActivity", "Error listening to event profile changes", error);
+                return;
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                Map<String, Object> data = snapshot.getData();
+                if (data != null) {
+                    // Extract current state of groups
+                    List<DocumentReference> currentWaitlist = (List<DocumentReference>) snapshot.get("waitlist");
+                    List<DocumentReference> currentPending = (List<DocumentReference>) snapshot.get("pending");
+                    List<DocumentReference> currentAccepted = (List<DocumentReference>) snapshot.get("accepted");
+                    List<DocumentReference> currentRejected = (List<DocumentReference>) snapshot.get("rejected");
+                    Log.d("listenToEventProfileChanges", eventId + " Event data changed " + currentPending);
+
+                    // Initialize or fetch previous states
+                    Map<String, List<DocumentReference>> previousEventState = previousStates.computeIfAbsent(eventId, k -> new HashMap<>());
+
+                    processGroupChanges(eventId, "Waitlist", previousEventState.get("Waitlist"), currentWaitlist);
+                    processGroupChanges(eventId, "Pending", previousEventState.get("Pending"), currentPending);
+                    processGroupChanges(eventId, "Accepted", previousEventState.get("Accepted"), currentAccepted);
+                    processGroupChanges(eventId, "Rejected", previousEventState.get("Rejected"), currentRejected);
+
+                    // Update the previous state with the current state
+                    previousEventState.put("Waitlist", currentWaitlist);
+                    previousEventState.put("Pending", currentPending);
+                    previousEventState.put("Accepted", currentAccepted);
+                    previousEventState.put("Rejected", currentRejected);
+                }
+            }
+        });
+    }
+
+    private void processGroupChanges(String eventId, String groupName, List<DocumentReference> previousGroup, List<DocumentReference> currentGroup) {
+        if (currentGroup == null) currentGroup = new ArrayList<>();
+        if (previousGroup == null) previousGroup = new ArrayList<>();
+
+        Notifications notifications = new Notifications();
+        //FirebaseMessaging messaging = FirebaseMessaging.getInstance();
+        String topic = groupName + "-" + eventId;
+
+        // Determine which users to unsubscribe (in previousGroup but not in currentGroup)
+        for (DocumentReference userRef : previousGroup) {
+            if (!currentGroup.contains(userRef)) {
+                notifications.unsubscribeFromTopic(topic);
+                        //.addOnSuccessListener(aVoid -> Log.d("MainActivity", "Unsubscribed from " + topic))
+                        //.addOnFailureListener(e -> Log.e("MainActivity", "Failed to unsubscribe from " + topic, e));
+            }
+        }
+
+        // Determine which users to subscribe (in currentGroup but not in previousGroup)
+        for (DocumentReference userRef : currentGroup) {
+            if (!previousGroup.contains(userRef)) {
+                notifications.subscribeToTopic(topic);
+                        //.addOnSuccessListener(aVoid -> Log.d("MainActivity", "Subscribed to " + topic))
+                        //.addOnFailureListener(e -> Log.e("MainActivity", "Failed to subscribe to " + topic, e));
+            }
+        }
+    }
 }
+

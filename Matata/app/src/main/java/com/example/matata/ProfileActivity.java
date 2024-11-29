@@ -1,9 +1,12 @@
 package com.example.matata;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,6 +29,8 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentReference;
@@ -102,6 +107,9 @@ public class ProfileActivity extends AppCompatActivity {
      * String for storing the user's device ID.
      */
     private String userId;
+
+    private static final int NOTIFICATION_PERMISSION_CODE = 1002;
+
 
     /**
      * ActivityResultLauncher for handling profile picture selection.
@@ -191,6 +199,17 @@ public class ProfileActivity extends AppCompatActivity {
             datePickerDialog.show();
         });
 
+        // Opt in and out of notifications.
+        notifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                Toast.makeText(ProfileActivity.this, "Notifications enabled", Toast.LENGTH_SHORT).show();
+
+            } else {
+                Toast.makeText(ProfileActivity.this, "Notifications disabled", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
         saveButton.setOnClickListener(v -> {
             String name = nameEditText.getText().toString().trim();
             String email = emailEditText.getText().toString().trim();
@@ -205,6 +224,19 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "No Email Found", Toast.LENGTH_SHORT).show();
             } else {
                 saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString, selectedGender, dobText);
+                // Save the notification check to be used for MyFirebaseMessagingService
+                SharedPreferences preferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("notifications_enabled", notificationsChecked);
+                editor.apply();
+            }
+
+            if (notificationsChecked) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    // Permission is not granted, request it
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_CODE);
+                }
             }
         });
 
@@ -225,6 +257,12 @@ public class ProfileActivity extends AppCompatActivity {
             String dobText = dobEditText.getText().toString().trim();
 
             saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString, gender, dobText);
+
+            // Save the notification check to be used for MyFirebaseMessagingService
+            SharedPreferences preferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("notifications_enabled", notificationsChecked);
+            editor.apply();
 
         });
 

@@ -22,21 +22,6 @@ import java.util.List;
 public class ClearPendingListFragment extends DialogFragment {
 
 
-
-    private List<Entrant> cancelledEntrants;
-
-
-    /**
-     * Sets the list of cancelled entrants to display in the fragment.
-     *
-     * @param entrants the list of cancelled entrants
-     */
-    public void setCancelledEntrants(List<Entrant> entrants) {
-        this.cancelledEntrants = entrants;
-    }
-
-
-
     /**
      * Creates and returns the dialog box to confirm the user's action to cancel pending entrants.
      *
