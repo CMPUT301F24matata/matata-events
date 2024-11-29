@@ -3,6 +3,7 @@ package com.example.matata;
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -33,7 +34,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -120,6 +123,11 @@ public class MainActivity extends AppCompatActivity {
      * RadioGroup for managing view toggles.
      */
     private RadioGroup Toggle;
+
+    /**
+     * A Hash Map to store previous states of groups (Waitlist, Pending, Accepted, Rejected).
+     */
+    private final Map<String, Map<String, List<DocumentReference>>> previousStates = new HashMap<>();
 
     /**
      * Called when the activity is first created. Initializes the user profile in Firestore if necessary,
@@ -291,6 +299,17 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Fetch all event documents in EVENT_PROFILES
+        db.collection("EVENT_PROFILES")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                        String eventId = document.getId();
+                        listenToEventProfileChanges(eventId);
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("MainActivity", "Failed to fetch event profiles", e));
+
     }
 
 
@@ -385,4 +404,67 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void listenToEventProfileChanges(String eventId) {
+        DocumentReference eventDocRef = db.collection("EVENT_PROFILES").document(eventId);
+
+        eventDocRef.addSnapshotListener((snapshot, error) -> {
+            if (error != null) {
+                Log.e("MainActivity", "Error listening to event profile changes", error);
+                return;
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                Map<String, Object> data = snapshot.getData();
+                if (data != null) {
+                    // Extract current state of groups
+                    List<DocumentReference> currentWaitlist = (List<DocumentReference>) data.get("Waitlist");
+                    List<DocumentReference> currentPending = (List<DocumentReference>) data.get("Pending");
+                    List<DocumentReference> currentAccepted = (List<DocumentReference>) data.get("Accepted");
+                    List<DocumentReference> currentRejected = (List<DocumentReference>) data.get("Rejected");
+
+                    // Initialize or fetch previous states
+                    Map<String, List<DocumentReference>> previousEventState = previousStates.computeIfAbsent(eventId, k -> new HashMap<>());
+
+                    processGroupChanges(eventId, "Waitlist", previousEventState.get("Waitlist"), currentWaitlist);
+                    processGroupChanges(eventId, "Pending", previousEventState.get("Pending"), currentPending);
+                    processGroupChanges(eventId, "Accepted", previousEventState.get("Accepted"), currentAccepted);
+                    processGroupChanges(eventId, "Rejected", previousEventState.get("Rejected"), currentRejected);
+
+                    // Update the previous state with the current state
+                    previousEventState.put("Waitlist", currentWaitlist);
+                    previousEventState.put("Pending", currentPending);
+                    previousEventState.put("Accepted", currentAccepted);
+                    previousEventState.put("Rejected", currentRejected);
+                }
+            }
+        });
+    }
+
+    private void processGroupChanges(String eventId, String groupName, List<DocumentReference> previousGroup, List<DocumentReference> currentGroup) {
+        if (currentGroup == null) currentGroup = new ArrayList<>();
+        if (previousGroup == null) previousGroup = new ArrayList<>();
+
+        FirebaseMessaging messaging = FirebaseMessaging.getInstance();
+        String topic = groupName + "-" + eventId;
+
+        // Determine which users to unsubscribe (in previousGroup but not in currentGroup)
+        for (DocumentReference userRef : previousGroup) {
+            if (!currentGroup.contains(userRef)) {
+                messaging.unsubscribeFromTopic(topic)
+                        .addOnSuccessListener(aVoid -> Log.d("MainActivity", "Unsubscribed from " + topic))
+                        .addOnFailureListener(e -> Log.e("MainActivity", "Failed to unsubscribe from " + topic, e));
+            }
+        }
+
+        // Determine which users to subscribe (in currentGroup but not in previousGroup)
+        for (DocumentReference userRef : currentGroup) {
+            if (!previousGroup.contains(userRef)) {
+                messaging.subscribeToTopic(topic)
+                        .addOnSuccessListener(aVoid -> Log.d("MainActivity", "Subscribed to " + topic))
+                        .addOnFailureListener(e -> Log.e("MainActivity", "Failed to subscribe to " + topic, e));
+            }
+        }
+    }
 }
+

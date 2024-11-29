@@ -29,6 +29,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Transaction;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -244,6 +248,8 @@ public class EventDraw extends AppCompatActivity {
 
     private List<Entrant> cancelledList;
 
+    private Button sendNotificationBtn;
+
     /**
      * Initializes the EventDraw activity and sets up Firebase, RecyclerViews, and various controls.
      *
@@ -311,7 +317,7 @@ public class EventDraw extends AppCompatActivity {
 
         cancelledList = new ArrayList<>();
 
-
+        sendNotificationBtn = findViewById(R.id.button3);
 
         entrantMap = new LinkedHashMap<>();
         selectedIdList = new ArrayList<>();
@@ -400,7 +406,19 @@ public class EventDraw extends AppCompatActivity {
                         }
                         remainingPosition.setText("Remaining Position: " + remainNum);
 
-                        if (accepted!= null && accepted.size()==capacity){
+                        String eventDate = document.getString("Date");
+                        String eventTime = document.getString("Time");
+
+                        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+                        LocalDate eventDateFormat = LocalDate.parse(eventDate, dateFormatter);
+                        LocalTime eventTimeFormat = LocalTime.parse(eventTime, timeFormatter);
+
+                        LocalDateTime eventDateTime = LocalDateTime.of(eventDateFormat, eventTimeFormat);
+                        LocalDateTime now = LocalDateTime.now();
+
+                        if (eventDateTime.isBefore(now) || (accepted!= null && accepted.size()==capacity)){
                             acceptedSectionText.setText("Final List");
                             totalEntrant.setText("Event Full");
                             pendingLinearLayout.setVisibility(View.GONE);
@@ -418,6 +436,15 @@ public class EventDraw extends AppCompatActivity {
 
         viewCombinedListButton.setOnClickListener(v -> {
             navigateToCancelledListActivity();
+        });
+
+        sendNotificationBtn.setOnClickListener(v -> {
+            NotificationDialogFragment dialog = new NotificationDialogFragment();
+            // Pass the uid as an argument to the fragment
+            Bundle args = new Bundle();
+            args.putString("uid", uid);
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), "NotificationDialog");
         });
     }
 
@@ -564,7 +591,7 @@ public class EventDraw extends AppCompatActivity {
      * @param adapter the adapter to notify of data changes
      * @param listType the type of list being loaded ("waitlist", "pending", etc.)
      */
-    private void loadList(List<DocumentReference> ref, List<Entrant> list, EntrantAdapter adapter, String listType) {
+    void loadList(List<DocumentReference> ref, List<Entrant> list, EntrantAdapter adapter, String listType) {
         if (ref == null || ref.isEmpty()) {
             return;
         }

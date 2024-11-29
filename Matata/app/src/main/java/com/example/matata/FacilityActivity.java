@@ -23,6 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -147,6 +149,8 @@ public class FacilityActivity extends AppCompatActivity {
         } else {
             USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         }
+
+
 
         facilityName = findViewById(R.id.facilityName);
         facilityAddress = findViewById(R.id.facilityAddress);
