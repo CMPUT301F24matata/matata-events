@@ -1,6 +1,9 @@
 package com.example.matata;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +35,8 @@ public class EntrantAdapter extends RecyclerView.Adapter<EntrantAdapter.EntrantV
      */
     private Context context;
 
+    private String status;
+
 
     /**
      * Constructs an EntrantAdapter with a specified context and list of Entrant objects.
@@ -39,9 +44,10 @@ public class EntrantAdapter extends RecyclerView.Adapter<EntrantAdapter.EntrantV
      * @param context the context in which the RecyclerView is being used
      * @param userList the list of Entrant objects to display in the RecyclerView
      */
-    public EntrantAdapter(Context context, List<Entrant> userList) {
+    public EntrantAdapter(Context context, List<Entrant> userList, String status) {
         this.context = context;
         this.userList = userList;
+        this.status = status;
     }
 
     /**
@@ -69,6 +75,28 @@ public class EntrantAdapter extends RecyclerView.Adapter<EntrantAdapter.EntrantV
         Entrant entrant = userList.get(position);
         String name = entrant.getName();
         holder.userNameText.setText(name);
+        if (status.equals("Rejected")){
+            holder.statusIndicator.setImageResource(R.drawable.ic_entrant_status_red);
+        }else if (status.equals("Pending") || status.equals("Cancelled")){
+            holder.statusIndicator.setImageResource(R.drawable.ic_entrant_status_yellow);
+        }else if (status.equals("Waitlist")){
+            holder.statusIndicator.setVisibility(View.INVISIBLE);
+        }
+
+        holder.itemView.setOnClickListener(view -> entrantDetailDialog(entrant));
+    }
+
+    private void entrantDetailDialog(Entrant entrant) {
+        String name = entrant.getName();
+        String email = entrant.getEmail();
+        String phone = entrant.getPhoneNumber();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Name: " + name +
+                        "\nEmail: " + email +
+                        "\nPhone Number: " + phone)
+                .setNegativeButton("OK", null);
+        builder.create().show();
     }
 
     /**

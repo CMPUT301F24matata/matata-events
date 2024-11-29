@@ -293,22 +293,22 @@ public class EventDraw extends AppCompatActivity {
         waitlistRecyclerView = findViewById(R.id.waitlist_recyclerView);
 
         entrantList = new ArrayList<>();
-        waitlistAdapter = new EntrantAdapter(this, entrantList);
+        waitlistAdapter = new EntrantAdapter(this, entrantList, "Waitlist");
         waitlistRecyclerView.setAdapter(waitlistAdapter);
         waitlistRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         selectedList = new ArrayList<>();
-        pendingAdapter = new EntrantAdapter(this, selectedList);
+        pendingAdapter = new EntrantAdapter(this, selectedList, "Pending");
         pendingRecyclerView.setAdapter(pendingAdapter);
         pendingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         rejectedList = new ArrayList<>();
-        rejectedAdapter = new EntrantAdapter(this, rejectedList);
+        rejectedAdapter = new EntrantAdapter(this, rejectedList, "Rejected");
         rejectedRecyclerView.setAdapter(rejectedAdapter);
         rejectedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         acceptedList = new ArrayList<>();
-        acceptedAdapter = new EntrantAdapter(this, acceptedList);
+        acceptedAdapter = new EntrantAdapter(this, acceptedList, "Accepted");
         acceptedRecyclerView.setAdapter(acceptedAdapter);
         acceptedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -417,14 +417,16 @@ public class EventDraw extends AppCompatActivity {
                         LocalDateTime now = LocalDateTime.now();
 
                         if (eventDateTime.isBefore(now) || (accepted!= null && accepted.size()==capacity)){
-                            acceptedSectionText.setText("Final List");
-                            totalEntrant.setText("Event Full");
+                            acceptedSectionText.setText("Final Accepted List");
                             pendingLinearLayout.setVisibility(View.GONE);
                             pendingSectionText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_more, 0);
                             rejectedLinearLayout.setVisibility(View.GONE);
                             rejectedSectionText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_more, 0);
                             waitlistLinearLayout.setVisibility(View.GONE);
                             waitlistSectionText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_more, 0);
+                        }
+                        if(accepted!= null && accepted.size()==capacity){
+                            totalEntrant.setText("Event Full");
                         }
                     }
                 });

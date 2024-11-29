@@ -38,7 +38,7 @@ public class CancelledListActivity extends AppCompatActivity {
         }
 
         // Set up the RecyclerView with an adapter
-        EntrantAdapter adapter = new EntrantAdapter(this, combinedList);
+        EntrantAdapter adapter = new EntrantAdapter(this, combinedList, "Cancelled");
         recyclerView.setAdapter(adapter);
     }
 }
