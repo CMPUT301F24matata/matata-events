@@ -305,89 +305,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Fetch all event documents in EVENT_PROFILES
-        db.collection("EVENT_PROFILES")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Log.d("realTimeListener", "Fetched " + queryDocumentSnapshots.size() + " event profiles");
-                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                        String eventId = document.getId();
-                        listenToEventProfileChanges(eventId);
-                    }
-                    completeLoad = true;
-                })
-                .addOnFailureListener(e -> Log.e("MainActivity", "Failed to fetch event profiles", e));
+//        db.collection("EVENT_PROFILES")
+//                .get()
+//                .addOnSuccessListener(queryDocumentSnapshots -> {
+//                    Log.d("realTimeListener", "Fetched " + queryDocumentSnapshots.size() + " event profiles");
+//                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+//                        String eventId = document.getId();
+//                        listenToEventProfileChanges(eventId);
+//                    }
+//                    completeLoad = true;
+//                })
+//                .addOnFailureListener(e -> Log.e("MainActivity", "Failed to fetch event profiles", e));
 
     }
 
-
-    /**
-     * Loads and listens for changes to event data in Firestore.
-     * Updates the RecyclerView dynamically when data changes.
-     */
-//    private void addEventsInit() {
-//
-//        db.collection("EVENT_PROFILES")
-//                .addSnapshotListener((snapshots, e) -> {
-//                    if (snapshots != null) {
-//                        eventList.clear();
-//                        statusList.clear();
-//                        posterUrls.clear();
-//
-//                        for (QueryDocumentSnapshot document : snapshots) {
-//                            DocumentReference entrantRef = db.collection("USER_PROFILES").document(USER_ID);
-//                            List<DocumentReference> accepted = (List<DocumentReference>) document.get("accepted");
-//                            List<DocumentReference> pending = (List<DocumentReference>) document.get("pending");
-//                            List<DocumentReference> waitlist = (List<DocumentReference>) document.get("waitlist");
-//
-//                            if (accepted != null && accepted.contains(entrantRef)) {
-//                                statusList.add("Accepted");
-//                            } else if (pending != null && pending.contains(entrantRef)) {
-//                                statusList.add("Pending");
-//                            } else if (waitlist != null && waitlist.contains(entrantRef)) {
-//                                statusList.add("Waitlist");
-//                            } else {
-//                                statusList.add("");
-//                            }
-//
-//                            String uid = document.getId();
-//                            String title = document.getString("Title");
-//                            String date = document.getString("Date");
-//                            String time = document.getString("Time");
-//                            String location = document.getString("Location");
-//                            String description = document.getString("Description");
-//                            String organizerId = document.getString("OrganizerId");
-//                            int capacity = document.getLong("Capacity").intValue();
-//                            String status = document.getString("Status");
-//
-//                            if (Objects.equals(status, "Active")) {
-//                                eventList.add(new Event(title, date, time, location, description, capacity, uid, organizerId, -1));
-//                                String posterUrl = document.getString("Poster");
-//                                if (posterUrl != null) {
-//                                    posterUrls.put(uid, posterUrl);
-//                                }
-//                            }
-//
-//                        }
-//
-//                        eventAdapter.notifyDataSetChanged();
-//
-//
-//                    } else if (e != null) {
-//                        Log.e("FirestoreError", "Error fetching events: ", e);
-//                    }
-//                });
-//        recyclerView.scheduleLayoutAnimation();
-//    }
-
-    // Declare the launcher at the top of your Activity/Fragment:
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    // FCM SDK (and your app) can post notifications.
-                } else {
-                    // TODO: Inform user that that your app will not show notifications.
-                }
-            });
 
     /**
      * Saves the FCM token to the Firestore database.
@@ -412,68 +343,68 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void listenToEventProfileChanges(String eventId) {
-        DocumentReference eventDocRef = db.collection("EVENT_PROFILES").document(eventId);
+    //private void listenToEventProfileChanges(String eventId) {
+    //    DocumentReference eventDocRef = db.collection("EVENT_PROFILES").document(eventId);
 
-        eventDocRef.addSnapshotListener((snapshot, error) -> {
-            if (error != null) {
-                Log.e("MainActivity", "Error listening to event profile changes", error);
-                return;
-            }
+    //    eventDocRef.addSnapshotListener((snapshot, error) -> {
+    //        if (error != null) {
+    //            Log.e("MainActivity", "Error listening to event profile changes", error);
+    //            return;
+    //        }
 
-            if (snapshot != null && snapshot.exists()) {
-                Map<String, Object> data = snapshot.getData();
-                if (data != null) {
-                    // Extract current state of groups
-                    List<DocumentReference> currentWaitlist = (List<DocumentReference>) snapshot.get("waitlist");
-                    List<DocumentReference> currentPending = (List<DocumentReference>) snapshot.get("pending");
-                    List<DocumentReference> currentAccepted = (List<DocumentReference>) snapshot.get("accepted");
-                    List<DocumentReference> currentRejected = (List<DocumentReference>) snapshot.get("rejected");
-                    Log.d("listenToEventProfileChanges", eventId + " Event data changed " + currentPending);
+    //        if (snapshot != null && snapshot.exists()) {
+    //            Map<String, Object> data = snapshot.getData();
+    //            if (data != null) {
+    //                // Extract current state of groups
+    //                List<DocumentReference> currentWaitlist = (List<DocumentReference>) snapshot.get("waitlist");
+    //                List<DocumentReference> currentPending = (List<DocumentReference>) snapshot.get("pending");
+    //                List<DocumentReference> currentAccepted = (List<DocumentReference>) snapshot.get("accepted");
+    //                List<DocumentReference> currentRejected = (List<DocumentReference>) snapshot.get("rejected");
+    //                Log.d("listenToEventProfileChanges", eventId + " Event data changed " + currentPending);
 
-                    // Initialize or fetch previous states
-                    Map<String, List<DocumentReference>> previousEventState = previousStates.computeIfAbsent(eventId, k -> new HashMap<>());
+    //                // Initialize or fetch previous states
+    //                Map<String, List<DocumentReference>> previousEventState = previousStates.computeIfAbsent(eventId, k -> new HashMap<>());
 
-                    processGroupChanges(eventId, "Waitlist", previousEventState.get("Waitlist"), currentWaitlist);
-                    processGroupChanges(eventId, "Pending", previousEventState.get("Pending"), currentPending);
-                    processGroupChanges(eventId, "Accepted", previousEventState.get("Accepted"), currentAccepted);
-                    processGroupChanges(eventId, "Rejected", previousEventState.get("Rejected"), currentRejected);
+    //                processGroupChanges(eventId, "Waitlist", previousEventState.get("Waitlist"), currentWaitlist);
+    //                processGroupChanges(eventId, "Pending", previousEventState.get("Pending"), currentPending);
+    //                processGroupChanges(eventId, "Accepted", previousEventState.get("Accepted"), currentAccepted);
+    //                processGroupChanges(eventId, "Rejected", previousEventState.get("Rejected"), currentRejected);
 
-                    // Update the previous state with the current state
-                    previousEventState.put("Waitlist", currentWaitlist);
+    //                // Update the previous state with the current state
+    /*                previousEventState.put("Waitlist", currentWaitlist);
                     previousEventState.put("Pending", currentPending);
                     previousEventState.put("Accepted", currentAccepted);
                     previousEventState.put("Rejected", currentRejected);
                 }
             }
         });
-    }
+    } */
 
-    private void processGroupChanges(String eventId, String groupName, List<DocumentReference> previousGroup, List<DocumentReference> currentGroup) {
-        if (currentGroup == null) currentGroup = new ArrayList<>();
-        if (previousGroup == null) previousGroup = new ArrayList<>();
+    //private void processGroupChanges(String eventId, String groupName, List<DocumentReference> previousGroup, List<DocumentReference> currentGroup) {
+    //    if (currentGroup == null) currentGroup = new ArrayList<>();
+    //    if (previousGroup == null) previousGroup = new ArrayList<>();
 
-        Notifications notifications = new Notifications();
-        //FirebaseMessaging messaging = FirebaseMessaging.getInstance();
-        String topic = groupName + "-" + eventId;
+    //Notifications notifications = new Notifications();
+    //    //FirebaseMessaging messaging = FirebaseMessaging.getInstance();
+    //    String topic = groupName + "-" + eventId;
 
         // Determine which users to unsubscribe (in previousGroup but not in currentGroup)
-        for (DocumentReference userRef : previousGroup) {
-            if (!currentGroup.contains(userRef)) {
-                notifications.unsubscribeFromTopic(topic);
-                        //.addOnSuccessListener(aVoid -> Log.d("MainActivity", "Unsubscribed from " + topic))
-                        //.addOnFailureListener(e -> Log.e("MainActivity", "Failed to unsubscribe from " + topic, e));
-            }
-        }
+    //    for (DocumentReference userRef : previousGroup) {
+    //        if (!currentGroup.contains(userRef)) {
+    //            notifications.unsubscribeFromTopic(topic);
+    //                    //.addOnSuccessListener(aVoid -> Log.d("MainActivity", "Unsubscribed from " + topic))
+    //                   //.addOnFailureListener(e -> Log.e("MainActivity", "Failed to unsubscribe from " + topic, e));
+    //        }
+    //    }
 
         // Determine which users to subscribe (in currentGroup but not in previousGroup)
-        for (DocumentReference userRef : currentGroup) {
-            if (!previousGroup.contains(userRef)) {
-                notifications.subscribeToTopic(topic);
-                        //.addOnSuccessListener(aVoid -> Log.d("MainActivity", "Subscribed to " + topic))
-                        //.addOnFailureListener(e -> Log.e("MainActivity", "Failed to subscribe to " + topic, e));
-            }
-        }
-    }
+    //    for (DocumentReference userRef : currentGroup) {
+    //        if (!previousGroup.contains(userRef)) {
+    //            notifications.subscribeToTopic(topic);
+    //                    //.addOnSuccessListener(aVoid -> Log.d("MainActivity", "Subscribed to " + topic))
+    //                    //.addOnFailureListener(e -> Log.e("MainActivity", "Failed to subscribe to " + topic, e));
+    //        }
+    //    }
+    //}
 }
 
