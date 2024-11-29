@@ -22,6 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.bumptech.glide.Glide;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -141,6 +142,7 @@ public class FacilityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_facility_profile);
 
+        String apiKey= BuildConfig.MAPS_API_KEY;
         db = FirebaseFirestore.getInstance();
 
         facilityId = getIntent().getStringExtra("FACILITY_ID");
@@ -150,6 +152,10 @@ public class FacilityActivity extends AppCompatActivity {
             USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         }
 
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(),apiKey);
+        }
+        PlacesClient placesClient = Places.createClient(this);
 
 
         facilityName = findViewById(R.id.facilityName);

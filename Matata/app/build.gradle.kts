@@ -1,4 +1,9 @@
+import java.util.Properties
 import java.util.regex.Pattern.compile
+
+val localProperties = Properties()
+file("../local.properties").inputStream().use { localProperties.load(it) }
+val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
 plugins {
     alias(libs.plugins.android.application)
@@ -8,6 +13,7 @@ plugins {
 
 
 android {
+    android.buildFeatures.buildConfig=true
     namespace = "com.example.matata"
     compileSdk = 34
 
@@ -19,6 +25,7 @@ android {
         versionName = "1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
     }
 
     buildTypes {
@@ -42,7 +49,6 @@ android {
 }
 
 dependencies {
-
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.libraries.places:places:3.5.0")
