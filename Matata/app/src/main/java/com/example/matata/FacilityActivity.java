@@ -1,5 +1,7 @@
 package com.example.matata;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +12,15 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -21,16 +29,27 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -118,6 +137,10 @@ public class FacilityActivity extends AppCompatActivity {
      */
     private ImageView btnBackProfile;
 
+    private PlacesClient placesClient;
+    private RecyclerView suggestions;
+    private PredictionAdapter predictionAdapter;
+    private boolean isPreloading = true;
 
     /**
      * ActivityResultLauncher for handling the result of profile picture selection.
@@ -155,7 +178,7 @@ public class FacilityActivity extends AppCompatActivity {
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(),apiKey);
         }
-        PlacesClient placesClient = Places.createClient(this);
+        placesClient = Places.createClient(this);
 
 
         facilityName = findViewById(R.id.facilityName);
@@ -169,6 +192,21 @@ public class FacilityActivity extends AppCompatActivity {
         clearAllButton = findViewById(R.id.clearAllButton);
         btnBackProfile = findViewById(R.id.btnBackProfile);
         profileIcon = findViewById(R.id.profileIcon);
+        suggestions=findViewById(R.id.address_suggestions);
+
+        suggestions.setVisibility(View.GONE);
+        predictionAdapter = new PredictionAdapter(prediction -> {
+            getPlaceDetails(prediction.getPlaceId());
+
+            facilityAddress.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(facilityAddress.getWindowToken(), 0);
+            }
+        });
+
+        suggestions.setLayoutManager(new LinearLayoutManager(this));
+        suggestions.setAdapter(predictionAdapter);
 
         btnBackProfile.setOnClickListener(v -> finish());
 
@@ -183,6 +221,37 @@ public class FacilityActivity extends AppCompatActivity {
             Intent intent = new Intent(FacilityActivity.this, FacilityPicActivity.class);
             intent.putExtra("userId", USER_ID);
             profilePicLauncher.launch(intent);
+        });
+
+        facilityAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!isPreloading){
+                    if (!s.toString().isEmpty()) {
+                        fetchAutocompletePredictions(s.toString());
+                    } else {
+                        predictionAdapter.updateData(new ArrayList<>());
+                        suggestions.setVisibility(View.GONE);
+                    }
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                facilityAddress.clearFocus();
+            }
+        });
+
+        facilityAddress.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && !facilityAddress.getText().toString().isEmpty() && !isPreloading) {
+                suggestions.setVisibility(View.VISIBLE);
+            } else {
+                suggestions.setVisibility(View.GONE);
+            }
         });
 
         saveButton.setOnClickListener(v -> {
@@ -220,8 +289,11 @@ public class FacilityActivity extends AppCompatActivity {
             facilityOwner.setText("");
             switchNotification.setChecked(false);
 
-            String name = facilityName.getText().toString();
+
+
             String address = facilityAddress.getText().toString();
+
+            String name = facilityName.getText().toString();
             String capacity = facilityCapacity.getText().toString();
             String contact = facilityContact.getText().toString();
             String email = facilityEmail.getText().toString();
@@ -323,6 +395,7 @@ public class FacilityActivity extends AppCompatActivity {
                             String capacity = documentSnapshot.getString("capacity");
                             String contact = documentSnapshot.getString("contact");
                             String owner = documentSnapshot.getString("owner");
+                            isPreloading = false;
 
                             facilityName.setText(name);
                             facilityAddress.setText(address);
@@ -336,7 +409,10 @@ public class FacilityActivity extends AppCompatActivity {
                         }
                     }
                 })
-                .addOnFailureListener(e -> Toast.makeText(FacilityActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Toast.makeText(FacilityActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show();
+                    isPreloading = false;
+                });
     }
 
     /**
@@ -367,6 +443,59 @@ public class FacilityActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         String base64String = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
         return Uri.parse("data:image/png;base64," + base64String);
+    }
+
+    private void fetchAutocompletePredictions(String q){
+        RectangularBounds bounds = RectangularBounds.newInstance(
+                new LatLng(53.2, -113.7),
+                new LatLng(53.8, -113.2)
+        );
+
+        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                .setQuery(q)
+                .setCountries("CA")
+                .setLocationBias(bounds)
+                .build();
+
+        placesClient.findAutocompletePredictions(request)
+                .addOnSuccessListener(response -> {
+                    List<AutocompletePrediction> predictions = response.getAutocompletePredictions();
+
+                    if (!predictions.isEmpty()) {
+                        predictionAdapter.updateData(predictions);
+                        suggestions.setVisibility(View.VISIBLE); // Show the dropdown
+                    } else {
+                        suggestions.setVisibility(View.GONE); // Hide if no predictions
+                    }
+                })
+                .addOnFailureListener(exception -> {
+                    Log.e(TAG, "Autocomplete prediction fetch failed: " + exception.getMessage());
+                    suggestions.setVisibility(View.GONE);
+                });
+        }
+
+    private void getPlaceDetails(String placeId) {
+        List<Place.Field> placeFields = Arrays.asList(
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.ADDRESS,
+                Place.Field.LAT_LNG
+        );
+
+        FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();
+
+        placesClient.fetchPlace(request)
+                .addOnSuccessListener(response -> {
+                    Place place = response.getPlace();
+                    Log.d("Place Details", "Name: " + place.getName());
+                    Log.d("Place Details", "Address: " + place.getAddress());
+                    Log.d("Place Details", "LatLng: " + place.getLatLng());
+
+                    facilityAddress.setText(place.getAddress());
+                })
+                .addOnFailureListener(exception -> {
+                    Log.e("TAG", "Error fetching place details: " + exception.getMessage());
+                });
     }
 
 }
