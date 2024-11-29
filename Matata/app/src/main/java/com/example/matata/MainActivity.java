@@ -129,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private final Map<String, Map<String, List<DocumentReference>>> previousStates = new HashMap<>();
 
+    private boolean completeLoad = false;
+
     /**
      * Called when the activity is first created. Initializes the user profile in Firestore if necessary,
      * sets up UI components, handles notification permissions, and loads event data.
@@ -137,11 +139,12 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SplashScreen.installSplashScreen(this);
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        splashScreen.setKeepOnScreenCondition(() -> !completeLoad);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -309,6 +312,7 @@ public class MainActivity extends AppCompatActivity {
                         String eventId = document.getId();
                         listenToEventProfileChanges(eventId);
                     }
+                    completeLoad = true;
                 })
                 .addOnFailureListener(e -> Log.e("MainActivity", "Failed to fetch event profiles", e));
 
