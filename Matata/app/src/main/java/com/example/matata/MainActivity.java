@@ -308,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
         db.collection("EVENT_PROFILES")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    Log.d("realTimeListener", "Fetched " + queryDocumentSnapshots.size() + " event profiles");
                     for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                         String eventId = document.getId();
                         listenToEventProfileChanges(eventId);
@@ -424,10 +425,11 @@ public class MainActivity extends AppCompatActivity {
                 Map<String, Object> data = snapshot.getData();
                 if (data != null) {
                     // Extract current state of groups
-                    List<DocumentReference> currentWaitlist = (List<DocumentReference>) data.get("Waitlist");
-                    List<DocumentReference> currentPending = (List<DocumentReference>) data.get("Pending");
-                    List<DocumentReference> currentAccepted = (List<DocumentReference>) data.get("Accepted");
-                    List<DocumentReference> currentRejected = (List<DocumentReference>) data.get("Rejected");
+                    List<DocumentReference> currentWaitlist = (List<DocumentReference>) snapshot.get("waitlist");
+                    List<DocumentReference> currentPending = (List<DocumentReference>) snapshot.get("pending");
+                    List<DocumentReference> currentAccepted = (List<DocumentReference>) snapshot.get("accepted");
+                    List<DocumentReference> currentRejected = (List<DocumentReference>) snapshot.get("rejected");
+                    Log.d("listenToEventProfileChanges", eventId + " Event data changed " + currentPending);
 
                     // Initialize or fetch previous states
                     Map<String, List<DocumentReference>> previousEventState = previousStates.computeIfAbsent(eventId, k -> new HashMap<>());
@@ -451,24 +453,25 @@ public class MainActivity extends AppCompatActivity {
         if (currentGroup == null) currentGroup = new ArrayList<>();
         if (previousGroup == null) previousGroup = new ArrayList<>();
 
-        FirebaseMessaging messaging = FirebaseMessaging.getInstance();
+        Notifications notifications = new Notifications();
+        //FirebaseMessaging messaging = FirebaseMessaging.getInstance();
         String topic = groupName + "-" + eventId;
 
         // Determine which users to unsubscribe (in previousGroup but not in currentGroup)
         for (DocumentReference userRef : previousGroup) {
             if (!currentGroup.contains(userRef)) {
-                messaging.unsubscribeFromTopic(topic)
-                        .addOnSuccessListener(aVoid -> Log.d("MainActivity", "Unsubscribed from " + topic))
-                        .addOnFailureListener(e -> Log.e("MainActivity", "Failed to unsubscribe from " + topic, e));
+                notifications.unsubscribeFromTopic(topic);
+                        //.addOnSuccessListener(aVoid -> Log.d("MainActivity", "Unsubscribed from " + topic))
+                        //.addOnFailureListener(e -> Log.e("MainActivity", "Failed to unsubscribe from " + topic, e));
             }
         }
 
         // Determine which users to subscribe (in currentGroup but not in previousGroup)
         for (DocumentReference userRef : currentGroup) {
             if (!previousGroup.contains(userRef)) {
-                messaging.subscribeToTopic(topic)
-                        .addOnSuccessListener(aVoid -> Log.d("MainActivity", "Subscribed to " + topic))
-                        .addOnFailureListener(e -> Log.e("MainActivity", "Failed to subscribe to " + topic, e));
+                notifications.subscribeToTopic(topic);
+                        //.addOnSuccessListener(aVoid -> Log.d("MainActivity", "Subscribed to " + topic))
+                        //.addOnFailureListener(e -> Log.e("MainActivity", "Failed to subscribe to " + topic, e));
             }
         }
     }
