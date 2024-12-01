@@ -1,5 +1,7 @@
 package com.example.matata;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,7 +28,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
 
 import java.time.LocalDate;
@@ -371,7 +375,57 @@ public class EventDraw extends AppCompatActivity {
         pendingSectionText.setOnClickListener(v->{ linearLayoutDropDown(pendingLinearLayout,pendingSectionText); });
         waitlistSectionText.setOnClickListener(v->{ linearLayoutDropDown(waitlistLinearLayout,waitlistSectionText); });
 
-        // Load event data from Firestore
+        loadEventData();
+
+        // Handle View Combined List button
+        Button viewCombinedListButton = findViewById(R.id.view_combined_list_button);
+
+        viewCombinedListButton.setOnClickListener(v -> {
+            navigateToCancelledListActivity();
+        });
+
+        sendNotificationBtn.setOnClickListener(v -> {
+            NotificationDialogFragment dialog = new NotificationDialogFragment();
+            // Pass the uid as an argument to the fragment
+            Bundle args = new Bundle();
+            args.putString("uid", uid);
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), "NotificationDialog");
+        });
+
+
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
+        eventRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.w(TAG, "Listen failed.", error);
+                    return;
+                }
+
+                if (value != null){
+                    loadEventData();
+                    loadLimit(uid);
+                }
+            }
+        });
+    }
+
+    private void navigateToCancelledListActivity() {
+        // Check if both lists are empty
+        if (cancelledList.isEmpty() && rejectedList.isEmpty()) {
+            Toast.makeText(this, "No entrants to display in the Cancelled List.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Pass the Cancelled and Rejected lists to the CancelledListActivity
+        Intent intent = new Intent(EventDraw.this, CancelledListActivity.class);
+        intent.putExtra("cancelledList", new ArrayList<>(cancelledList)); // Pass the cancelled list
+        intent.putExtra("rejectedList", new ArrayList<>(rejectedList)); // Pass the rejected list
+        startActivity(intent); // Start the CancelledListActivity
+    }
+
+    private void loadEventData () {
         db.collection("EVENT_PROFILES").document(uid).get()
                 .addOnCompleteListener(task -> {
                     DocumentSnapshot document = task.getResult();
@@ -384,9 +438,13 @@ public class EventDraw extends AppCompatActivity {
                         List<DocumentReference> rejected = (List<DocumentReference>) document.get("rejected");
 
                         // Load entrants for each list
+                        selectedList.clear();
                         loadList(pending, selectedList, pendingAdapter, "pending");
+                        acceptedList.clear();
                         loadList(accepted, acceptedList, acceptedAdapter, "accepted");
+                        rejectedList.clear();
                         loadList(rejected, rejectedList, rejectedAdapter, "rejected");
+                        entrantList.clear();
                         loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
 
                         capacity = document.getLong("Capacity").intValue();
@@ -432,39 +490,7 @@ public class EventDraw extends AppCompatActivity {
                         }
                     }
                 });
-
-        // Handle View Combined List button
-        Button viewCombinedListButton = findViewById(R.id.view_combined_list_button);
-
-        viewCombinedListButton.setOnClickListener(v -> {
-            navigateToCancelledListActivity();
-        });
-
-        sendNotificationBtn.setOnClickListener(v -> {
-            NotificationDialogFragment dialog = new NotificationDialogFragment();
-            // Pass the uid as an argument to the fragment
-            Bundle args = new Bundle();
-            args.putString("uid", uid);
-            dialog.setArguments(args);
-            dialog.show(getSupportFragmentManager(), "NotificationDialog");
-        });
     }
-
-    private void navigateToCancelledListActivity() {
-        // Check if both lists are empty
-        if (cancelledList.isEmpty() && rejectedList.isEmpty()) {
-            Toast.makeText(this, "No entrants to display in the Cancelled List.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Pass the Cancelled and Rejected lists to the CancelledListActivity
-        Intent intent = new Intent(EventDraw.this, CancelledListActivity.class);
-        intent.putExtra("cancelledList", new ArrayList<>(cancelledList)); // Pass the cancelled list
-        intent.putExtra("rejectedList", new ArrayList<>(rejectedList)); // Pass the rejected list
-        startActivity(intent); // Start the CancelledListActivity
-    }
-
-
 
     public static void injectFirestore(FirebaseFirestore firestore) {
         injectedFirestore = firestore;
