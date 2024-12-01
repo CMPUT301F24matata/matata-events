@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -21,6 +22,8 @@ public class NotificationDialogFragment extends DialogFragment {
     private String[] groups = {"Waitlist", "Pending", "Accepted", "Rejected"};
     private ArrayAdapter<String> adapter;
     private String uid;
+    private EditText title;
+    private EditText message;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -42,26 +45,35 @@ public class NotificationDialogFragment extends DialogFragment {
             uid = getArguments().getString("uid");
         }
 
+        title = view.findViewById(R.id.title_EditText);
+        message = view.findViewById(R.id.message_EditText);
+
         // Set up the Send Notification button
         sendNotificationButton = view.findViewById(R.id.send_notification_button);
         sendNotificationButton.setOnClickListener(v -> {
+            String titleString = title.getText().toString().trim();
+            String messageString = message.getText().toString();
 
-            // Handle sending notification logic
-            String selectedGroup = groupSpinner.getSelectedItem().toString();
-            Notifications notifications = new Notifications();
-            if (selectedGroup.equals("Waitlist")) {
-                notifications.sendNotification(this.getActivity(), "Waitlist-" + uid, "Waitlist Notification", "You have a new waitlist entry");
-            } else if (selectedGroup.equals("Pending")) {
-                notifications.sendNotification(this.getActivity(), "Pending-" + uid, "Pending Notification", "You have a new pending entry");
-            } else if (selectedGroup.equals("Accepted")) {
-                notifications.sendNotification(this.getActivity(), "Accepted-" + uid, "Accepted Notification", "You have a new accepted entry");
-            } else if (selectedGroup.equals("Rejected")) {
-                notifications.sendNotification(this.getActivity(), "Rejected-" + uid, "Rejected Notification", "You have a new rejected entry");
+            if (titleString.isEmpty() || messageString.isEmpty()) {
+                Toast.makeText(getActivity(), "Please complete all fields", Toast.LENGTH_SHORT).show();
+            } else {
+                // Handle sending notification logic
+                String selectedGroup = groupSpinner.getSelectedItem().toString();
+                Notifications notifications = new Notifications();
+                if (selectedGroup.equals("Waitlist")) {
+                    notifications.sendNotification(this.getActivity(), "Waitlist-" + uid, titleString, messageString);
+                } else if (selectedGroup.equals("Pending")) {
+                    notifications.sendNotification(this.getActivity(), "Pending-" + uid, titleString, messageString);
+                } else if (selectedGroup.equals("Accepted")) {
+                    notifications.sendNotification(this.getActivity(), "Accepted-" + uid, titleString, messageString);
+                } else if (selectedGroup.equals("Rejected")) {
+                    notifications.sendNotification(this.getActivity(), "Rejected-" + uid, titleString, messageString);
+                }
+
+                // Send notification based on selected group
+                Toast.makeText(getActivity(), "Sending notification to: " + selectedGroup, Toast.LENGTH_SHORT).show();
+                dismiss(); // Close the dialog
             }
-
-            // Send notification based on selected group
-            Toast.makeText(getActivity(), "Sending notification to: " + selectedGroup, Toast.LENGTH_SHORT).show();
-            dismiss(); // Close the dialog
         });
 
         // Set the dialog view and title

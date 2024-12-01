@@ -375,7 +375,7 @@ public class EventDraw extends AppCompatActivity {
         pendingSectionText.setOnClickListener(v->{ linearLayoutDropDown(pendingLinearLayout,pendingSectionText); });
         waitlistSectionText.setOnClickListener(v->{ linearLayoutDropDown(waitlistLinearLayout,waitlistSectionText); });
 
-        loadEventData();
+        //loadEventData();
 
         // Handle View Combined List button
         Button viewCombinedListButton = findViewById(R.id.view_combined_list_button);
