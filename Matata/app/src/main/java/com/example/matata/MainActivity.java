@@ -343,6 +343,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void loadMyEvents () {
+        
+    }
+
+    private void updateNotificationSubscription () {
+
+    }
+
     //private void listenToEventProfileChanges(String eventId) {
     //    DocumentReference eventDocRef = db.collection("EVENT_PROFILES").document(eventId);
 

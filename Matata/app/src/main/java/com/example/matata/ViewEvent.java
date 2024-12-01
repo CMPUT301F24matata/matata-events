@@ -487,6 +487,7 @@ public class ViewEvent extends AppCompatActivity {
                     showGeolocationWarning();
                 } else {
                     addToWaitList();
+                    addToMyList();
                 }
             }, 300);
         });
@@ -502,8 +503,10 @@ public class ViewEvent extends AppCompatActivity {
         AlertDialog.Builder geoBuilder = new AlertDialog.Builder(ViewEvent.this);
         geoBuilder.setTitle("Geolocation Required");
         geoBuilder.setMessage("To join the waitlist for this event, we need access to your location. Do you agree to share your location data?");
-        geoBuilder.setPositiveButton("Accept", (dialog, which) -> addToWaitList());
-        geoBuilder.setNegativeButton("Decline", (dialog, which) -> Toast.makeText(ViewEvent.this, "You must accept geolocation to join the waitlist", Toast.LENGTH_SHORT).show());
+        geoBuilder.setPositiveButton("Accept", (dialog, which) -> {
+            addToWaitList();
+            addToMyList();
+        });        geoBuilder.setNegativeButton("Decline", (dialog, which) -> Toast.makeText(ViewEvent.this, "You must accept geolocation to join the waitlist", Toast.LENGTH_SHORT).show());
         AlertDialog geoDialog = geoBuilder.create();
         geoDialog.show();
     }
@@ -524,6 +527,24 @@ public class ViewEvent extends AppCompatActivity {
             // Subscribe to topic for the user
             Notifications notifications = new Notifications();
             notifications.subscribeToTopic("Waitlist-" + uid);
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("Firebase", "Entrant added to waitlist successfully");
+            waitlistBtn.setText("Withdraw");
+            eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
+        }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
+    }
+
+    private void addToMyList() {
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot entrantSnapshot = transaction.get(entrantRef);
+            List<DocumentReference> myList = (List<DocumentReference>) entrantSnapshot.get("myList");
+            if (myList == null) {
+                myList = new ArrayList<>();
+            }
+            myList.add(eventRef);
+            transaction.update(entrantRef, "myList", myList);
+
             return null;
         }).addOnSuccessListener(aVoid -> {
             Log.d("Firebase", "Entrant added to waitlist successfully");
