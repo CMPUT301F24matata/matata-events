@@ -52,8 +52,11 @@ public class NotificationDialogFragment extends DialogFragment {
             if (selectedGroup.equals("Waitlist")) {
                 notifications.sendNotification(this.getActivity(), "Waitlist-" + uid, "Waitlist Notification", "You have a new waitlist entry");
             } else if (selectedGroup.equals("Pending")) {
-                // Handle pending notification logic
-                String fillerText = "Filler text, I'm working on this";
+                notifications.sendNotification(this.getActivity(), "Pending-" + uid, "Pending Notification", "You have a new pending entry");
+            } else if (selectedGroup.equals("Accepted")) {
+                notifications.sendNotification(this.getActivity(), "Accepted-" + uid, "Accepted Notification", "You have a new accepted entry");
+            } else if (selectedGroup.equals("Rejected")) {
+                notifications.sendNotification(this.getActivity(), "Rejected-" + uid, "Rejected Notification", "You have a new rejected entry");
             }
 
             // Send notification based on selected group
