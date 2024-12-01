@@ -532,7 +532,9 @@ public class EventDraw extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(EventDraw.this);
         builder.setCancelable(true);
         builder.setMessage("You are about to draw " + drawNum + " out of " + entrantList.size() + " people.\nProceed?");
-        builder.setPositiveButton("Confirm", (dialog, which) -> setSelectedEntrant());
+        builder.setPositiveButton("Confirm", (dialog, which) -> {
+            setSelectedEntrant();
+        });
         builder.setNegativeButton(android.R.string.cancel, null);
         AlertDialog dialog = builder.create();
         currentDialog = dialog;
@@ -546,7 +548,9 @@ public class EventDraw extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(EventDraw.this);
         builder.setCancelable(true);
         builder.setMessage("You are about to remove all entrants that haven't accepted the invitation yet.\nProceed?");
-        builder.setPositiveButton("Confirm", (dialog, which) -> clearSelectedEntrant());
+        builder.setPositiveButton("Confirm", (dialog, which) -> {
+            clearSelectedEntrant();
+        });
         builder.setNegativeButton(android.R.string.cancel, null);
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -585,6 +589,8 @@ public class EventDraw extends AppCompatActivity {
             remainNum -= drawNum;
             return null;
         }).addOnSuccessListener(aVoid -> {
+            notifyEntrants();
+
             Log.d("Firebase", "Entrant added to pending list successfully");
             pendingAdapter.notifyDataSetChanged();
             waitlistAdapter.notifyDataSetChanged();
@@ -606,6 +612,7 @@ public class EventDraw extends AppCompatActivity {
             transaction.update(eventRef, "pending", new ArrayList<>());
             return null;
         }).addOnSuccessListener(aVoid -> {
+            notifyEntrants();
             Log.d("Firebase", "Clearing pending list successfully");
             pendingAdapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> Log.e("Firebase", "Error clearing pending list", e));
@@ -694,6 +701,49 @@ public class EventDraw extends AppCompatActivity {
 
     public AlertDialog getCurrentDialog () {
         return currentDialog;
+    }
+
+    private void notifyEntrants () {
+        DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
+        eventRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<DocumentReference> allEntrants = new ArrayList<>();
+                        List<DocumentReference> waitlistEntrants = (List<DocumentReference>) documentSnapshot.get("waitlist");
+                        List<DocumentReference> pendingEntrants = (List<DocumentReference>) documentSnapshot.get("pending");
+                        List<DocumentReference> acceptedEntrants = (List<DocumentReference>) documentSnapshot.get("accepted");
+                        List<DocumentReference> rejectedEntrants = (List<DocumentReference>) documentSnapshot.get("rejected");
+
+                        if (waitlistEntrants != null) allEntrants.addAll(waitlistEntrants);
+                        if (pendingEntrants != null) allEntrants.addAll(pendingEntrants);
+                        if (acceptedEntrants != null) allEntrants.addAll(acceptedEntrants);
+                        if (rejectedEntrants != null) allEntrants.addAll(rejectedEntrants);
+
+                        for (DocumentReference entrantRef : allEntrants) {
+                            entrantRef.get()
+                                    .addOnSuccessListener(currentDocument -> {
+                                        Long updateCodeLong = currentDocument.getLong("updateCode");
+
+                                        int updateCode = (updateCodeLong != null) ? updateCodeLong.intValue() : 0;
+                                        updateCode++;
+
+                                        entrantRef.update("updateCode", updateCode)
+                                                .addOnSuccessListener(aVoid -> {
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Log.e("EventDraw", "Failed to update entrant", e);
+                                                });
+                                        Log.d("notify entrants", "notifyEntrants: " + entrantRef.getId());
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Handle failure to get entrant document
+                                        Log.e("EventDraw", "Failed to get entrant document", e);
+                                    });
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(EventDraw.this, "Failed to notify entrants", Toast.LENGTH_SHORT).show());
+
     }
 
 

@@ -422,8 +422,10 @@ public class ViewEvent extends AppCompatActivity {
             }
             rejected.add(entrantRef);
             transaction.update(eventRef, "rejected", rejected);
+            Log.d("User list", "notified entrants to subscribe to rejected.");
             return null;
         }).addOnSuccessListener(aVoid -> {
+            notifyMyself();
             Log.d("Firebase", "Entrant added to rejected list successfully");
             eventRef.update("pending", FieldValue.arrayRemove(entrantRef));
         }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to rejected list", e));
@@ -443,6 +445,7 @@ public class ViewEvent extends AppCompatActivity {
             transaction.update(eventRef, "accepted", accepted);
             return null;
         }).addOnSuccessListener(aVoid -> {
+            notifyMyself();
             Log.d("Firebase", "Entrant added to accepted list successfully");
             eventRef.update("pending", FieldValue.arrayRemove(entrantRef));
         }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to accepted list", e));
@@ -525,10 +528,11 @@ public class ViewEvent extends AppCompatActivity {
             transaction.update(eventRef, "waitlist", waitlist);
 
             // Subscribe to topic for the user
-            Notifications notifications = new Notifications();
-            notifications.subscribeToTopic("Waitlist-" + uid);
+            /*Notifications notifications = new Notifications();
+            notifications.subscribeToTopic("Waitlist-" + uid);*/
             return null;
         }).addOnSuccessListener(aVoid -> {
+            notifyMyself();
             Log.d("Firebase", "Entrant added to waitlist successfully");
             waitlistBtn.setText("Withdraw");
             eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
@@ -542,8 +546,11 @@ public class ViewEvent extends AppCompatActivity {
             if (myList == null) {
                 myList = new ArrayList<>();
             }
-            myList.add(eventRef);
-            transaction.update(entrantRef, "myList", myList);
+            Log.d("Subscriptionn issue check", "MyList: " + myList);
+            if (!myList.contains(eventRef)) {
+                myList.add(eventRef);
+                transaction.update(entrantRef, "myList", myList);
+            }
 
             return null;
         }).addOnSuccessListener(aVoid -> {
@@ -574,11 +581,32 @@ public class ViewEvent extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "Entrant withdrew from waitlist successfully");
                     waitlistBtn.setText("Join Waitlist");
-
+                    notifyMyself();
+                    removeFromMyList();
                     // Unsubscribe from topic
-                    Notifications notifications = new Notifications();
-                    notifications.unsubscribeFromTopic("Waitlist-" + uid);
+                    /*Notifications notifications = new Notifications();
+                    notifications.unsubscribeFromTopic("Waitlist-" + uid);*/
                 }).addOnFailureListener(e -> Log.e("Firebase", "Error deleting entrant from waitlist", e));
+    }
+
+    private void removeFromMyList () {
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+            DocumentSnapshot entrantSnapshot = transaction.get(entrantRef);
+            List<DocumentReference> myList = (List<DocumentReference>) entrantSnapshot.get("myList");
+            if (!(myList == null)) {
+                if (myList.contains(eventRef)) {
+                    myList.remove(eventRef);
+                    transaction.update(entrantRef, "myList", myList);
+                }
+            }
+            Log.d("Subscriptionn issue check", "MyList: " + myList);
+
+            return null;
+        }).addOnSuccessListener(aVoid -> {
+            Log.d("Firebase", "Entrant added to waitlist successfully");
+            waitlistBtn.setText("Join Waitlist");
+            eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
+        }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
     }
 
     /**
@@ -666,6 +694,28 @@ public class ViewEvent extends AppCompatActivity {
             Log.d("Firebase", "Successfully resampled a new entrant from waitlist");
             Toast.makeText(ViewEvent.this, "A new entrant has been selected!", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> Log.e("Firebase", "Error resampling a new entrant", e));
+    }
+
+    private void notifyMyself () {
+        entrantRef.get()
+                .addOnSuccessListener(currentDocument -> {
+                    Long updateCodeLong = currentDocument.getLong("updateCode");
+
+                    int updateCode = (updateCodeLong != null) ? updateCodeLong.intValue() : 0;
+                    updateCode++;
+
+                    entrantRef.update("updateCode", updateCode)
+                            .addOnSuccessListener(aVoid -> {
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("EventDraw", "Failed to update entrant", e);
+                            });
+                    Log.d("notify entrants", "notifyEntrants: " + entrantRef.getId());
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure to get entrant document
+                    Log.e("EventDraw", "Failed to get entrant document", e);
+                });
     }
 
 }

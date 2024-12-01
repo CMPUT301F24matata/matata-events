@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.core.graphics.Insets;
@@ -35,7 +36,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -131,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean completeLoad = false;
 
+    private List<DocumentReference> myList;
+
     /**
      * Called when the activity is first created. Initializes the user profile in Firestore if necessary,
      * sets up UI components, handles notification permissions, and loads event data.
@@ -195,6 +200,22 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MainActivity", "Error fetching user profile", task.getException());
             }
         });
+
+        userRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                Log.w("Snapshot listener", "Snapshot listener triggered, try to update subscription. ");
+                if (error != null) {
+                    Log.w(TAG, "Listen failed.", error);
+                    return;
+                }
+
+                if (value != null){
+                    loadMyEvents();
+                }
+            }
+        });
+
 
     }
 
@@ -344,11 +365,80 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadMyEvents () {
-        
+        DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
+        userRef.get().addOnCompleteListener(task -> {
+            DocumentSnapshot document = task.getResult();
+            if (document.exists()) {
+                myList = (List<DocumentReference>) document.get("myList");
+                Log.d(TAG, "loadMyEvents: " + myList + "update subscription next");
+            }
+            updateNotificationSubscription();
+        });
     }
 
     private void updateNotificationSubscription () {
+        if (myList != null) {
+            for (int i = 0; i < myList.size(); i++) {
+                Log.d("User list", "subscribe update started");
+                DocumentReference currentDocRef = myList.get(i);
+                currentDocRef.get().addOnCompleteListener(task -> {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
+                        Notifications notifications = new Notifications();
 
+                        List<DocumentReference> currentWaitlist = (List<DocumentReference>) document.get("waitlist");
+                        List<DocumentReference> currentPending = (List<DocumentReference>) document.get("pending");
+                        List<DocumentReference> currentAccepted = (List<DocumentReference>) document.get("accepted");
+                        List<DocumentReference> currentRejected = (List<DocumentReference>) document.get("rejected");
+
+                        if (currentWaitlist != null && currentWaitlist.contains(userRef)) {
+                            notifications.subscribeToTopic("Waitlist-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Pending-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Accepted-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Rejected-" + currentDocRef.getId());
+
+                            Log.d("User list", "User in waitlist.");
+
+                        } else if (currentPending != null && currentPending.contains(userRef)) {
+                            notifications.subscribeToTopic("Pending-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Waitlist-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Accepted-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Rejected-" + currentDocRef.getId());
+
+                            Log.d("User list", "User in pending.");
+
+                        } else if (currentAccepted != null && currentAccepted.contains(userRef)) {
+                            notifications.subscribeToTopic("Accepted-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Waitlist-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Pending-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Rejected-" + currentDocRef.getId());
+
+                            Log.d("User list", "User in accepted.");
+
+                        } else if (currentRejected != null && currentRejected.contains(userRef)) {
+                            notifications.subscribeToTopic("Rejected-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Waitlist-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Pending-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Accepted-" + currentDocRef.getId());
+
+                            Log.d("User list", "User in rejected.");
+
+                        } else {
+                            notifications.unsubscribeFromTopic("Waitlist-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Pending-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Accepted-" + currentDocRef.getId());
+                            notifications.unsubscribeFromTopic("Rejected-" + currentDocRef.getId());
+
+                            Log.d("User list", "User not in any list");
+                        }
+                    }
+                });
+                Log.d("User list", "subscribe update ended");
+            }
+        } else {
+            Log.d("User list", "myList is null");
+        }
     }
 
     //private void listenToEventProfileChanges(String eventId) {
@@ -396,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
     //    //FirebaseMessaging messaging = FirebaseMessaging.getInstance();
     //    String topic = groupName + "-" + eventId;
 
-        // Determine which users to unsubscribe (in previousGroup but not in currentGroup)
+    // Determine which users to unsubscribe (in previousGroup but not in currentGroup)
     //    for (DocumentReference userRef : previousGroup) {
     //        if (!currentGroup.contains(userRef)) {
     //            notifications.unsubscribeFromTopic(topic);
@@ -405,7 +495,7 @@ public class MainActivity extends AppCompatActivity {
     //        }
     //    }
 
-        // Determine which users to subscribe (in currentGroup but not in previousGroup)
+    // Determine which users to subscribe (in currentGroup but not in previousGroup)
     //    for (DocumentReference userRef : currentGroup) {
     //        if (!previousGroup.contains(userRef)) {
     //            notifications.subscribeToTopic(topic);
@@ -415,4 +505,3 @@ public class MainActivity extends AppCompatActivity {
     //    }
     //}
 }
-
