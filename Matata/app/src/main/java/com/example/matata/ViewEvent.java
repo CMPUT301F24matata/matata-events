@@ -718,4 +718,32 @@ public class ViewEvent extends AppCompatActivity {
                 });
     }
 
+    private void notifyEvents () {
+        entrantRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                List<DocumentReference> allEvents = (List<DocumentReference>) documentSnapshot.get("myList");
+
+                for (DocumentReference currentEvent : allEvents) {
+                    currentEvent.get().addOnSuccessListener(currentDocument -> {
+                        Long updateCodeLong = currentDocument.getLong("updateCode");
+
+                        int updateCode = (updateCodeLong != null) ? updateCodeLong.intValue() : 0;
+                        updateCode++;
+
+                        currentEvent.update("updateCode", updateCode)
+                                .addOnSuccessListener(aVoid -> {
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("EventDraw", "Failed to update entrant", e);
+                                });
+                        Log.d("notify event", "notifyEvent: " + currentEvent.getId());
+                    }).addOnFailureListener(e -> {
+                        // Handle failure to get entrant document
+                        Log.e("ViewEvent", "Failed to get event document", e);
+                    });
+                }
+            }
+        }).addOnFailureListener(e -> Toast.makeText(ViewEvent.this, "Failed to notify event", Toast.LENGTH_SHORT).show());
+    }
+
 }
