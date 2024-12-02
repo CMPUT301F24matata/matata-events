@@ -67,7 +67,7 @@
 
                 <ImageView
                     android:backgroundTint="@color/white"
-                    android:foregroundTint="@color/white"
+
                     android:id="@+id/profileIcon"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
