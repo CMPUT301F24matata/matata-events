@@ -281,6 +281,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
+                android:background="@drawable/google_button_custom"
                 android:padding="10dp"
                 android:text="@string/pending"
                 android:textColor="@android:color/white"
