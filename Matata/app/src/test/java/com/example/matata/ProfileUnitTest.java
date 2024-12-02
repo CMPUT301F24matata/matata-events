@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.Before;
@@ -36,44 +37,47 @@ import org.robolectric.shadows.ShadowLooper;
 @Config(sdk = 28, manifest = Config.NONE)
 public class ProfileUnitTest {
 
-    /**
-     * Mock instance of ProfileActivity to simulate profile setup and testing.
-     */
-    private ProfileActivity mockprofile;
-
-    /**
-     * Controller to manage the lifecycle of the mock ProfileActivity.
-     */
-    private ActivityController<ProfileActivity> controller;
-
-    /**
-     * Tests the createImageFromString method by generating a bitmap
-     * from initials and checking if a valid URI is produced.
-     *
-     * @see ProfileActivity#createImageFromString(Context, String)
-     * Expected outcome: URI starts with "data:image/png;base64,".
-     */
     @Test
-    public void testGenerateInitialsBitmap() {
-        String initials = "TN";
+    public void testCreateImageFromString() {
         Context context = ApplicationProvider.getApplicationContext();
-        Uri generatedUri = mockprofile.createImageFromString(context, initials);
-        assertNotNull(generatedUri);
-        String uriString = generatedUri.toString();
-        assertTrue(uriString.startsWith("data:image/png;base64,"));
+        Uri uri = ProfileActivity.createImageFromString(context, "JD");
+
+        // Assert that the URI is not null
+        assertNotNull(uri);
+
+        // Assert that the URI contains base64 data
+        assertTrue(uri.toString().startsWith("data:image/png;base64,"));
     }
 
-    /**
-     * Tests loading a profile picture with a null URI to ensure no image is loaded
-     * if the URI is null.
-     *
-     * Expected outcome: profileIcon drawable should remain null.
-     */
     @Test
-    public void testLoadProfilePictureWithNullUri() {
-        Uri mockUri = null;
-        mockprofile.loadProfilePicture(String.valueOf(mockUri));
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
-        assertNull(mockprofile.profileIcon.getDrawable());
+    public void testLoadProfilePicture_ValidUri() {
+        ActivityScenario<ProfileActivity> scenario = ActivityScenario.launch(ProfileActivity.class);
+
+        scenario.onActivity(activity -> {
+            String testUri = "content://media/external/images/media/12345";
+            activity.loadProfilePicture(testUri);
+
+            // Assert that the profile icon has been updated
+            ImageView profileIcon = activity.findViewById(R.id.profileIcon);
+            assertNotNull(profileIcon.getDrawable());
+        });
     }
+
+    @Test
+    public void testLoadProfilePicture_NullUri() {
+        ActivityScenario<ProfileActivity> scenario = ActivityScenario.launch(ProfileActivity.class);
+
+        scenario.onActivity(activity -> {
+            EditText nameEditText = activity.findViewById(R.id.nameEditText);
+            nameEditText.setText("Test User");
+            assertEquals("Test User", nameEditText.getText().toString());
+            activity.loadProfilePicture(null);
+
+            // Assert that the profile icon has initials-based image
+            ImageView profileIcon = activity.findViewById(R.id.profileIcon);
+            assertNotNull(profileIcon.getDrawable());
+        });
+    }
+
+
 }

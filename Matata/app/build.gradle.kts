@@ -23,11 +23,15 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true // Enables code shrinking and obfuscation
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            isMinifyEnabled = false // Disable minification for debug builds
         }
     }
     compileOptions {
@@ -38,8 +42,26 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    sourceSets {
+        getByName("main") {
+            java {
+                srcDirs("src\\main\\java", "src\\main\\java\\com.example.matata",
+                    "src\\main\\java",
+                    "src\\main\\java\\com.example.matata\\TestClasses"
+                )
+            }
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            force("com.google.protobuf:protobuf-javalite:3.21.12")
+        }
+    }
+
 
 }
+
 
 dependencies {
 
@@ -47,14 +69,11 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.libraries.places:places:3.5.0")
 
-
-
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
 
-
-    implementation ("androidx.appcompat:appcompat:1.6.1")
-    implementation ("com.google.android.material:material:1.9.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    androidTestImplementation(platform("com.google.firebase:firebase-bom:32.7.1"))
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
@@ -66,19 +85,15 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.2.0")
+
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    androidTestImplementation("org.mockito:mockito-android:5.14.2")
-    testImplementation ("org.mockito:mockito-core:5.14.2")
 
-    implementation(platform("com.google.firebase:firebase-bom:32.0.0"))
-    implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.protobuf:protobuf-javalite:3.21.12")
-
     implementation ("jp.wasabeef:glide-transformations:4.3.0")
 
 //    implementation(files("C:/Users/chiro/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
@@ -104,10 +119,14 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.10.3")
 
     implementation ("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("com.google.protobuf:protobuf-javalite:3.21.12")
+    androidTestImplementation("com.google.protobuf:protobuf-javalite:3.21.12")
 
     implementation ("androidx.palette:palette:1.0.0")
-    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
-    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-firestore:24.10.1")
+    implementation("com.google.firebase:firebase-firestore:24.10.1") {
+        exclude(group= "com.google.protobuf", module= "protobuf-lite")
+    }
     implementation("com.google.android.gms:play-services-base:18.2.0")
     implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
     coreLibraryDesugaring("com.android.tools.desugar_jdk_libs:1.1.6")
@@ -121,4 +140,22 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-functions")
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Exclude protobuf-lite from test dependencies
+    androidTestImplementation("androidx.test:core:1.5.0") {
+        exclude(group= "com.google.protobuf", module= "protobuf-lite")
+    }
+
+    // Similarly, exclude from other test dependencies if needed
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1") {
+        exclude(group= "com.google.protobuf", module= "protobuf-lite")
+    }
+
+    // Explicitly include the correct version of protobuf-javalite for testing
+    androidTestImplementation("com.google.protobuf:protobuf-javalite:3.21.2")
+
+    // Ensure that Firestore is included in the test configuration
+    androidTestImplementation("com.google.firebase:firebase-firestore:24.10.1") {
+        exclude(group= "com.google.protobuf", module= "protobuf-lite")
+    }
 }

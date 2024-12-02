@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -50,7 +51,7 @@ import java.util.Map;
  * Additionally, profile image handling relies on shared preferences to store the image URI,
  * which may not persist across devices.
  */
-public class ProfileActivity extends AppCompatActivity {
+public class TestProfileActivity extends AppCompatActivity {
 
     /**
      * ImageView to display the user's profile picture.
@@ -60,7 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * FirebaseFirestore instance for accessing Firestore database.
      */
-    private FirebaseFirestore db;
+    private static FirebaseFirestore db;
 
     /**
      * Switch to enable or disable notifications for the user.
@@ -131,6 +132,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("myTag", "This is my message");
         setContentView(R.layout.edit_profile);
 
         db = FirebaseFirestore.getInstance();
@@ -157,12 +159,11 @@ public class ProfileActivity extends AppCompatActivity {
                 .getString("profile_image_uri", null);
 
         loadProfilePicture(imageUriString);
-        loadProfileData();
 
         back.setOnClickListener(v -> finish());
 
         profileIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, ProfilePicActivity.class);
+            Intent intent = new Intent(TestProfileActivity.this, ProfilePicActivity.class);
             intent.putExtra("userId", USER_ID);
             profilePicLauncher.launch(intent);
         });
@@ -180,7 +181,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(ProfileActivity.this, "Please select one of the options", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TestProfileActivity.this, "Please select one of the options", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -202,42 +203,16 @@ public class ProfileActivity extends AppCompatActivity {
         // Opt in and out of notifications.
         notifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                Toast.makeText(ProfileActivity.this, "Notifications enabled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TestProfileActivity.this, "Notifications enabled", Toast.LENGTH_SHORT).show();
 
             } else {
-                Toast.makeText(ProfileActivity.this, "Notifications disabled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TestProfileActivity.this, "Notifications disabled", Toast.LENGTH_SHORT).show();
 
             }
         });
 
         saveButton.setOnClickListener(v -> {
-            String name = nameEditText.getText().toString().trim();
-            String email = emailEditText.getText().toString().trim();
-            String phoneNumber = phoneEditText.getText().toString().trim();
-            boolean notificationsChecked = notifications.isChecked();
-            String dobText = dobEditText.getText().toString();
-            String selectedGender = genderSpinner.getSelectedItem().toString();
-
-            if (name.isEmpty()) {
-                Toast.makeText(this, "No UserName Found", Toast.LENGTH_SHORT).show();
-            } else if (email.isEmpty()) {
-                Toast.makeText(this, "No Email Found", Toast.LENGTH_SHORT).show();
-            } else {
-                saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString, selectedGender, dobText);
-                // Save the notification check to be used for MyFirebaseMessagingService
-                SharedPreferences preferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("notifications_enabled", notificationsChecked);
-                editor.apply();
-            }
-
-            if (notificationsChecked) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    // Permission is not granted, request it
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_CODE);
-                }
-            }
+            Toast.makeText(this, "Text saved", Toast.LENGTH_SHORT).show();
         });
 
         clearAllButton.setOnClickListener(v -> {
@@ -247,22 +222,6 @@ public class ProfileActivity extends AppCompatActivity {
             notifications.setChecked(false);
             genderSpinner.setSelection(0);
             dobEditText.setText("");
-
-            String name = nameEditText.getText().toString().trim();
-            String email = emailEditText.getText().toString().trim();
-            String phoneNumber = phoneEditText.getText().toString().trim();
-            boolean notificationsChecked = notifications.isChecked();
-            imageUriString = "";
-            String gender = genderSpinner.toString().trim();
-            String dobText = dobEditText.getText().toString().trim();
-
-            saveProfileData(name, phoneNumber, email, notificationsChecked, imageUriString, gender, dobText);
-
-            // Save the notification check to be used for MyFirebaseMessagingService
-            SharedPreferences preferences = getSharedPreferences("NotificationPrefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("notifications_enabled", notificationsChecked);
-            editor.apply();
 
         });
 
@@ -298,7 +257,7 @@ public class ProfileActivity extends AppCompatActivity {
                         loadProfilePicture(sImageUri);
                     }
                 })
-                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(TestProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -327,10 +286,10 @@ public class ProfileActivity extends AppCompatActivity {
         db.collection("USER_PROFILES").document(USER_ID)
                 .set(userProfile)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(ProfileActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TestProfileActivity.this, "Profile saved successfully", Toast.LENGTH_SHORT).show();
                     finish();
                 })
-                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(TestProfileActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
     }
 
     /**

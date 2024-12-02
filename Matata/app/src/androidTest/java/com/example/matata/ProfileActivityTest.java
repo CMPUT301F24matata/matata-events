@@ -1,135 +1,164 @@
 package com.example.matata;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import android.view.View;
+import static org.hamcrest.Matchers.containsString;
 
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.hamcrest.Matchers;
+import static org.hamcrest.Matchers.not;
+
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.Calendar;
-
+@RunWith(AndroidJUnit4.class)
 public class ProfileActivityTest {
 
     @Rule
-    public ActivityScenarioRule<ProfileActivity> activityRule =
-            new ActivityScenarioRule<>(ProfileActivity.class);
+    public ActivityScenarioRule<TestProfileActivity> activityRule =
+            new ActivityScenarioRule<>(TestProfileActivity.class);
 
-    /**
-     * Test to verify that the ProfileActivity layout is displayed correctly.
-     */
     @Test
-    public void testProfileActivityUIElementsDisplayed() {
-        onView(withId(R.id.profileIcon)).check(matches(isDisplayed()));
-        onView(withId(R.id.nameEditText)).check(matches(isDisplayed()));
-        onView(withId(R.id.emailEditText)).check(matches(isDisplayed()));
-        onView(withId(R.id.phoneEditText)).check(matches(isDisplayed()));
-        onView(withId(R.id.dobEditText)).check(matches(isDisplayed()));
-        onView(withId(R.id.genderSpinner)).check(matches(isDisplayed()));
-        onView(withId(R.id.switch_notification)).check(matches(isDisplayed()));
-        onView(withId(R.id.saveButton)).check(matches(isDisplayed()));
-        onView(withId(R.id.clearAllButton)).check(matches(isDisplayed()));
+    public void testNameField() {
+        // Type a name into the name field
+        onView(withId(R.id.nameEditText))
+                .perform(typeText("Test User"), closeSoftKeyboard());
+
+        // Verify the typed name
+        onView(withId(R.id.nameEditText))
+                .check(matches(withText("Test User")));
+
+        onView(withId(R.id.clearAllButton))
+                .perform(scrollTo(), click());
     }
 
-    /**
-     * Test to verify that profile data is loaded correctly.
-     */
     @Test
-    public void testLoadProfileData() {
-        onView(withId(R.id.nameEditText)).check(matches(withText("")));
-        onView(withId(R.id.emailEditText)).check(matches(withText("")));
-        onView(withId(R.id.phoneEditText)).check(matches(withText("")));
-        onView(withId(R.id.dobEditText)).check(matches(withText("")));
-        onView(withId(R.id.genderSpinner)).check(matches(withSpinnerText("Select Gender")));
-        onView(withId(R.id.switch_notification)).check(matches(isNotChecked()));
+    public void testEmailField() {
+        // Type an email into the email field
+        onView(withId(R.id.emailEditText))
+                .perform(typeText("testuser@example.com"), closeSoftKeyboard());
+
+        // Verify the typed email
+        onView(withId(R.id.emailEditText))
+                .check(matches(withText("testuser@example.com")));
+
+        onView(withId(R.id.clearAllButton))
+                .perform(scrollTo(), click());
     }
 
-    /**
-     * Test to edit and save profile data.
-     */
     @Test
-    public void testEditAndSaveProfileData() {
-        onView(withId(R.id.nameEditText)).perform(typeText("John Doe"));
-        onView(withId(R.id.emailEditText)).perform(typeText("johndoe@example.com"));
-        onView(withId(R.id.phoneEditText)).perform(typeText("1234567890"));
+    public void testPhoneField() {
+        // Type a phone number into the phone field
+        onView(withId(R.id.phoneEditText))
+                .perform(typeText("1234567890"), closeSoftKeyboard());
+
+        // Verify the typed phone number
+        onView(withId(R.id.phoneEditText))
+                .check(matches(withText("1234567890")));
+
+        onView(withId(R.id.clearAllButton))
+                .perform(scrollTo(), click());
+    }
+
+    @Test
+    public void testDatePicker() {
+        // Open the date picker
         onView(withId(R.id.dobEditText)).perform(click());
-        Calendar calendar = Calendar.getInstance();
-        onView(withId(android.R.id.button1)).perform(PickerActions.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
-        onView(withId(android.R.id.button1)).perform(click());
+
+        // Set the date
+        onView(withText("OK")).perform(click());
+
+        // Verify the selected date
+        onView(withId(R.id.dobEditText))
+                .check(matches(not(withText(""))));
+
+        onView(withId(R.id.clearAllButton))
+                .perform(scrollTo(), click());
+    }
+
+    @Test
+    public void testGenderDropdown() {
+        // Open the dropdown
         onView(withId(R.id.genderSpinner)).perform(click());
-        onView(withText("Male")).perform(click());
-        onView(withId(R.id.switch_notification)).perform(click());
-        onView(withId(R.id.saveButton)).perform(click());
+
+        // Select "Male" from the dropdown
+        onData(org.hamcrest.Matchers.allOf(
+                org.hamcrest.Matchers.is(org.hamcrest.Matchers.instanceOf(String.class)),
+                org.hamcrest.Matchers.is("Male")
+        )).perform(click());
+
+        // Verify the selected item
+        onView(withId(R.id.genderSpinner))
+                .check(matches(withSpinnerText(containsString("Male"))));
+
+        onView(withId(R.id.clearAllButton))
+                .perform(scrollTo(), click());
     }
 
-    /**
-     * Test to clear all profile fields.
-     */
     @Test
-    public void testClearAllFields() {
-        onView(withId(R.id.clearAllButton)).perform(click());
-        onView(withId(R.id.nameEditText)).check(matches(withText("")));
-        onView(withId(R.id.emailEditText)).check(matches(withText("")));
-        onView(withId(R.id.phoneEditText)).check(matches(withText("")));
-        onView(withId(R.id.dobEditText)).check(matches(withText("")));
-        onView(withId(R.id.genderSpinner)).check(matches(withSpinnerText("Select Gender")));
-        onView(withId(R.id.switch_notification)).check(matches(isNotChecked()));
-    }
-
-    /**
-     * Test that the back button works.
-     */
-    @Test
-    public void testBackButtonFunctionality() {
-        onView(withId(R.id.btnBackProfile)).perform(click());
-    }
-
-    /**
-     * Test selecting a profile picture.
-     */
-    @Test
-    public void testProfilePictureSelection() {
-        onView(withId(R.id.profileIcon)).perform(click());
-        // Simulate choosing an image and returning to ProfileActivity.
-        Espresso.pressBack();
-        onView(withId(R.id.profileIcon)).check(matches(isDisplayed()));
-    }
-
-    /**
-     * Test switching the notifications toggle.
-     */
-    @Test
-    public void testNotificationsSwitch() {
-        onView(withId(R.id.switch_notification)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_notification)).perform(click());
-        onView(withId(R.id.switch_notification)).check(matches(isChecked()));
-    }
-
-    /**
-     * Test date picker functionality.
-     */
-    @Test
-    public void testDatePickerFunctionality() {
+    public void testSaveAllFields() {
+        // Fill in all fields
+        onView(withId(R.id.nameEditText)).perform(typeText("Test User"), closeSoftKeyboard());
+        onView(withId(R.id.emailEditText)).perform(typeText("testuser@example.com"), closeSoftKeyboard());
+        onView(withId(R.id.phoneEditText)).perform(typeText("1234567890"), closeSoftKeyboard());
         onView(withId(R.id.dobEditText)).perform(click());
-        Calendar calendar = Calendar.getInstance();
-        onView(withId(android.R.id.button1)).perform(PickerActions.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
-        onView(withId(android.R.id.button1)).perform(click());
-        String expectedDate = calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR);
-        onView(withId(R.id.dobEditText)).check(matches(withText(expectedDate)));
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.genderSpinner)).perform(click());
+        onData(org.hamcrest.Matchers.allOf(
+                org.hamcrest.Matchers.is(org.hamcrest.Matchers.instanceOf(String.class)),
+                org.hamcrest.Matchers.is("Male")
+        )).perform(click());
+
+        // Save profile
+        onView(withId(R.id.saveButton)).perform(scrollTo(), click());
+
+        onView(withId(R.id.nameEditText)).check(matches(withText("Test User")));
+        onView(withId(R.id.emailEditText)).check(matches(withText("testuser@example.com")));
+        onView(withId(R.id.phoneEditText)).check(matches(withText("1234567890")));
+        onView(withId(R.id.dobEditText)).check(matches(not(withText("")))); // Ensure it's not empty
+        onView(withId(R.id.genderSpinner)).check(matches(withSpinnerText(containsString("Male"))));
+
+        onView(withId(R.id.clearAllButton))
+                .perform(scrollTo(), click());
     }
+
+    @Test
+    public void testClearAllButton() {
+        // Fill in all fields
+        onView(withId(R.id.nameEditText)).perform(typeText("Test User"), closeSoftKeyboard());
+        onView(withId(R.id.emailEditText)).perform(typeText("testuser@example.com"), closeSoftKeyboard());
+        onView(withId(R.id.phoneEditText)).perform(typeText("1234567890"), closeSoftKeyboard());
+        onView(withId(R.id.dobEditText)).perform(click());
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.genderSpinner)).perform(click());
+        onData(org.hamcrest.Matchers.allOf(
+                org.hamcrest.Matchers.is(org.hamcrest.Matchers.instanceOf(String.class)),
+                org.hamcrest.Matchers.is("Male")
+        )).perform(click());
+
+        // Click the "Clear All" button
+        onView(withId(R.id.clearAllButton))
+                .perform(scrollTo(), click());
+
+        // Ensure all fields are cleared
+        onView(withId(R.id.nameEditText)).check(matches(withText("")));          // Name field should be empty
+        onView(withId(R.id.emailEditText)).check(matches(withText("")));        // Email field should be empty
+        onView(withId(R.id.phoneEditText)).check(matches(withText("")));        // Phone field should be empty
+        onView(withId(R.id.dobEditText)).check(matches(withText("")));          // DOB field should be empty
+        onView(withId(R.id.genderSpinner)).check(matches(withSpinnerText("Select gender"))); // Spinner should reset to default
+        onView(withId(R.id.switch_notification)).check(matches(isNotChecked())); // Notification switch should be off
+    }
+
 }

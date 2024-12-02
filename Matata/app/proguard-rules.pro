@@ -19,3 +19,20 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# Keep all gRPC-related classes
+-keep class io.grpc.** { *; }
+# Keep Firebase Firestore classes
+-keep class com.google.firebase.firestore.** { *; }
+-keep class com.google.firestore.v1.** { *; }
+-keep class com.google.protobuf.** { *; }
+-keep class com.google.android.gms.** { *; }
+-keepattributes Signature
+-keepattributes *Annotation*
+# Firebase SDK general rules
+-keep class com.google.firebase.** { *; }
+-keepclassmembers class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**
+# Protobuf Lite
+-keep class com.google.protobuf.** { *; }
+-keep class com.google.type.** { *; }
+-dontwarn com.google.protobuf.**
