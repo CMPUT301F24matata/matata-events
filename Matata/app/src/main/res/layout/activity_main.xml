@@ -34,7 +34,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/sansation_bold"
                 android:text="@string/matata"
-                android:textColor="#F5F5DC"
+                android:textColor="#6383C5"
                 android:textSize="25sp" />
 
             <ImageView
@@ -193,14 +193,14 @@
             android:layout_margin="4dp"
             android:alpha="0.9"
             android:background="@drawable/custom_fab_layout"
-            android:backgroundTint="#282828"
+            android:backgroundTint="#405889"
             android:elevation="2dp"
             android:enabled="true"
             android:foreground="@drawable/baseline_qr_code_scanner_24"
             android:foregroundGravity="center"
             android:foregroundTint="#FFFFFF"
             android:scaleType="center"
-            android:tint="@color/black"
+            android:tint="#405889"
             android:translationZ="0dp"
             app:hoveredFocusedTranslationZ="4dp"
             app:useCompatPadding="false" />
