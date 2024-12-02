@@ -108,6 +108,7 @@ public class EventDrawTest {
                     assertTrue("Pending field should be empty", documentSnapshot.get("pending") == null);
                 }).addOnFailureListener(e -> assertFalse("Failed to retrieve document", true));
             }, 50);
+            
         });
     }
 
