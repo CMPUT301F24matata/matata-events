@@ -389,10 +389,14 @@ public class ViewEvent extends AppCompatActivity {
         builder.setPositiveButton("Accept", (dialog, which) -> {
             Intent intent = new Intent(ViewEvent.this, SignUpSheet.class);
             intent.putExtra("Unique_id", uid);
-            startActivity(intent);
-            waitlistBtn.setText("Accepted");
-            Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
-            addToAccepted();
+            signUpSheetLauncher.launch(intent);
+
+
+//            startActivity(intent);
+//            waitlistBtn.setText("Accepted");
+//            Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
+//            addToAccepted();
+
         });
 
         builder.setNegativeButton("Decline", (dialog, which) -> {
@@ -410,6 +414,20 @@ public class ViewEvent extends AppCompatActivity {
         dialog.show();
     }
 
+    private final ActivityResultLauncher<Intent> signUpSheetLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    // User completed the sign-up sheet
+                    addToAccepted();
+                    waitlistBtn.setText("Accepted");
+                    Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
+                } else {
+                    // User did not complete the sign-up sheet, keep previous state
+                    Toast.makeText(ViewEvent.this, "Sign-up not completed", Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
     /**
      * Adds the user to the rejected list in Firestore.
      */
