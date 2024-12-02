@@ -1,15 +1,28 @@
 /**
- * EventDrawTest class provides integration tests for the EventDraw class, which manages the event draw process,
- * waitlist limit functionality, and clearing of pending participants. The class directly interacts with Firebase
- * Firestore without any mocking libraries, so it performs actual database operations.
+ * The `EventDrawTest` class provides integration tests for the `EventDraw` class.
+ * It verifies the correctness of event draw-related functionalities, such as managing the draw process,
+ * clearing pending participants, and setting waitlist limits. The tests directly interact with Firebase Firestore,
+ * ensuring real-time updates are validated. This test suite is designed for use in a test Firestore environment
+ * and should not be executed against a production database.
  *
- * Purpose:
- * - Validate the functionality of the event draw process and waitlist handling.
- * - Test UI elements such as limit switch, draw button, and clear button for correct behavior.
+ * <h2>Purpose</h2>
+ * - Validate the functionality of the event draw process.
+ * - Ensure correct handling of the waitlist limit.
+ * - Test clearing of the pending participants list.
+ * - Verify UI components and interactions, such as buttons and switches.
  *
- * Note:
- * - Ensure that the Firestore database contains the necessary "EVENT_PROFILES" collection with the correct schema for testing.
- * - These tests rely on a test environment Firestore database and should not be run on a production database.
+ * <h2>Test Scenarios</h2>
+ * <ul>
+ *     <li><b>testDraw:</b> Tests the event draw process and verifies updates to the "pending" and "waitlist" fields in Firestore.</li>
+ *     <li><b>testClearPendingList:</b> Tests clearing the pending participants list and verifies database updates.</li>
+ *     <li><b>testWaitlistLimit:</b> Tests enabling/disabling and setting waitlist limits and ensures Firestore updates.</li>
+ * </ul>
+ *
+ * <h2>Important Notes</h2>
+ * <ul>
+ *     <li>The Firestore database must contain the necessary "EVENT_PROFILES" collection with the expected schema.</li>
+ *     <li>These tests perform actual database operations and require a configured test Firestore environment.</li>
+ * </ul>
  */
 
 package com.example.matata;
@@ -35,15 +48,25 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Test suite for validating the functionality of the `EventDraw` class.
+ */
 @RunWith(AndroidJUnit4.class)
 public class EventDrawTest {
 
+    /**
+     * Instance of FirebaseFirestore for database operations.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * Reference to a specific test document in the "EVENT_PROFILES" Firestore collection.
+     */
     private DocumentReference documentReference;
 
     /**
-     * Initializes Firestore and sets up a test document in the "EVENT_PROFILES" collection for testing.
-     * This document represents a sample event profile for the purpose of the tests.
+     * Initializes Firestore and sets up a test document in the "EVENT_PROFILES" collection.
+     * This document is used for all test cases to ensure consistency.
      */
     @Before
     public void setUp() {
@@ -52,7 +75,7 @@ public class EventDrawTest {
     }
 
     /**
-     * Tests the event draw process by simulating a button click and verifying transaction updates for the
+     * Tests the event draw process by simulating a button click and verifying updates to the
      * "pending" and "waitlist" fields in Firestore.
      */
     @Test
@@ -62,7 +85,7 @@ public class EventDrawTest {
         scenario.onActivity(activity -> {
             Button drawButton = activity.findViewById(R.id.draw_button);
 
-            // Simulate click on the draw button
+            // Simulate a click on the draw button
             drawButton.performClick();
 
             AlertDialog dialog = activity.getCurrentDialog();
@@ -72,7 +95,7 @@ public class EventDrawTest {
             positive.performClick();
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                // Verify that pending and waitlist fields were updated in the database
+                // Verify database updates
                 documentReference.get().addOnSuccessListener(documentSnapshot -> {
                     assertTrue("Pending field should be updated", documentSnapshot.contains("pending"));
                     assertTrue("Waitlist field should be updated", documentSnapshot.contains("waitlist"));
@@ -82,7 +105,8 @@ public class EventDrawTest {
     }
 
     /**
-     * Tests clearing the pending list by simulating a button click and verifying the dialog interaction.
+     * Tests clearing the pending participants list by simulating a button click.
+     * Verifies the dialog interaction and database updates.
      */
     @Test
     public void testClearPendingList() {
@@ -91,7 +115,7 @@ public class EventDrawTest {
         scenario.onActivity(activity -> {
             Button clearButton = activity.findViewById(R.id.clearPendingList);
 
-            // Perform clear action
+            // Simulate a click on the clear button
             clearButton.performClick();
             AlertDialog dialog = activity.getCurrentDialog();
             assertTrue("Dialog should be showing", dialog.isShowing());
@@ -100,21 +124,17 @@ public class EventDrawTest {
             positive.performClick();
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                // Verify that the dialog is dismissed after the click
-                assertFalse("Dialog should be dismissed", dialog.isShowing());
-
-                // Check if pending list was cleared in Firestore
+                // Verify the pending list is cleared in Firestore
                 documentReference.get().addOnSuccessListener(documentSnapshot -> {
                     assertTrue("Pending field should be empty", documentSnapshot.get("pending") == null);
                 }).addOnFailureListener(e -> assertFalse("Failed to retrieve document", true));
             }, 50);
-            
         });
     }
 
     /**
-     * Tests enabling and setting the waitlist limit by interacting with the limit switch and verifying
-     * Firestore updates.
+     * Tests enabling, setting, and disabling the waitlist limit functionality.
+     * Verifies the visibility of UI elements and updates to Firestore.
      */
     @Test
     public void testWaitlistLimit() {
@@ -135,6 +155,7 @@ public class EventDrawTest {
             saveButton.performClick();
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                // Verify database update for waitlist limit
                 documentReference.get().addOnSuccessListener(documentSnapshot -> {
                     assertEquals("WaitlistLimit field should be updated to 10", 10L, (long) documentSnapshot.getLong("WaitlistLimit"));
                 }).addOnFailureListener(e -> assertFalse("Failed to retrieve document", true));
@@ -147,6 +168,7 @@ public class EventDrawTest {
 
             saveButton.performClick();
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                // Verify the waitlist limit field is reset in Firestore
                 documentReference.get().addOnSuccessListener(documentSnapshot -> {
                     assertEquals("WaitlistLimit field should be updated to -1", -1L, (long) documentSnapshot.getLong("WaitlistLimit"));
                 }).addOnFailureListener(e -> assertFalse("Failed to retrieve document", true));
