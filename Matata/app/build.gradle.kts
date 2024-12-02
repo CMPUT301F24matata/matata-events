@@ -73,6 +73,7 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
 
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    testImplementation(libs.ext.junit)
     androidTestImplementation(platform("com.google.firebase:firebase-bom:32.7.1"))
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
