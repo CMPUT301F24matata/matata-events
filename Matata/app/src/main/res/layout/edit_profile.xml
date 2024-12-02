@@ -57,7 +57,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="@drawable/bg_matat_app">
+            android:background="@drawable/new_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -66,6 +66,8 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:backgroundTint="@color/white"
+                    android:foregroundTint="@color/white"
                     android:id="@+id/profileIcon"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
@@ -73,7 +75,8 @@
                     android:layout_marginTop="16dp"
                     android:src="@drawable/ic_user_profile"
                     android:contentDescription="@string/profile_picture"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    app:tint="@color/white" />
 
                 <TextView
                     android:id="@+id/initials"
@@ -115,7 +118,8 @@
                     android:padding="12dp"
                     android:textColor="@color/black"
                     android:onClick="clearTextOnClick"
-                    android:textColorHint="#CCCCCC"/>
+                    android:textColorHint="#CCCCCC"
+                    tools:ignore="OnClick" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -261,7 +265,7 @@
                     android:textAllCaps="false"
                     android:textStyle="bold"
                     android:letterSpacing="0.05"
-                    android:backgroundTint="#4A90E2"
+                    android:backgroundTint="#4B69A4"
                     android:fontFamily="@font/sansation_regular"
                     android:elevation="6dp"
                     android:outlineProvider="background" />
@@ -277,7 +281,7 @@
                     android:textAllCaps="false"
                     android:textStyle="bold"
                     android:letterSpacing="0.05"
-                    android:backgroundTint="#FF5252"
+                    android:backgroundTint="#9D4B4B"
                     android:fontFamily="@font/sansation_regular"
                     android:elevation="6dp"
                     android:outlineProvider="background" />
