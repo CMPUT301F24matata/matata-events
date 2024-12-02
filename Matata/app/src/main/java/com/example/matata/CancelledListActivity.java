@@ -10,11 +10,32 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+/**
+ * The {@code CancelledListActivity} class is responsible for displaying a list of entrants
+ * whose participation has been cancelled, either due to being rejected or removed from the pending list.
+ *
+ * <p>This activity combines two separate lists passed via an {@code Intent}—one for cleared pending entrants
+ * and another for rejected entrants—into a single list and displays it using a {@link RecyclerView}.
+ * If the combined list is empty, a message is shown to the user indicating no entrants are available to display.
+ */
 public class CancelledListActivity extends AppCompatActivity {
 
+    /**
+     * RecyclerView for displaying the list of cancelled entrants.
+     */
     private RecyclerView recyclerView;
+
+    /**
+     * Adapter for populating the {@link RecyclerView} with entrant data.
+     */
     private EntrantAdapter entrantAdapter;
 
+    /**
+     * Called when the activity is created. Initializes the views, retrieves entrant lists from the intent,
+     * combines them, and sets up the RecyclerView to display the combined list.
+     *
+     * @param savedInstanceState The saved state of the activity, if any.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

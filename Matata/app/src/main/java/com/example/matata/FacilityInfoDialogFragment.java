@@ -14,9 +14,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 /**
- * FacilityInfoDialogFragment displays facility information in a dialog fragment.
- * It provides details such as name, address, capacity, contact, email, owner,
- * and notifications status.
+ * {@code FacilityInfoDialogFragment} is a dialog fragment that displays detailed information
+ * about a facility. This includes details such as the facility name, address, capacity,
+ * contact information, email, owner, and whether notifications are enabled.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Displays facility details in a user-friendly dialog layout.</li>
+ *     <li>Allows users to review facility information in a non-editable format.</li>
+ *     <li>Supports dismissal of the dialog by clicking outside or using a confirmation button.</li>
+ * </ul>
  */
 public class FacilityInfoDialogFragment extends DialogFragment {
 

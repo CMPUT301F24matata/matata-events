@@ -76,8 +76,6 @@ public class ProfileActivityTest {
     public void testDatePicker() {
         // Open the date picker
         onView(withId(R.id.dobEditText)).perform(click());
-
-        // Set the date
         onView(withText("OK")).perform(click());
 
         // Verify the selected date

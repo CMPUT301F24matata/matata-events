@@ -24,19 +24,87 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.ByteArrayOutputStream;
 
 /**
- * TestFacilityActivity is a stripped-down version of FacilityActivity for UI testing.
- * It includes basic UI interactions without dependencies on Firebase or external libraries.
+ * The `TestFacilityActivity` class provides a stripped-down version of the `FacilityActivity` for UI testing purposes.
+ * It focuses on testing basic UI interactions, such as editing, saving, clearing, and selecting a profile picture.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Edit and save facility details, such as name, address, capacity, contact, email, and owner.</li>
+ *     <li>Toggle notification settings for the facility.</li>
+ *     <li>Select a profile picture from the gallery or generate a default image based on initials.</li>
+ *     <li>Clear all fields to reset the form.</li>
+ * </ul>
  */
 public class TestFacilityActivity extends AppCompatActivity {
 
-    private EditText facilityName, facilityAddress, facilityCapacity, facilityContact, facilityEmail, facilityOwner;
+    /**
+     * EditText for entering the facility name.
+     */
+    private EditText facilityName;
+
+    /**
+     * EditText for entering the facility address.
+     */
+    private EditText facilityAddress;
+
+    /**
+     * EditText for entering the facility capacity.
+     */
+    private EditText facilityCapacity;
+
+    /**
+     * EditText for entering the facility contact information.
+     */
+    private EditText facilityContact;
+
+    /**
+     * EditText for entering the facility email address.
+     */
+    private EditText facilityEmail;
+
+    /**
+     * EditText for entering the facility owner's name.
+     */
+    private EditText facilityOwner;
+
+    /**
+     * Switch for enabling or disabling notifications for the facility.
+     */
     private Switch switchNotification;
+
+    /**
+     * String representing the URI of the selected profile picture.
+     */
     private String imageUriString;
+
+    /**
+     * String representing the unique ID of the user.
+     */
     private String USER_ID = "";
+
+    /**
+     * ImageView for displaying the facility's profile picture.
+     */
     private ImageView profileIcon;
-    private Button saveButton, clearAllButton;
+
+    /**
+     * Button for saving facility data.
+     */
+    private Button saveButton;
+
+    /**
+     * Button for clearing all entered data in the form.
+     */
+    private Button clearAllButton;
+
+    /**
+     * ImageView for handling the back button functionality.
+     */
     private ImageView btnBackProfile;
 
+    /**
+     * ActivityResultLauncher for handling the result of the profile picture selection.
+     */
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -45,6 +113,11 @@ public class TestFacilityActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * Called when the activity is created. Sets up the UI components, initializes fields, and handles button interactions.
+     *
+     * @param savedInstanceState The activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +177,11 @@ public class TestFacilityActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Loads the facility's profile picture. If no picture is provided, generates a default image based on initials.
+     *
+     * @param imageUriString URI of the selected profile picture.
+     */
     void loadFacilityPicture(String imageUriString) {
         if (imageUriString != null && !imageUriString.isEmpty()) {
             // Placeholder for real image loading logic
@@ -126,6 +204,13 @@ public class TestFacilityActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Generates a circular image containing the provided initials.
+     *
+     * @param context The application context.
+     * @param text    The initials to be displayed on the image.
+     * @return URI of the generated image.
+     */
     public static Uri createImageFromString(Context context, String text) {
         int width = 400, height = 400;
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);

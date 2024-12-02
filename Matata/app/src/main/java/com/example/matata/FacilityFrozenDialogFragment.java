@@ -17,9 +17,17 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * FacilityFrozenDialogFragment displays a dialog to notify the user that their facility is frozen.
- * The user is provided with an option to reset the facility's information.
- * This dialog integrates with Firebase Firestore to update facility data.
+ * The {@code FacilityFrozenDialogFragment} class represents a dialog that notifies users
+ * when their facility is frozen. This dialog provides an option to reset facility information
+ * and includes guidance for contacting administrators for further assistance.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Displays a notification when a facility is marked as frozen.</li>
+ *     <li>Provides a "Reset Facility" button to clear facility details.</li>
+ *     <li>Includes an "Exit" button for dismissing the dialog or navigating back.</li>
+ *     <li>Integrates with Firebase Firestore for updating facility data.</li>
+ * </ul>
  */
 public class FacilityFrozenDialogFragment extends DialogFragment {
 

@@ -21,9 +21,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * AdminReportActivity displays statistics and reports for events, users, and facilities.
- * It includes visual representations such as pie charts and textual data to summarize
- * various metrics in the application.
+ * The {@code AdminReportActivity} class provides an interface for administrators to view reports and statistics
+ * related to events, users, and facilities. It presents data visually through pie charts and textually through
+ * summarized metrics. The reports cover various aspects such as:
+ * - Event statistics: total events, active/inactive events, participant distribution.
+ * - User statistics: total users, user roles, and account statuses.
+ * - Facility statistics: total facilities, and active/frozen facilities.
+ *
+ * <p>This class fetches data from Firebase Firestore to populate its views and charts.
  */
 public class AdminReportActivity extends AppCompatActivity {
 

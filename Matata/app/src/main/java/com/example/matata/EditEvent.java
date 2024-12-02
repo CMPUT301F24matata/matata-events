@@ -43,11 +43,34 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * EditEvent activity allows users to edit details of an existing event.
- * It provides options to update event details, upload a new poster image,
- * and save changes to Firebase Firestore.
- * Implements {@link DatePickerListener} and {@link TimePickerListener} interfaces
- * for selecting event date and time.
+ * The {@code EditEvent} class provides functionality for editing an existing event in the application.
+ * It allows users to modify event details such as title, date, time, description, location, capacity, and poster image.
+ * The updated details are saved back to the Firebase Firestore database.
+ * <p>
+ * This activity implements {@link DatePickerListener} and {@link TimePickerListener} for selecting
+ * event date and time through dialog pickers.
+ * </p>
+ *
+ * <h2>Key Features:</h2>
+ * <ul>
+ *     <li>Load existing event details from Firestore.</li>
+ *     <li>Allow users to update event attributes including the poster image.</li>
+ *     <li>Save the updated details to Firestore and Firebase Storage.</li>
+ *     <li>Provide user-friendly UI with real-time feedback on actions.</li>
+ * </ul>
+ *
+ * <h2>Usage:</h2>
+ * <pre>
+ * Intent intent = new Intent(this, EditEvent.class);
+ * intent.putExtra("Unique_id", eventId);
+ * startActivity(intent);
+ * </pre>
+ *
+ * <h2>Limitations:</h2>
+ * <ul>
+ *     <li>Requires a valid internet connection to fetch and save event data.</li>
+ *     <li>No offline support for editing events.</li>
+ * </ul>
  */
 public class EditEvent extends AppCompatActivity implements DatePickerListener,TimePickerListener {
 
@@ -156,11 +179,6 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
     /**
      * Switch indicating if the event requires geolocation
      */
-
-
-
-
-
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch geoRequirement;
 
@@ -177,9 +195,6 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
 
         db = FirebaseFirestore.getInstance();
         ref = FirebaseStorage.getInstance("gs://matata-d53da.firebasestorage.app").getReference();
-
-
-
 
         initializeViews();
         headerText.setText("Edit Event");
@@ -235,7 +250,6 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         genrQR.setOnClickListener(view->updateEvent(event,intent,view));
 
         backBtn.setOnClickListener(v->finish());
-
 
     }
 
@@ -461,6 +475,5 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                     });
         }
     }
-
 
 }

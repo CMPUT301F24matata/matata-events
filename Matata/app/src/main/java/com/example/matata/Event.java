@@ -3,13 +3,46 @@ package com.example.matata;
 import java.io.Serializable;
 
 /**
- * Event class represents an event with details such as title, date, time, location,
- * description, capacity, event ID, organizer ID, and a waitlist limit. This class
- * implements Serializable to allow instances to be passed between activities.
+ * The {@code Event} class represents an event with various attributes such as title, date, time,
+ * location, description, capacity, unique identifiers for the event and its organizer, waitlist limit,
+ * and a geolocation requirement flag. This class implements {@link Serializable} to allow instances
+ * to be passed between activities in Android applications.
  *
- * Outstanding issues: Field names are inconsistent in capitalization (e.g., Eventid
- * and Organizerid) which could lead to confusion. Additionally, no validation is
- * provided for inputs (e.g., capacity cannot be negative).
+ * <h2>Key Features:</h2>
+ * <ul>
+ *     <li>Stores essential event details such as title, date, time, location, and description.</li>
+ *     <li>Includes unique identifiers for the event and the organizer for database integration.</li>
+ *     <li>Implements getter and setter methods for all fields, allowing for easy manipulation of event data.</li>
+ *     <li>Supports serialization for seamless transfer of event objects between Android activities.</li>
+ * </ul>
+ *
+ * <h2>Usage:</h2>
+ * <pre>
+ * // Creating an event object
+ * Event event = new Event(
+ *     "Music Concert",
+ *     "12/25/2024",
+ *     "19:00",
+ *     "Central Park",
+ *     "An evening of live music and entertainment.",
+ *     500,
+ *     "event123",
+ *     "organizer456",
+ *     50,
+ *     true
+ * );
+ *
+ * // Accessing event details
+ * String title = event.getTitle();
+ * int capacity = event.getCapacity();
+ * </pre>
+ *
+ * <h2>Limitations:</h2>
+ * <ul>
+ *     <li>No validation is enforced on fields, such as ensuring that capacity is non-negative.</li>
+ *     <li>Field names are inconsistently capitalized (e.g., {@code Eventid} and {@code Organizerid}).</li>
+ *     <li>The class does not include methods for formatting or displaying event details.</li>
+ * </ul>
  */
 public class Event implements Serializable {
 

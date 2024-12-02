@@ -31,13 +31,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * EventAdapter is a RecyclerView adapter that binds a list of Event objects to views displayed in a RecyclerView.
- * Each Event is represented in an item layout defined by event_card.xml. The adapter also supports dynamic
- * background color generation using image palettes and animations for a better user experience.
+ * {@code EventAdapter} is a {@link RecyclerView.Adapter} implementation that binds a list of {@link Event}
+ * objects to views displayed in a {@link RecyclerView}. This adapter supports dynamic image loading,
+ * background color generation using Glide and Palette, animations for a smooth user experience,
+ * and search filtering for event titles.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Binds {@code Event} objects to a custom item layout defined in {@code event_card.xml}.</li>
+ *     <li>Loads event poster images dynamically using Glide.</li>
+ *     <li>Implements animations to enhance the visual appearance of items as they appear in the RecyclerView.</li>
+ *     <li>Filters events based on a search query, updating the RecyclerView in real-time.</li>
+ *     <li>Handles user interactions, such as opening an event's detailed view when a card is clicked.</li>
+ * </ul>
+ *
+ * <h2>Usage:</h2>
+ * <pre>
+ * // Example setup for EventAdapter
+ * List&lt;Event&gt; events = getEventList();
+ * List&lt;String&gt; statuses = getStatuses();
+ * Map&lt;String, String&gt; posterUrls = getPosterUrls();
+ *
+ * EventAdapter adapter = new EventAdapter(context, events, statuses, posterUrls);
+ * recyclerView.setAdapter(adapter);
+ * </pre>
+ *
+ * <h2>Outstanding Issues:</h2>
+ * <ul>
+ *     <li>The background color of the card is static; dynamic background color generation using Palette is not fully implemented.</li>
+ *     <li>No caching mechanism for poster URLs is implemented; Glide handles caching internally.</li>
+ * </ul>
  */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
-
 
     /**
      * List of status strings representing the status of each event.

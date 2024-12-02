@@ -101,9 +101,9 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation ("jp.wasabeef:glide-transformations:4.3.0")
 
-//    implementation(files("C:/Users/chiro/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
+    implementation(files("C:/Users/chiro/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
 
-
+    testImplementation("org.hamcrest:hamcrest:2.2")
     implementation("com.google.zxing:core:3.5.3")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
 

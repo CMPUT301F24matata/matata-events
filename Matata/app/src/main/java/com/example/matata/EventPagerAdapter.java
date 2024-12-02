@@ -13,8 +13,29 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The `EventPagerAdapter` is an adapter for managing fragments in a ViewPager2.
- * Each fragment represents the details of a specific event.
+ * The {@code EventPagerAdapter} is an adapter for managing fragments in a {@link androidx.viewpager2.widget.ViewPager2}.
+ * Each fragment represents the details of a specific event, allowing users to swipe through events in a paginated format.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Binds a list of {@link Event} objects to fragments in the ViewPager2.</li>
+ *     <li>Fetches and displays event-specific poster images using a provided map of poster URLs.</li>
+ *     <li>Dynamically creates fragments for each event, ensuring smooth swiping between pages.</li>
+ * </ul>
+ *
+ * <h2>Usage:</h2>
+ * The adapter is used in conjunction with a ViewPager2 to display event details in a swipeable format. To set up:
+ * <pre>
+ * ViewPager2 viewPager = findViewById(R.id.viewPager);
+ * EventPagerAdapter adapter = new EventPagerAdapter(this, eventList, posterUrls);
+ * viewPager.setAdapter(adapter);
+ * </pre>
+ *
+ * <h2>Limitations:</h2>
+ * <ul>
+ *     <li>The adapter requires the {@link EventDetailsFragment} to properly display event details.</li>
+ *     <li>No caching or preloading of fragments is implemented; fragments are created on demand.</li>
+ * </ul>
  */
 public class EventPagerAdapter extends FragmentStateAdapter {
 

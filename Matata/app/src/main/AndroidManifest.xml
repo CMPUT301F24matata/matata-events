@@ -71,6 +71,9 @@
         <activity android:name=".TestProfilePicActivity"/>
         <activity android:name=".TestFacilityPicActivity"/>
         <activity android:name=".TestAddEventActivity"/>
+        <activity android:name=".TestViewEvent"/>
+        <activity android:name=".TestAdminView"/>
+        <activity android:name=".TestMainActivity"/>
         <activity android:name=".EventHistory" />
         <activity android:name=".EventDraw" />
         <activity

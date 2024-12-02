@@ -19,8 +19,33 @@ import com.bumptech.glide.Glide;
 import com.example.matata.R;
 
 /**
- * A fragment that displays details of an event, including its title, date, time, and poster image.
- * Clicking on the card opens the detailed event page.
+ * {@code EventDetailsFragment} is a {@link Fragment} that displays details of an event, including
+ * its title, date, time, and a poster image. The fragment provides a tappable card interface
+ * that allows users to navigate to the event's detailed page when clicked.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Displays the event's title, date, time, and poster image in a card layout.</li>
+ *     <li>Supports dynamic image loading for the event poster using Glide.</li>
+ *     <li>Includes a tappable card that opens the detailed view of the event when clicked.</li>
+ * </ul>
+ *
+ * <h2>Usage:</h2>
+ * <pre>
+ * EventDetailsFragment fragment = EventDetailsFragment.newInstance(
+ *         "Event Title", "2024-12-25", "19:00", "event123", "https://example.com/poster.jpg"
+ * );
+ * getSupportFragmentManager().beginTransaction()
+ *         .replace(R.id.fragment_container, fragment)
+ *         .commit();
+ * </pre>
+ *
+ * <h2>Outstanding Issues:</h2>
+ * <ul>
+ *     <li>The fragment assumes that the event details (e.g., title, date, time, and poster URL)
+ *         are passed correctly via the arguments. No validation is performed.</li>
+ *     <li>The default placeholder and error images for Glide are static. Consider making them configurable.</li>
+ * </ul>
  */
 public class EventDetailsFragment extends Fragment {
 

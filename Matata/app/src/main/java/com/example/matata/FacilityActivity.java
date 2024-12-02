@@ -34,10 +34,19 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * The FacilityActivity class allows users to view, edit, and save facility information,
- * such as name, address, capacity, contact, email, owner, and profile picture.
- * This activity interacts with Firebase Firestore to fetch and store facility data,
- * and uses Glide for image handling.
+ * The {@code FacilityActivity} class allows users to view, edit, and save information about facilities.
+ * This activity integrates with Firebase Firestore for data storage and retrieval, and uses Glide for
+ * profile image handling. Users can enter or modify details such as facility name, address, capacity,
+ * contact information, email, owner details, and profile picture. Additionally, it supports enabling
+ * or disabling notifications for the facility.
+ *
+ * <h2>Key Features:</h2>
+ * <ul>
+ *     <li>View and edit facility details stored in Firebase Firestore.</li>
+ *     <li>Upload and manage facility profile pictures.</li>
+ *     <li>Enable or disable notifications for the facility.</li>
+ *     <li>Handles frozen facility states with a dialog notification.</li>
+ * </ul>
  */
 public class FacilityActivity extends AppCompatActivity {
 
@@ -149,8 +158,6 @@ public class FacilityActivity extends AppCompatActivity {
         } else {
             USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         }
-
-
 
         facilityName = findViewById(R.id.facilityName);
         facilityAddress = findViewById(R.id.facilityAddress);
@@ -362,5 +369,4 @@ public class FacilityActivity extends AppCompatActivity {
         String base64String = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
         return Uri.parse("data:image/png;base64," + base64String);
     }
-
 }

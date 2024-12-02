@@ -28,6 +28,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * {@code EventHistoryFragment} is a fragment that displays a list of events created by the user in a {@link RecyclerView}.
+ * It retrieves event data from Firebase Firestore and dynamically updates the UI. The user can view all events they have
+ * organized, with event details such as title, date, time, and location displayed in the list.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Fetches event data from Firestore based on the user's ID.</li>
+ *     <li>Displays event details in a dynamically populated RecyclerView.</li>
+ *     <li>Maintains a map of event poster URLs for efficient image loading.</li>
+ *     <li>Filters events using a search bar (to be implemented).</li>
+ * </ul>
+ *
+ * <h2>Usage:</h2>
+ * This fragment is used in activities that require displaying a history of events organized by the user. To include this fragment:
+ * <pre>
+ * FragmentManager fragmentManager = getSupportFragmentManager();
+ * FragmentTransaction transaction = fragmentManager.beginTransaction();
+ * transaction.replace(R.id.container, new EventHistoryFragment());
+ * transaction.commit();
+ * </pre>
+ *
+ * <h2>Limitations:</h2>
+ * <ul>
+ *     <li>The search bar functionality is not implemented yet.</li>
+ *     <li>Error handling for Firestore operations is minimal.</li>
+ *     <li>No pagination is implemented, which might cause performance issues with a large dataset.</li>
+ * </ul>
+ */
 public class EventHistoryFragment extends Fragment {
 
     private String uid;
@@ -100,13 +129,6 @@ public class EventHistoryFragment extends Fragment {
 
         return view;
     }
-
-    /**
-     * Fetches event data from Firestore and initializes the RecyclerView with the retrieved events.
-     * This method listens for changes in the Firestore database and updates the UI dynamically.
-     */
-
-
 
     /**
      * Loads events created by the user from Firebase Firestore and populates the RecyclerView.

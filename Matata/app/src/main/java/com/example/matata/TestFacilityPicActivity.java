@@ -13,14 +13,33 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
- * TestFacilityPicActivity is a simplified version of FacilityPicActivity for UI testing.
- * It focuses on local functionality without Firebase or external dependencies.
+ * The `TestFacilityPicActivity` class is a simplified version of the `FacilityPicActivity`
+ * designed for UI testing purposes. It provides basic functionality for selecting, uploading,
+ * and deleting a facility profile picture, without Firebase or other external dependencies.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Load and display an existing profile picture from local storage.</li>
+ *     <li>Allow the user to select a new profile picture from the gallery.</li>
+ *     <li>Save the selected profile picture's URI in SharedPreferences for persistence.</li>
+ *     <li>Delete the profile picture and reset the display to a default placeholder.</li>
+ * </ul>
  */
 public class TestFacilityPicActivity extends AppCompatActivity {
 
+    /**
+     * ImageView for displaying the facility profile picture.
+     */
     private ImageView ivProfilePicture;
+
+    /**
+     * URI for storing the selected profile picture from the gallery.
+     */
     private Uri selectedImageUri;
 
+    /**
+     * Launcher for handling the result of the profile picture selection process.
+     */
     final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -34,6 +53,12 @@ public class TestFacilityPicActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * Called when the activity is created. Sets up UI components, loads the existing profile picture,
+     * and handles button interactions for uploading, deleting, and navigating back.
+     *
+     * @param savedInstanceState The activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +77,21 @@ public class TestFacilityPicActivity extends AppCompatActivity {
         btnDeletePicture.setOnClickListener(v -> deleteProfilePicture());
     }
 
+    /**
+     * Opens the image picker for the user to select a profile picture.
+     * The selected image is handled by the `pickImageLauncher`.
+     */
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         pickImageLauncher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 
+    /**
+     * Saves the URI of the selected profile picture to SharedPreferences.
+     *
+     * @param uri The URI of the selected profile picture.
+     */
     private void saveProfilePictureUri(Uri uri) {
         getSharedPreferences("FacilityPrefs", Context.MODE_PRIVATE)
                 .edit()
@@ -65,6 +99,10 @@ public class TestFacilityPicActivity extends AppCompatActivity {
                 .apply();
     }
 
+    /**
+     * Loads the profile picture from SharedPreferences and displays it in the `ImageView`.
+     * If no profile picture is saved, a default placeholder image is displayed.
+     */
     private void loadProfilePicture() {
         String imageUriString = getSharedPreferences("FacilityPrefs", Context.MODE_PRIVATE)
                 .getString("profile_image_uri", null);
@@ -76,6 +114,10 @@ public class TestFacilityPicActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Uploads the selected profile picture by saving its URI to SharedPreferences
+     * and displaying a success message. If no image is selected, a warning is shown.
+     */
     private void uploadProfilePicture() {
         if (selectedImageUri != null) {
             saveProfilePictureUri(selectedImageUri);
@@ -85,6 +127,10 @@ public class TestFacilityPicActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Deletes the profile picture by removing its URI from SharedPreferences, resetting
+     * the `ImageView` to a default placeholder, and displaying a success message.
+     */
     private void deleteProfilePicture() {
         ivProfilePicture.setImageResource(R.drawable.ic_upload);
         selectedImageUri = null;

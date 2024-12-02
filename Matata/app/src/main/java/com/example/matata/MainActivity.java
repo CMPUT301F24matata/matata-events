@@ -50,15 +50,32 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * MainActivity serves as the central hub for the Matata app. It provides navigation to key features, such as:
- * - User profiles
- * - Event creation
- * - Event exploration
- * - Event history
- * - Admin and facility-specific sections
+ * The {@code MainActivity} class serves as the central hub for the Matata app, managing navigation between features,
+ * such as user profiles, event creation, event history, and administrative sections.
  *
- * The activity dynamically initializes user profiles in Firestore if they don't exist and adapts UI
- * based on the user's role (admin or entrant).
+ * <h2>Key Features:</h2>
+ * <ul>
+ *     <li>Dynamic initialization of user profiles in Firebase Firestore.</li>
+ *     <li>Role-based UI adaptation for admins and entrants.</li>
+ *     <li>Navigation to key features, such as QR scanning, event history, and facility profiles.</li>
+ *     <li>Support for real-time updates and push notifications.</li>
+ * </ul>
+ *
+ * <h2>Class Responsibilities:</h2>
+ * <ul>
+ *     <li>Checks and creates user profiles if not already present in Firestore.</li>
+ *     <li>Handles role-based customization for admin and entrant users.</li>
+ *     <li>Subscribes and unsubscribes users from relevant Firebase Cloud Messaging (FCM) topics.</li>
+ *     <li>Loads and listens for event data changes dynamically.</li>
+ * </ul>
+ *
+ * <h2>Dependencies:</h2>
+ * This class requires:
+ * <ul>
+ *     <li>Firebase Firestore for user and event data storage.</li>
+ *     <li>Firebase Messaging for push notifications.</li>
+ *     <li>UI components defined in {@code activity_main.xml}.</li>
+ * </ul>
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -137,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     private List<DocumentReference> myList;
 
     /**
-     * Called when the activity is first created. Initializes the user profile in Firestore if necessary,
+     * Called when the activity is first created. Initializes user profiles in Firestore if necessary,
      * sets up UI components, handles notification permissions, and loads event data.
      *
      * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
@@ -326,20 +343,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, AdminView.class);
             startActivity(intent);
         });
-
-        // Fetch all event documents in EVENT_PROFILES
-//        db.collection("EVENT_PROFILES")
-//                .get()
-//                .addOnSuccessListener(queryDocumentSnapshots -> {
-//                    Log.d("realTimeListener", "Fetched " + queryDocumentSnapshots.size() + " event profiles");
-//                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-//                        String eventId = document.getId();
-//                        listenToEventProfileChanges(eventId);
-//                    }
-//
-//                })
-//                .addOnFailureListener(e -> Log.e("MainActivity", "Failed to fetch event profiles", e));
-
     }
 
 
@@ -443,68 +446,4 @@ public class MainActivity extends AppCompatActivity {
             Log.d("User list", "myList is null");
         }
     }
-
-    //private void listenToEventProfileChanges(String eventId) {
-    //    DocumentReference eventDocRef = db.collection("EVENT_PROFILES").document(eventId);
-
-    //    eventDocRef.addSnapshotListener((snapshot, error) -> {
-    //        if (error != null) {
-    //            Log.e("MainActivity", "Error listening to event profile changes", error);
-    //            return;
-    //        }
-
-    //        if (snapshot != null && snapshot.exists()) {
-    //            Map<String, Object> data = snapshot.getData();
-    //            if (data != null) {
-    //                // Extract current state of groups
-    //                List<DocumentReference> currentWaitlist = (List<DocumentReference>) snapshot.get("waitlist");
-    //                List<DocumentReference> currentPending = (List<DocumentReference>) snapshot.get("pending");
-    //                List<DocumentReference> currentAccepted = (List<DocumentReference>) snapshot.get("accepted");
-    //                List<DocumentReference> currentRejected = (List<DocumentReference>) snapshot.get("rejected");
-    //                Log.d("listenToEventProfileChanges", eventId + " Event data changed " + currentPending);
-
-    //                // Initialize or fetch previous states
-    //                Map<String, List<DocumentReference>> previousEventState = previousStates.computeIfAbsent(eventId, k -> new HashMap<>());
-
-    //                processGroupChanges(eventId, "Waitlist", previousEventState.get("Waitlist"), currentWaitlist);
-    //                processGroupChanges(eventId, "Pending", previousEventState.get("Pending"), currentPending);
-    //                processGroupChanges(eventId, "Accepted", previousEventState.get("Accepted"), currentAccepted);
-    //                processGroupChanges(eventId, "Rejected", previousEventState.get("Rejected"), currentRejected);
-
-    //                // Update the previous state with the current state
-    /*                previousEventState.put("Waitlist", currentWaitlist);
-                    previousEventState.put("Pending", currentPending);
-                    previousEventState.put("Accepted", currentAccepted);
-                    previousEventState.put("Rejected", currentRejected);
-                }
-            }
-        });
-    } */
-
-    //private void processGroupChanges(String eventId, String groupName, List<DocumentReference> previousGroup, List<DocumentReference> currentGroup) {
-    //    if (currentGroup == null) currentGroup = new ArrayList<>();
-    //    if (previousGroup == null) previousGroup = new ArrayList<>();
-
-    //Notifications notifications = new Notifications();
-    //    //FirebaseMessaging messaging = FirebaseMessaging.getInstance();
-    //    String topic = groupName + "-" + eventId;
-
-    // Determine which users to unsubscribe (in previousGroup but not in currentGroup)
-    //    for (DocumentReference userRef : previousGroup) {
-    //        if (!currentGroup.contains(userRef)) {
-    //            notifications.unsubscribeFromTopic(topic);
-    //                    //.addOnSuccessListener(aVoid -> Log.d("MainActivity", "Unsubscribed from " + topic))
-    //                   //.addOnFailureListener(e -> Log.e("MainActivity", "Failed to unsubscribe from " + topic, e));
-    //        }
-    //    }
-
-    // Determine which users to subscribe (in currentGroup but not in previousGroup)
-    //    for (DocumentReference userRef : currentGroup) {
-    //        if (!previousGroup.contains(userRef)) {
-    //            notifications.subscribeToTopic(topic);
-    //                    //.addOnSuccessListener(aVoid -> Log.d("MainActivity", "Subscribed to " + topic))
-    //                    //.addOnFailureListener(e -> Log.e("MainActivity", "Failed to subscribe to " + topic, e));
-    //        }
-    //    }
-    //}
 }

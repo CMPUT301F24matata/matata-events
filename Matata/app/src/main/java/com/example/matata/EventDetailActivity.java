@@ -35,9 +35,37 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * EventDetailActivity displays the details of a selected event and allows users to join or withdraw
- * from the event's waitlist. Users can also view a list of cancelled entrants.
- * This activity interacts with Firebase Firestore for retrieving and updating event data.
+ * The {@code EventDetailActivity} class provides detailed information about a selected event
+ * and allows users to join or withdraw from the event's waitlist. Users can also view a list
+ * of cancelled entrants. This activity interacts with Firebase Firestore for retrieving and
+ * updating event-related data.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Displays event details including title, date, time, location, and description.</li>
+ *     <li>Provides functionality to join or withdraw from an event's waitlist.</li>
+ *     <li>Manages user subscriptions to Firebase Cloud Messaging (FCM) topics for notifications.</li>
+ *     <li>Fetches and displays a list of cancelled entrants for the event.</li>
+ * </ul>
+ *
+ * <h2>Usage:</h2>
+ * <pre>
+ * // Start EventDetailActivity with intent data
+ * Intent intent = new Intent(context, EventDetailActivity.class);
+ * intent.putExtra("title", "Sample Event");
+ * intent.putExtra("date", "2024-12-25");
+ * intent.putExtra("time", "19:00");
+ * intent.putExtra("location", "Central Park");
+ * intent.putExtra("description", "An evening of live music.");
+ * context.startActivity(intent);
+ * </pre>
+ *
+ * <h2>Outstanding Issues:</h2>
+ * <ul>
+ *     <li>The class assumes that the {@code Event_id} is valid and already exists in Firestore.</li>
+ *     <li>No error handling for scenarios where the event or user profile data is missing or corrupted.</li>
+ *     <li>Limited customization of dialog messages and actions.</li>
+ * </ul>
  */
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -245,14 +273,7 @@ public class EventDetailActivity extends AppCompatActivity {
                 }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
             }
         });
-
-
-
     }
-
-
-
-
 
     /**
      * Subscribes the user to a specific topic.

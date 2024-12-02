@@ -35,14 +35,40 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Recycler_fragment is a fragment used to display a list of events in a RecyclerView.
- * It retrieves event data from Firebase Firestore and provides a search bar to filter events by their titles.
+ * The {@code EventHistory} class represents an activity that displays the user's event history.
+ * This activity interacts with Firebase Firestore to fetch and display details of past events.
+ * Users can navigate back to the main activity using the back button provided.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Displays a list of past events using a RecyclerView.</li>
+ *     <li>Fetches event details such as title, status, and poster image from Firebase Firestore.</li>
+ *     <li>Includes a search feature to filter events by title.</li>
+ *     <li>Allows users to navigate back to the main screen using a back button.</li>
+ * </ul>
+ *
+ * <h2>Implementation:</h2>
+ * <ul>
+ *     <li>Data is fetched from Firestore collections and displayed in a RecyclerView using an adapter.</li>
+ *     <li>The device ID is used to uniquely identify the user in the database.</li>
+ *     <li>The back button closes the activity and navigates back to the previous screen.</li>
+ * </ul>
+ *
+ * <h2>Limitations:</h2>
+ * <ul>
+ *     <li>No implementation for loading or displaying event details in the current version.</li>
+ *     <li>Search functionality is not yet implemented.</li>
+ *     <li>Error handling for Firestore interactions is minimal.</li>
+ * </ul>
+ *
+ * <h2>Usage:</h2>
+ * This activity can be launched from another activity using:
+ * <pre>
+ * Intent intent = new Intent(context, EventHistory.class);
+ * context.startActivity(intent);
+ * </pre>
  */
 public class EventHistory extends AppCompatActivity {
-
-    /**
-     * RecyclerView to display the event history.
-     */
 
     /**
      * Adapter for managing the display of events in the event history.
@@ -106,12 +132,5 @@ public class EventHistory extends AppCompatActivity {
                 finish();  // Closes EventDetailActivity and returns to MainActivity
             }
         });
-
-
-
     }
-
-
 }
-
-

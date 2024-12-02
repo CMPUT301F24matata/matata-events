@@ -24,18 +24,79 @@ import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
- * TestAddEventActivity is a simplified version of AddEvent for UI testing.
- * It focuses on testing input fields, QR generation, and UI interactions.
+ * The `TestAddEventActivity` class is a simplified version of an event creation activity.
+ * It is primarily designed for testing UI interactions such as form validation, QR code generation,
+ * image selection, and input management.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Input fields for event title, date, time, location, capacity, and description.</li>
+ *     <li>QR code generation for the event ID.</li>
+ *     <li>Image selection for uploading a poster.</li>
+ *     <li>Form validation to ensure all required fields are filled.</li>
+ *     <li>Clear button to reset all input fields.</li>
+ * </ul>
  */
 public class TestAddEventActivity extends AppCompatActivity {
 
-    private TextView eventDate, eventTime, location;
-    private EditText eventTitle, descriptionBox, capacityBox;
+    /**
+     * TextView for selecting the event date.
+     */
+    private TextView eventDate;
+
+    /**
+     * TextView for selecting the event time.
+     */
+    private TextView eventTime;
+
+    /**
+     * TextView for entering the event location.
+     */
+    private TextView location;
+
+    /**
+     * EditText for entering the event title.
+     */
+    private EditText eventTitle;
+
+    /**
+     * EditText for entering the event description.
+     */
+    private EditText descriptionBox;
+
+    /**
+     * EditText for entering the event capacity.
+     */
+    private EditText capacityBox;
+
+    /**
+     * ImageView for uploading and displaying the event poster.
+     */
     private ImageView posterImage;
+
+    /**
+     * Switch for enabling or disabling geolocation requirements for the event.
+     */
     private Switch geoRequirementSwitch;
-    private Button generateQRButton, clearAllButton;
+
+    /**
+     * Button for generating a QR code for the event.
+     */
+    private Button generateQRButton;
+
+    /**
+     * Button for clearing all input fields.
+     */
+    private Button clearAllButton;
+
+    /**
+     * Unique identifier for the event.
+     */
     private String eventId;
 
+    /**
+     * Launcher for handling image selection from the device's gallery.
+     */
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -48,6 +109,12 @@ public class TestAddEventActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * Called when the activity is created.
+     * Initializes all views, sets up click listeners, and generates a unique event ID.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +159,9 @@ public class TestAddEventActivity extends AppCompatActivity {
         datePicker.show(getSupportFragmentManager(), "datePicker");
     }
 
+    /**
+     * Initializes all views used in the activity.
+     */
     private void initializeViews() {
         eventDate = findViewById(R.id.editTextDate);
         eventTime = findViewById(R.id.editTextTime);
@@ -105,6 +175,11 @@ public class TestAddEventActivity extends AppCompatActivity {
         clearAllButton = findViewById(R.id.clearAllButton);
     }
 
+    /**
+     * Validates the user input to ensure that all required fields are filled.
+     *
+     * @return {@code true} if all required fields are filled; {@code false} otherwise.
+     */
     private boolean validateInputs() {
         return !eventTitle.getText().toString().isEmpty() &&
                 !descriptionBox.getText().toString().isEmpty() &&
@@ -113,6 +188,9 @@ public class TestAddEventActivity extends AppCompatActivity {
                 !capacityBox.getText().toString().isEmpty();
     }
 
+    /**
+     * Clears all input fields and resets the poster image to the default placeholder.
+     */
     private void clearFields() {
         eventTitle.setText("");
         descriptionBox.setText("");
@@ -124,12 +202,22 @@ public class TestAddEventActivity extends AppCompatActivity {
         Toast.makeText(this, "All Fields Cleared", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Opens the device's gallery to allow the user to select an image for the event poster.
+     */
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         pickImageLauncher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 
+    /**
+     * Generates a QR code bitmap for the given data using the {@link BarcodeEncoder}.
+     *
+     * @param data The data to encode in the QR code.
+     * @return A {@link Bitmap} representing the generated QR code.
+     * @throws RuntimeException If the QR code generation fails.
+     */
     private Bitmap generateQRBitmap(String data) {
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
@@ -139,6 +227,12 @@ public class TestAddEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Compresses the given bitmap into a Base64-encoded string.
+     *
+     * @param bitmap The bitmap to compress.
+     * @return A Base64-encoded string representing the compressed bitmap.
+     */
     public String compressBitmap(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);

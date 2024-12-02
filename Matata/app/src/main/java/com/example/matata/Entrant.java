@@ -1,12 +1,43 @@
 package com.example.matata;
 
 /**
- * Entrant class represents an individual entrant with personal information including
- * name, phone number, and email. This class provides constructors to initialize an entrant's
- * details, along with getters and setters for each field.
+ * The {@code Entrant} class represents an individual participant in an event or activity.
+ * It encapsulates the personal information of an entrant, including their name, phone number,
+ * and email address. This class provides constructors for initialization and includes
+ * getter and setter methods for accessing and modifying the entrant's details.
+ * <p>
+ * <h2>Key Features:</h2>
+ * <ul>
+ *     <li>Encapsulation of personal details (name, phone number, email).</li>
+ *     <li>Easy access and modification of entrant data through getters and setters.</li>
+ *     <li>Flexible construction to initialize entrant data upon creation.</li>
+ * </ul>
  *
- * Outstanding issues: This class does not include validation for name, phone number,
- * or email, so any class utilizing Entrant should ensure these fields are valid if necessary.
+ * <h2>Usage:</h2>
+ * <pre>
+ * // Create an entrant
+ * Entrant entrant = new Entrant("John Doe", "123-456-7890", "john.doe@example.com");
+ *
+ * // Access entrant details
+ * String name = entrant.getName();
+ * String phone = entrant.getPhoneNumber();
+ * String email = entrant.getEmail();
+ *
+ * // Modify entrant details
+ * entrant.setName("Jane Doe");
+ * entrant.setPhoneNumber("987-654-3210");
+ * entrant.setEmail("jane.doe@example.com");
+ * </pre>
+ *
+ * <h2>Limitations:</h2>
+ * <ul>
+ *     <li>No validation for the format of name, phone number, or email address.</li>
+ *     <li>It is recommended to implement validation logic in classes utilizing {@code Entrant}.</li>
+ * </ul>
+ *
+ * <h2>Thread Safety:</h2>
+ * This class is not thread-safe. If multiple threads access or modify instances of this class concurrently,
+ * external synchronization is required.
  */
 public class Entrant {
 

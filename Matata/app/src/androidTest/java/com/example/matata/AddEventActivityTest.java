@@ -9,9 +9,6 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-import static org.hamcrest.Matchers.not;
-
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -19,6 +16,28 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * The `AddEventActivityTest` class is an Espresso test suite designed to validate the functionality
+ * and user interface of the `TestAddEventActivity`. It includes tests for input fields, buttons,
+ * and interactions with time and date pickers.
+ *
+ * <h2>Features Tested:</h2>
+ * <ul>
+ *     <li>Initial UI state verification.</li>
+ *     <li>Input validation for event fields such as title, description, capacity, and location.</li>
+ *     <li>Button functionality for clearing fields and generating QR codes.</li>
+ *     <li>Interaction with date and time pickers.</li>
+ * </ul>
+ *
+ * <h2>Test Cases:</h2>
+ * <ul>
+ *     <li><b>testInitialUIState:</b> Verifies that input fields are empty upon activity launch.</li>
+ *     <li><b>testInputFields:</b> Ensures input fields accept and display user-entered data correctly.</li>
+ *     <li><b>testClearButton:</b> Validates that the "Clear All" button resets all fields to their default state.</li>
+ *     <li><b>testTimeAndDatePicker:</b> Tests the functionality of date and time pickers.</li>
+ *     <li><b>testGenerateQRButton:</b> Checks if the "Generate QR" button works when required fields are filled.</li>
+ * </ul>
+ */
 @RunWith(AndroidJUnit4.class)
 public class AddEventActivityTest {
 

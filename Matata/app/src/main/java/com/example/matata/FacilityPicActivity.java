@@ -20,10 +20,18 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * FacilityPicActivity allows the user to view, select, upload, and delete a profile picture.
- * It utilizes Firestore to save the image URI and SharedPreferences to persist it locally.
- * The activity includes options for handling the back button and notifying other activities
- * about profile picture changes.
+ * The {@code FacilityPicActivity} class provides functionality for users to view, select, upload, and delete
+ * a profile picture for their facility. It integrates with Firebase Firestore for storing profile picture URIs
+ * and uses SharedPreferences to locally persist the image URI for quick access. The activity also supports
+ * navigating back to the previous screen and handles profile picture changes dynamically.
+ *
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Display the current profile picture or a default placeholder image.</li>
+ *     <li>Select an image from the gallery as the facility profile picture.</li>
+ *     <li>Upload the selected profile picture to Firestore and save it locally.</li>
+ *     <li>Delete the current profile picture, reset it to a default image, and update Firestore.</li>
+ * </ul>
  */
 public class FacilityPicActivity extends AppCompatActivity {
 

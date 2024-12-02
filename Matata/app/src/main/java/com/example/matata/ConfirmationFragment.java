@@ -9,21 +9,42 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 /**
- * ConfirmationFragment class is a DialogFragment that provides a dialog prompt to the user,
- * asking if they want to discard their unsaved changes and go back. This dialog includes
- * "Yes" and "No" options. Selecting "Yes" will close the current activity, while "No" will
- * simply dismiss the dialog.
+ * The {@code ConfirmationFragment} class represents a confirmation dialog for the user.
+ * <p>
+ * This dialog is displayed when the user attempts to leave an activity without saving changes, specifically
+ * when working with event creation or modification screens. The dialog prompts the user with the following message:
+ * <blockquote>
+ * "Your event hasn't been saved yet. Are you sure you want to go back?"
+ * </blockquote>
+ * The dialog provides two options:
+ * <ul>
+ *     <li>Yes: Terminates the current activity, discarding any unsaved changes.</li>
+ *     <li>No: Dismisses the dialog and returns the user to the current screen.</li>
+ * </ul>
+ * <p>
+ * The dialog is useful for preventing accidental data loss due to navigation away from the current screen.
  *
- * Outstanding issues: This dialog only closes the activity on "Yes". Consider adding logic
- * to explicitly handle any unsaved data if required by the application's flow in the future.
+ * <h2>Potential Future Enhancements:</h2>
+ * <ul>
+ *     <li>Provide an option to save changes before leaving the activity.</li>
+ *     <li>Explicitly handle unsaved data and allow recovery after the user decides to leave.</li>
+ *     <li>Customize the dialog's message and behavior based on the context of the invoking activity.</li>
+ * </ul>
  */
 public class ConfirmationFragment extends DialogFragment {
 
     /**
-     * Creates and returns the dialog box to confirm the user's decision to discard unsaved changes.
+     * Called to create the dialog box for confirming the user's decision to leave without saving changes.
+     * <p>
+     * The dialog contains:
+     * <ul>
+     *     <li>A message: "Your event hasn't been saved yet. Are you sure you want to go back?"</li>
+     *     <li>A "Yes" button: Closes the current activity when clicked.</li>
+     *     <li>A "No" button: Dismisses the dialog without any action.</li>
+     * </ul>
      *
-     * @param savedInstanceState the saved instance state containing data about the dialog instance (if any)
-     * @return the AlertDialog created with "Yes" and "No" buttons for user confirmation
+     * @param savedInstanceState A {@link Bundle} containing the saved state of the dialog fragment, if any.
+     * @return An {@link AlertDialog} instance representing the confirmation dialog.
      */
     @NonNull
     @Override
@@ -33,10 +54,13 @@ public class ConfirmationFragment extends DialogFragment {
         dialogBuilder.setMessage("Your event hasn't been saved yet. Are you sure you want to go back?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     /**
-                     * Handles the "Yes" button click event, closing the activity when the button is pressed.
+                     * Handles the "Yes" button click event.
+                     * <p>
+                     * When the user selects "Yes," the current activity is terminated using {@link androidx.fragment.app.FragmentActivity#finish()}.
+                     * This discards any unsaved changes and navigates the user back to the previous screen.
                      *
-                     * @param dialogInterface the dialog interface
-                     * @param i the identifier of the button pressed
+                     * @param dialogInterface The interface for interacting with the dialog.
+                     * @param i An identifier for the button that was clicked.
                      */
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -45,10 +69,13 @@ public class ConfirmationFragment extends DialogFragment {
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     /**
-                     * Handles the "No" button click event, dismissing the dialog when the button is pressed.
+                     * Handles the "No" button click event.
+                     * <p>
+                     * When the user selects "No," the dialog is dismissed, allowing the user to remain on the current screen
+                     * and continue editing or interacting with the activity.
                      *
-                     * @param dialogInterface the dialog interface
-                     * @param i the identifier of the button pressed
+                     * @param dialogInterface The interface for interacting with the dialog.
+                     * @param i An identifier for the button that was clicked.
                      */
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

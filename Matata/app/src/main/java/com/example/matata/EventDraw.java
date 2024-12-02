@@ -47,10 +47,35 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
- * The `EventDraw` activity allows event organizers to manage a draw process for selecting participants
- * from a waitlist. The organizer can set a waitlist limit, randomly draw participants, and manage
- * accepted, rejected, and pending lists of entrants.
- * This activity interacts with Firebase Firestore to store and update event-related data.
+ * {@code EventDraw} is an activity designed for event organizers to manage the draw process
+ * for selecting participants from a waitlist. This activity provides the ability to:
+ * <ul>
+ *     <li>Set and manage a waitlist limit.</li>
+ *     <li>Randomly select participants from a waitlist based on available spots.</li>
+ *     <li>Organize participants into accepted, rejected, and pending categories.</li>
+ *     <li>Clear pending entrants and notify participants about updates.</li>
+ *     <li>Interact with Firebase Firestore for event-related data management.</li>
+ * </ul>
+ *
+ * <h2>Key Features:</h2>
+ * <ul>
+ *     <li>Real-time updates for waitlist and event capacity through Firestore listeners.</li>
+ *     <li>Flexible UI components including dropdown toggles and dynamic RecyclerViews for each list.</li>
+ *     <li>Integration with Firebase for updating event data and notifying participants.</li>
+ * </ul>
+ *
+ * <h2>Usage:</h2>
+ * <pre>
+ * Intent intent = new Intent(context, EventDraw.class);
+ * intent.putExtra("Unique_id", "event_id_123");
+ * context.startActivity(intent);
+ * </pre>
+ *
+ * <h2>Limitations:</h2>
+ * <ul>
+ *     <li>No validation for user inputs such as waitlist limit.</li>
+ *     <li>Limited error handling for database operations.</li>
+ * </ul>
  */
 public class EventDraw extends AppCompatActivity {
 
@@ -84,9 +109,6 @@ public class EventDraw extends AppCompatActivity {
      */
     private List<Entrant> rejectedList;
 
-
-
-
     /**
      * Adapter for displaying pending entrants.
      */
@@ -107,8 +129,6 @@ public class EventDraw extends AppCompatActivity {
      */
     private EntrantAdapter rejectedAdapter;
 
-
-
     /**
      * RecyclerView for displaying the waitlist.
      */
@@ -128,8 +148,6 @@ public class EventDraw extends AppCompatActivity {
      * RecyclerView for displaying rejected entrants.
      */
     private RecyclerView rejectedRecyclerView;
-
-
 
     /**
      * TextView showing the total number of entrants.
@@ -161,8 +179,6 @@ public class EventDraw extends AppCompatActivity {
      */
     private TextView waitlistSectionText;
 
-
-
     /**
      * LinearLayout for the accepted entrants section.
      */
@@ -182,8 +198,6 @@ public class EventDraw extends AppCompatActivity {
      * LinearLayout for the waitlist entrants section.
      */
     private LinearLayout waitlistLinearLayout;
-
-
 
     /**
      * Map linking each entrant to their status (e.g., accepted, rejected).
@@ -250,9 +264,6 @@ public class EventDraw extends AppCompatActivity {
      */
     private static String injectedUid;
 
-
-    //private List<Entrant> cancelledList;
-
     private Button sendNotificationBtn;
 
     /**
@@ -284,16 +295,12 @@ public class EventDraw extends AppCompatActivity {
         rejectedSectionText = findViewById(R.id.rejected_section_text);
         pendingSectionText = findViewById(R.id.pending_section_text);
         waitlistSectionText = findViewById(R.id.waiting_section_text);
-
-
         acceptedLinearLayout = findViewById(R.id.accepted_section);
         rejectedLinearLayout = findViewById(R.id.rejected_section);
         pendingLinearLayout = findViewById(R.id.pending_section);
         waitlistLinearLayout = findViewById(R.id.waitlist_section);
-
         drawBtn = findViewById(R.id.draw_button);
         ImageView backBtn = findViewById(R.id.go_back_draw_event);
-
         pendingRecyclerView = findViewById(R.id.pending_recyclerView);
         acceptedRecyclerView = findViewById(R.id.accepted_recyclerView);
         rejectedRecyclerView = findViewById(R.id.rejected_recyclerView);
@@ -319,9 +326,6 @@ public class EventDraw extends AppCompatActivity {
         acceptedRecyclerView.setAdapter(acceptedAdapter);
         acceptedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-        //cancelledList = new ArrayList<>();
-
         sendNotificationBtn = findViewById(R.id.button3);
 
         entrantMap = new LinkedHashMap<>();
@@ -333,16 +337,11 @@ public class EventDraw extends AppCompatActivity {
         backBtn.setOnClickListener(v -> finish());
 
         // Draw button opens a confirmation dialog
-        //drawBtn.setOnClickListener(view -> drawConfirmDialog());
         drawBtn.setOnClickListener(view -> checkDrawStatus());
 
         clearPendingList = findViewById(R.id.clearPendingList);
         clearPendingList.setOnClickListener(v -> {
             clearConfirmDialog();
-
-            // Track the current pending list as cancelled entrants
-            //cancelledList.addAll(selectedList);
-
 
             Log.d("Selected List", "Selected List Cleared");
             pendingAdapter.notifyDataSetChanged();
@@ -376,14 +375,7 @@ public class EventDraw extends AppCompatActivity {
         pendingSectionText.setOnClickListener(v->{ linearLayoutDropDown(pendingLinearLayout,pendingSectionText); });
         waitlistSectionText.setOnClickListener(v->{ linearLayoutDropDown(waitlistLinearLayout,waitlistSectionText); });
 
-        //loadEventData();
-
-        // Handle View Combined List button
         Button viewCombinedListButton = findViewById(R.id.view_combined_list_button);
-
-//        viewCombinedListButton.setOnClickListener(v -> {
-//            navigateToCancelledListActivity();
-//        });
 
         sendNotificationBtn.setOnClickListener(v -> {
             NotificationDialogFragment dialog = new NotificationDialogFragment();
@@ -413,20 +405,9 @@ public class EventDraw extends AppCompatActivity {
         });
     }
 
-//    private void navigateToCancelledListActivity() {
-//        // Check if both lists are empty
-//        if (cancelledList.isEmpty() && rejectedList.isEmpty()) {
-//            Toast.makeText(this, "No entrants to display in the Cancelled List.", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        // Pass the Cancelled and Rejected lists to the CancelledListActivity
-//        Intent intent = new Intent(EventDraw.this, CancelledListActivity.class);
-//        intent.putExtra("cancelledList", new ArrayList<>(cancelledList)); // Pass the cancelled list
-//        intent.putExtra("rejectedList", new ArrayList<>(rejectedList)); // Pass the rejected list
-//        startActivity(intent); // Start the CancelledListActivity
-//    }
-
+    /**
+     * Loads event data from Firestore and populates the UI.
+     */
     private void loadEventData () {
         db.collection("EVENT_PROFILES").document(uid).get()
                 .addOnCompleteListener(task -> {
@@ -758,6 +739,4 @@ public class EventDraw extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(EventDraw.this, "Failed to notify entrants", Toast.LENGTH_SHORT).show());
 
     }
-
-
 }

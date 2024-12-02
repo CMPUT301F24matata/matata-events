@@ -104,28 +104,4 @@ public class AddEventUnitTest {
         assertEquals(500, bitmap.getWidth());
         assertEquals(500, bitmap.getHeight());
     }
-
-//    /**
-//     * Tests that the correct time is displayed in the eventTime TextView after time selection.
-//     *
-//     * Expected outcome: The eventTime TextView should display the time as "10:30".
-//     */
-//    @Test
-//    public void testOnTimeSelected_SetsCorrectTime() {
-//        addEvent.eventTime = new TextView(ApplicationProvider.getApplicationContext());
-//        addEvent.onTimeSelected(10, 30);
-//        assertEquals("10:30", addEvent.eventTime.getText().toString());
-//    }
-
-//    /**
-//     * Tests that the correct date is displayed in the eventDate TextView after date selection.
-//     *
-//     * Expected outcome: The eventDate TextView should display the date as "08/12/2024".
-//     */
-//    @Test
-//    public void testOnDateSelected_SetsCorrectDate() {
-//        addEvent.eventDate = new TextView(ApplicationProvider.getApplicationContext());
-//        addEvent.onDateSelected(2024, 11, 8);
-//        assertEquals("08/12/2024", addEvent.eventDate.getText().toString());
-//    }
 }
