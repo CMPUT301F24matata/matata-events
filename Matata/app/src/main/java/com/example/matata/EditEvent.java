@@ -242,7 +242,7 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
     /**
      * Loads the details of the event being edited from Firestore and populates the input fields.
      */
-    public void loadDetails(){
+    public void loadDetails() {
         DocumentReference doc = db.collection("EVENT_PROFILES").document(EVENT_ID);
         doc.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
@@ -257,19 +257,18 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                 argbase64 = documentSnapshot.getString("bitmap");
                 try {
                     String ImageUri = documentSnapshot.getString("Poster");
-                    assert ImageUri != null;
-                    if (!ImageUri.isEmpty()) {
+                    if (ImageUri != null && !ImageUri.isEmpty()) {
                         Log.d("Image", "loadDetails: ImgaeUri = (" + ImageUri + ")");
                         Glide.with(this).load(ImageUri).into(posterPic);
-                    }
-                    else {
+                        posterURI = ImageUri; // Set the poster URI
+                        isDefaultImage = false; // Mark that a custom image is used
+                    } else {
                         Glide.with(this).load(R.drawable.ic_upload).into(posterPic);
+                        isDefaultImage = true; // Mark as default image
                     }
-                } catch(Exception e){
-                    throw e;
+                } catch (Exception e) {
+                    Log.e(TAG, "Error loading poster URI", e);
                 }
-
-                Bitmap QR = decodeBase64toBmp(argbase64);
 
                 eveTitle.setText(Title != null ? Title : "");
                 capacity.setText(String.valueOf(Capacity));
@@ -408,13 +407,37 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         updates.put("Location", location.getText().toString());
         updates.put("GeoRequirement", geoRequirement.isChecked());
 
-        if (!isDefaultImage) {
+        Log.d(TAG, "Initial posterURI: " + posterURI);
+        Log.d(TAG, "isDefaultImage: " + isDefaultImage);
+
+        if (isDefaultImage) {
+            if (posterURI != null && !posterURI.isEmpty()) {
+                updates.put("Poster", posterURI); // Retain existing poster URI
+                Log.d(TAG, "Using existing poster URI: " + posterURI);
+            } else {
+                updates.put("Poster", ""); // Handle empty or missing posterURI
+                Log.d(TAG, "Default poster URI is empty");
+            }
+            docRef.update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
+                        Intent intentHome = new Intent(EditEvent.this, MainActivity.class);
+                        startActivity(intentHome);
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error updating event in Firestore", e);
+                        Toast.makeText(EditEvent.this, "Event Update Error", Toast.LENGTH_SHORT).show();
+                    });
+        } else {
             posterRef.putFile(global_Uri)
                     .addOnSuccessListener(taskSnapshot -> {
                         posterRef.getDownloadUrl()
                                 .addOnSuccessListener(uri -> {
                                     String downloadUrl = uri.toString();
                                     updates.put("Poster", downloadUrl);
+                                    Log.d(TAG, "Uploaded poster URI: " + downloadUrl);
+
                                     docRef.update(updates)
                                             .addOnSuccessListener(aVoid -> {
                                                 Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
@@ -435,19 +458,6 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Error uploading poster", e);
                         Toast.makeText(EditEvent.this, "Poster upload failed", Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            updates.put("Poster", posterURI);
-            docRef.update(updates)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
-                        Intent intentHome = new Intent(EditEvent.this, MainActivity.class);
-                        startActivity(intentHome);
-                        finish();
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "Error updating event in Firestore", e);
-                        Toast.makeText(EditEvent.this, "Event Update Error", Toast.LENGTH_SHORT).show();
                     });
         }
     }

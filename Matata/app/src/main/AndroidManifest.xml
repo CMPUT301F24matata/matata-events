@@ -67,6 +67,10 @@
             android:exported="false" />
         <activity android:name=".AdminReportActivity"/>
         <activity android:name=".TestProfileActivity"/>
+        <activity android:name=".TestFacilityActivity"/>
+        <activity android:name=".TestProfilePicActivity"/>
+        <activity android:name=".TestFacilityPicActivity"/>
+        <activity android:name=".TestAddEventActivity"/>
         <activity android:name=".EventHistory" />
         <activity android:name=".EventDraw" />
         <activity

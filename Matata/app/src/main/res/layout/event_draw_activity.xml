@@ -188,7 +188,7 @@
                     android:id="@+id/rejected_section_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Rejected"
+                    android:text="Cancelled"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:paddingTop="8dp"
@@ -300,7 +300,8 @@
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="View Cancelled List"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/button3"

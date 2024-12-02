@@ -20,11 +20,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class ProfilePicActivityTest {
+public class FacilityPicActivityTest {
 
     @Rule
-    public ActivityScenarioRule<TestProfilePicActivity> activityRule =
-            new ActivityScenarioRule<>(TestProfilePicActivity.class);
+    public ActivityScenarioRule<TestFacilityPicActivity> activityRule =
+            new ActivityScenarioRule<>(TestFacilityPicActivity.class);
 
     @Test
     public void testInitialProfilePictureDisplay() {
@@ -33,7 +33,7 @@ public class ProfilePicActivityTest {
     }
 
     @Test
-    public void testUploadButton() {
+    public void testUploadButtonWithoutSelection() {
         onView(withId(R.id.btnUploadPicture)).perform(click());
     }
 
@@ -41,4 +41,5 @@ public class ProfilePicActivityTest {
     public void testDeleteButton() {
         onView(withId(R.id.btnDeletePicture)).perform(click());
     }
+
 }

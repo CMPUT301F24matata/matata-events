@@ -38,12 +38,8 @@ public class NotificationDialogFragment extends DialogFragment {
 
         // Get the unique ID from the intent
         if (getArguments() != null) {
+            uid = getArguments().getString("uid");
             admin = getArguments().getString("admin");
-            if ("true".equals(admin)) {
-                uid = getArguments().getString("uid");
-            } else {
-                uid = null;
-            }
         }
 
         // Set up the Spinner
