@@ -185,11 +185,15 @@
             android:id="@+id/geoRequirement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="16dp"
+            android:gravity="center_vertical"
             android:paddingRight="15dp"
             android:trackTint="@color/white"
             android:textColor="@color/white"
-            android:text="Require Geolocation" />
+            android:text="Require Geolocation"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <Button
             android:id="@+id/genQR"
