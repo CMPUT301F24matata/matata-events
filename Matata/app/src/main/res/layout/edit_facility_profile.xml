@@ -56,7 +56,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/bg_matat_app">
+        android:background="@drawable/new_bg">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -237,7 +237,7 @@
                 android:textAllCaps="false"
                 android:textStyle="bold"
                 android:letterSpacing="0.05"
-                android:backgroundTint="#4A90E2"
+                android:backgroundTint="#4672A6"
                 android:fontFamily="@font/sansation_regular"
                 android:elevation="6dp"
                 android:outlineProvider="background" />
@@ -253,7 +253,7 @@
                 android:textAllCaps="false"
                 android:textStyle="bold"
                 android:letterSpacing="0.05"
-                android:backgroundTint="#FF5252"
+                android:backgroundTint="#954040"
                 android:fontFamily="@font/sansation_regular"
                 android:elevation="6dp"
                 android:outlineProvider="background" />

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/bg_matat_app">
+    android:background="@drawable/new_bg">
 
     <LinearLayout
         android:id="@+id/headerLayout"
@@ -46,7 +46,6 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="16dp"
         android:scaleType="centerCrop"
-        android:background="#E0E0E0"
         android:src="@drawable/ic_upload"
         android:contentDescription="@string/profile_picture" />
 
@@ -67,7 +66,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="@string/delete"
-            android:backgroundTint="#FF5252"
+            android:backgroundTint="#9D4D4D"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:padding="12dp"
@@ -82,7 +81,7 @@
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:text="@string/upload"
-            android:backgroundTint="#4CAF50"
+            android:backgroundTint="#4C77AF"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             android:padding="12dp"
