@@ -128,7 +128,7 @@ public class SignUpSheet extends AppCompatActivity {
 
                         .addOnFailureListener(e -> Log.w("Firestore", "Error adding signup sheet", e));
 
-                finish();
+                //finish();
             }
         });
     }

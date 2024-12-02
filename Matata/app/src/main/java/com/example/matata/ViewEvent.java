@@ -456,11 +456,14 @@ public class ViewEvent extends AppCompatActivity {
         db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
             List<DocumentReference> accepted = (List<DocumentReference>) eventSnapshot.get("accepted");
+            List<DocumentReference> pending = (List<DocumentReference>) eventSnapshot.get("pending");
             if (accepted == null) {
                 accepted = new ArrayList<>();
             }
             accepted.add(entrantRef);
             transaction.update(eventRef, "accepted", accepted);
+            pending.remove(entrantRef);
+            transaction.update(eventRef, "pending", pending);
             return null;
         }).addOnSuccessListener(aVoid -> {
             notifyMyself();
@@ -575,7 +578,7 @@ public class ViewEvent extends AppCompatActivity {
             Log.d("Firebase", "Entrant added to waitlist successfully");
             waitlistBtn.setText("Withdraw");
             eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
-        }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
+        }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant tfo waitlist", e));
     }
 
     /**
@@ -647,7 +650,6 @@ public class ViewEvent extends AppCompatActivity {
                 argbase64 = documentSnapshot.getString("bitmap");
                 try{
                     String ImageUri = documentSnapshot.getString("Poster");
-                    assert ImageUri != null;
                     if (!ImageUri.isEmpty()) {
                         Glide.with(this).load(ImageUri).into(poster);
                     }
