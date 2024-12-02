@@ -336,6 +336,7 @@ public class ViewEvent extends AppCompatActivity {
                 Log.e("Firebase", "Error fetching event details: ", task.getException());
             }
         });
+
         waitlistBtn.setOnClickListener(v -> {
             String joinBtnText = waitlistBtn.getText().toString();
             if (joinBtnText.equals("Pending")) {
@@ -418,16 +419,18 @@ public class ViewEvent extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    // User completed the sign-up sheet
+                    // Add to accepted list and refresh state
                     addToAccepted();
                     waitlistBtn.setText("Accepted");
                     Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
                 } else {
-                    // User did not complete the sign-up sheet, keep previous state
+                    // Keep the button as "Pending" if not completed
+                    waitlistBtn.setText("Pending");
                     Toast.makeText(ViewEvent.this, "Sign-up not completed", Toast.LENGTH_SHORT).show();
                 }
             }
     );
+
     /**
      * Adds the user to the rejected list in Firestore.
      */
@@ -459,13 +462,20 @@ public class ViewEvent extends AppCompatActivity {
             if (accepted == null) {
                 accepted = new ArrayList<>();
             }
-            accepted.add(entrantRef);
-            transaction.update(eventRef, "accepted", accepted);
+            if (!accepted.contains(entrantRef)) {
+                accepted.add(entrantRef);
+                transaction.update(eventRef, "accepted", accepted);
+
+                // Remove entrant from pending list
+                transaction.update(eventRef, "pending", FieldValue.arrayRemove(entrantRef));
+            }
             return null;
+
         }).addOnSuccessListener(aVoid -> {
             notifyMyself();
             Log.d("Firebase", "Entrant added to accepted list successfully");
-            eventRef.update("pending", FieldValue.arrayRemove(entrantRef));
+            refreshEntrantStatus();
+           // eventRef.update("pending", FieldValue.arrayRemove(entrantRef));
         }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to accepted list", e));
     }
 

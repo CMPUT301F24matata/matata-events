@@ -2,10 +2,10 @@
  * AddEventUnitTest class contains unit tests for the AddEvent class, verifying the functionality
  * of event ID generation, hash generation, bitmap compression, QR code generation, and event date
  * and time selection. These tests use the Robolectric framework to simulate Android components.
- *
+ * <p>
  * Purpose:
  * - Validate the correctness and reliability of the AddEvent functionalities.
- *
+ * <p>
  * Outstanding Issues:
  * - Confirm that QR code generation produces scannable images with accurate encoding.
  * - Ensure that bitmap compression does not degrade image quality for event visuals.

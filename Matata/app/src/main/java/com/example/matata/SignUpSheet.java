@@ -132,4 +132,14 @@ public class SignUpSheet extends AppCompatActivity {
             }
         });
     }
+
+
+    // On back button press
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED); // Send RESULT_CANCELED if user exits
+        super.onBackPressed();
+    }
+
 }
+
