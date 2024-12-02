@@ -71,6 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:backgroundTint="#405889"
                     android:text="Draw" />
 
                 <TextView
@@ -78,6 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginLeft="8dp"
                     android:text="From:"
                     android:textColor="#FFFFFF" />
 
@@ -94,6 +96,7 @@
             <TextView
                 android:id="@+id/remaining_text"
                 android:layout_width="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:layout_height="wrap_content"
                 android:text="Remaining: "
                 android:textColor="@color/white"/>
@@ -300,6 +303,8 @@
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="View Cancelled List"
+            android:theme="@style/Button.White"
+            android:backgroundTint="#405889"
             android:textColor="@color/white"
             android:visibility="gone"/>
 
@@ -309,6 +314,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
+            android:backgroundTint="#405889"
             android:text="Send Notification"
             android:textColor="@color/white" />
     </LinearLayout>
