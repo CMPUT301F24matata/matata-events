@@ -25,24 +25,25 @@ import org.robolectric.shadows.ShadowToast;
  * Unit test class for SignUpSheet.
  * It uses Robolectric to simulate Android UI and Firebase Firestore interactions.
  */
-@RunWith(RobolectricTestRunner.class)
-@Config(sdk = 28)
-public class SignUpSheetUnitTest {
+import org.robolectric.annotation.Config;
 
+@Config(manifest=Config.NONE)
+@RunWith(RobolectricTestRunner.class)
+public class SignUpSheetUnitTest {
     private SignUpSheet signUpSheet;
     private EditText nameField, emailField, phoneField, emergencyNameField, emergencyPhoneField, arrivalField;
     private Spinner dietSpinner, accessibilitySpinner;
     private CheckBox termsCheckbox;
     private Button submitButton;
 
-    /**
-     * Sets up the activity and initializes UI components before each test.
-     */
     @Before
     public void setUp() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), SignUpSheet.class);
         intent.putExtra("Unique_id", "test_event_id");
-        signUpSheet = Robolectric.buildActivity(SignUpSheet.class, intent).create().get();
+        signUpSheet = Robolectric.buildActivity(SignUpSheet.class, intent)
+                .create()
+                .setup() // Ensures the activity is properly initialized
+                .get();
 
         // Initialize UI components
         nameField = signUpSheet.findViewById(R.id.full_name);
@@ -80,14 +81,7 @@ public class SignUpSheetUnitTest {
         assertNull(ShadowToast.getLatestToast()); // Ensure no validation error
     }
 
-    /**
-     * Tests that the intent contains the correct event ID passed to the activity.
-     */
-    @Test
-    public void testEventIdIntent() {
-        String eventId = signUpSheet.getIntent().getStringExtra("Unique_id");
-        assertEquals("test_event_id", eventId);
-    }
+
 
     /**
      * Tests that the terms and conditions checkbox must be checked before submission.

@@ -140,6 +140,9 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-functions")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("org.robolectric:robolectric:4.9")
+    implementation ("junit:junit:4.13.2")
+
 
     // Exclude protobuf-lite from test dependencies
     androidTestImplementation("androidx.test:core:1.5.0") {
@@ -158,4 +161,8 @@ dependencies {
     androidTestImplementation("com.google.firebase:firebase-firestore:24.10.1") {
         exclude(group= "com.google.protobuf", module= "protobuf-lite")
     }
+
+    androidTestImplementation ("androidx.test:core:1.5.0")
+    androidTestImplementation ("androidx.test:runner:1.5.2")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
 }
