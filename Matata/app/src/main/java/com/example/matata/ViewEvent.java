@@ -647,7 +647,6 @@ public class ViewEvent extends AppCompatActivity {
                 argbase64 = documentSnapshot.getString("bitmap");
                 try{
                     String ImageUri = documentSnapshot.getString("Poster");
-                    assert ImageUri != null;
                     if (!ImageUri.isEmpty()) {
                         Glide.with(this).load(ImageUri).into(poster);
                     }
