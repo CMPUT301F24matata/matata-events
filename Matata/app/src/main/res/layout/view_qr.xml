@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:ignore="MissingConstraints"
+        android:background="#2A2A2A"
         tools:layout_editor_absoluteX="1dp">
 
         <ImageView
@@ -34,7 +35,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_weight="1"
                 android:alpha="0.7"
-                android:src="@drawable/baseline_download_24" />
+                android:src="@drawable/baseline_download_24"
+                app:tint="@color/white" />
 
 
         </LinearLayout>
