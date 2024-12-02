@@ -27,7 +27,7 @@ public class NotificationDialogFragmentTest {
         args.putString("admin", "false");
         args.putString("uid", "12345");
 
-        FragmentScenario<NotificationDialogFragment> scenario = FragmentScenario.launch(
+        FragmentScenario<NotificationDialogFragment> scenario = FragmentScenario.launchInContainer(
                 NotificationDialogFragment.class, args);
 
         // Verify the dialog title is displayed
