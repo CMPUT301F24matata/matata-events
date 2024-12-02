@@ -575,7 +575,7 @@ public class ViewEvent extends AppCompatActivity {
             Log.d("Firebase", "Entrant added to waitlist successfully");
             waitlistBtn.setText("Withdraw");
             eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
-        }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
+        }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant tfo waitlist", e));
     }
 
     /**
@@ -647,7 +647,6 @@ public class ViewEvent extends AppCompatActivity {
                 argbase64 = documentSnapshot.getString("bitmap");
                 try{
                     String ImageUri = documentSnapshot.getString("Poster");
-                    assert ImageUri != null;
                     if (!ImageUri.isEmpty()) {
                         Glide.with(this).load(ImageUri).into(poster);
                     }
