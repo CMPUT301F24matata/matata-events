@@ -267,12 +267,13 @@
                 android:id="@+id/show_QR"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="#624192"
                 android:contentDescription="@string/qr_code"
                 android:enabled="true"
                 android:focusable="true"
                 android:foreground="@drawable/baseline_qr_code_scanner_24"
                 android:foregroundGravity="center"
-                android:foregroundTint="@color/black" />
+                android:foregroundTint="@color/white" />
 
             <Button
                 android:id="@+id/join_waitlist_button"
