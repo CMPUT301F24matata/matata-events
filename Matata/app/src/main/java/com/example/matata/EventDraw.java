@@ -389,6 +389,7 @@ public class EventDraw extends AppCompatActivity {
             // Pass the uid as an argument to the fragment
             Bundle args = new Bundle();
             args.putString("uid", uid);
+            args.putString("admin", "false");
             dialog.setArguments(args);
             dialog.show(getSupportFragmentManager(), "NotificationDialog");
         });

@@ -20,8 +20,10 @@ public class NotificationDialogFragment extends DialogFragment {
     private Spinner groupSpinner;
     private Button sendNotificationButton;
     private String[] groups = {"Waitlist", "Pending", "Accepted", "Rejected"};
+    private String[] adminGroups = {"All"};
     private ArrayAdapter<String> adapter;
     private String uid;
+    private String admin;
     private EditText title;
     private EditText message;
 
@@ -34,15 +36,27 @@ public class NotificationDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_notification_dialog, null);
 
-        // Set up the Spinner
-        groupSpinner = view.findViewById(R.id.group_spinner);
-        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groups);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        groupSpinner.setAdapter(adapter);
-
         // Get the unique ID from the intent
         if (getArguments() != null) {
-            uid = getArguments().getString("uid");
+            admin = getArguments().getString("admin");
+            if ("true".equals(admin)) {
+                uid = getArguments().getString("uid");
+            } else {
+                uid = null;
+            }
+        }
+
+        // Set up the Spinner
+        if (admin.equals("false")) {
+            groupSpinner = view.findViewById(R.id.group_spinner);
+            adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, groups);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            groupSpinner.setAdapter(adapter);
+        } else {
+            groupSpinner = view.findViewById(R.id.group_spinner);
+            adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, adminGroups);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            groupSpinner.setAdapter(adapter);
         }
 
         title = view.findViewById(R.id.title_EditText);
@@ -68,6 +82,8 @@ public class NotificationDialogFragment extends DialogFragment {
                     notifications.sendNotification(this.getActivity(), "Accepted-" + uid, titleString, messageString);
                 } else if (selectedGroup.equals("Rejected")) {
                     notifications.sendNotification(this.getActivity(), "Rejected-" + uid, titleString, messageString);
+                } else {
+                    notifications.sendNotification(this.getActivity(), "All", titleString, messageString);
                 }
 
                 // Send notification based on selected group

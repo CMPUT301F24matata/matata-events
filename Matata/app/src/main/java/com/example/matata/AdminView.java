@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -122,6 +121,11 @@ public class AdminView extends AppCompatActivity {
      * Drawable for the border of dropdown items.
      */
     private Drawable dropdown_item_border;
+
+    /**
+     * Admin state for notifications
+     */
+    private String admin;
 
     /**
      * Called when the activity is first created.
@@ -280,6 +284,15 @@ public class AdminView extends AppCompatActivity {
             Intent intent = new Intent(AdminView.this, MainActivity.class);
             startActivity(intent);
             finish();
+        });
+
+        iconNotifications.setOnClickListener(v -> {
+            NotificationDialogFragment dialog = new NotificationDialogFragment();
+            // Pass the uid as an argument to the fragment
+            Bundle args = new Bundle();
+            args.putString("admin", "true");
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), "NotificationDialog");
         });
 
         viewAllEvents.setOnClickListener(v -> {

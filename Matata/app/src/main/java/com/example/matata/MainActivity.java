@@ -159,7 +159,8 @@ public class MainActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         USER_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
+        Notifications notifications = new Notifications();
+        notifications.subscribeToTopic("All");
 
 
         DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
@@ -180,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
 
                     initializeApp();
                     saveFCMTokenToDatabase();
+                    Log.d("MainActivity", "User profile created");
+
                 } else {
                     // Check the freeze status
                     String freezeStatus = task.getResult().getString("freeze");
@@ -386,6 +389,7 @@ public class MainActivity extends AppCompatActivity {
                     if (document.exists()) {
                         DocumentReference userRef = db.collection("USER_PROFILES").document(USER_ID);
                         Notifications notifications = new Notifications();
+
 
                         List<DocumentReference> currentWaitlist = (List<DocumentReference>) document.get("waitlist");
                         List<DocumentReference> currentPending = (List<DocumentReference>) document.get("pending");
