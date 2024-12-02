@@ -66,8 +66,6 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:backgroundTint="@color/white"
-
                     android:id="@+id/profileIcon"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
@@ -75,8 +73,7 @@
                     android:layout_marginTop="16dp"
                     android:src="@drawable/ic_user_profile"
                     android:contentDescription="@string/profile_picture"
-                    android:padding="8dp"
-                    app:tint="@color/white" />
+                    android:padding="8dp" />
 
                 <TextView
                     android:id="@+id/initials"
@@ -118,8 +115,7 @@
                     android:padding="12dp"
                     android:textColor="@color/black"
                     android:onClick="clearTextOnClick"
-                    android:textColorHint="#CCCCCC"
-                    tools:ignore="OnClick" />
+                    android:textColorHint="#CCCCCC"/>
 
                 <TextView
                     android:layout_width="wrap_content"
