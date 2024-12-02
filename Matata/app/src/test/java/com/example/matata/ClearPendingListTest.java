@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 import org.robolectric.annotation.LooperMode;
 
 import static org.junit.Assert.assertEquals;
@@ -19,13 +20,13 @@ import static org.junit.Assert.assertTrue;
 import com.example.matata.ClearPendingListFragment;
 import com.example.matata.R;
 @RunWith(AndroidJUnit4.class)
+@Config(manifest=Config.NONE)
 public class ClearPendingListTest {
 
     @Test
     public void testDialogButtons() {
         // Launch the ClearPendingListFragment
-        FragmentScenario<ClearPendingListFragment> scenario =
-                FragmentScenario.launchInContainer(ClearPendingListFragment.class);
+        FragmentScenario<ClearPendingListFragment> scenario = FragmentScenario.launchInContainer(ClearPendingListFragment.class);
 
         scenario.onFragment(fragment -> {
             // Obtain the dialog
