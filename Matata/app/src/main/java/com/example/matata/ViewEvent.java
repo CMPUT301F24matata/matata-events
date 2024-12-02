@@ -456,11 +456,14 @@ public class ViewEvent extends AppCompatActivity {
         db.runTransaction((Transaction.Function<Void>) transaction -> {
             DocumentSnapshot eventSnapshot = transaction.get(eventRef);
             List<DocumentReference> accepted = (List<DocumentReference>) eventSnapshot.get("accepted");
+            List<DocumentReference> pending = (List<DocumentReference>) eventSnapshot.get("pending");
             if (accepted == null) {
                 accepted = new ArrayList<>();
             }
             accepted.add(entrantRef);
             transaction.update(eventRef, "accepted", accepted);
+            pending.remove(entrantRef);
+            transaction.update(eventRef, "pending", pending);
             return null;
         }).addOnSuccessListener(aVoid -> {
             notifyMyself();
