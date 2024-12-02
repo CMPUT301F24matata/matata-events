@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -45,7 +46,6 @@ import java.util.Map;
  * ProfileActivity manages the user's profile, allowing them to edit personal information,
  * view and update profile images, and manage facility data if they are an organizer.
  * It also includes features for notifications and admin views.
- *
  * Outstanding issues: Facility information is only loaded when the user toggles the organizer switch.
  * Additionally, profile image handling relies on shared preferences to store the image URI,
  * which may not persist across devices.
@@ -229,6 +229,7 @@ public class ProfileActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean("notifications_enabled", notificationsChecked);
                 editor.apply();
+                Log.d("NotificationPermission", "notifications set to " + notificationsChecked);
             }
 
             if (notificationsChecked) {
