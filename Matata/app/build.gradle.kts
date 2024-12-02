@@ -79,9 +79,11 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.activity:activity:1.9.2")
     implementation(libs.play.services.maps)
+    implementation(libs.fragment.testing)
 
     testImplementation("junit:junit:4.13.2")
     testImplementation(libs.core)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
