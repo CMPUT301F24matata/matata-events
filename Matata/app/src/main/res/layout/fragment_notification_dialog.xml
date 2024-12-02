@@ -48,6 +48,7 @@
         android:id="@+id/send_notification_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#405889"
         android:layout_marginTop="16dp"
         android:text="Send Notification" />
 
