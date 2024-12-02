@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
@@ -250,7 +251,7 @@ public class EventDraw extends AppCompatActivity {
     private static String injectedUid;
 
 
-    private List<Entrant> cancelledList;
+    //private List<Entrant> cancelledList;
 
     private Button sendNotificationBtn;
 
@@ -319,7 +320,7 @@ public class EventDraw extends AppCompatActivity {
         acceptedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        cancelledList = new ArrayList<>();
+        //cancelledList = new ArrayList<>();
 
         sendNotificationBtn = findViewById(R.id.button3);
 
@@ -340,7 +341,7 @@ public class EventDraw extends AppCompatActivity {
             clearConfirmDialog();
 
             // Track the current pending list as cancelled entrants
-            cancelledList.addAll(selectedList);
+            //cancelledList.addAll(selectedList);
 
 
             Log.d("Selected List", "Selected List Cleared");
@@ -380,9 +381,9 @@ public class EventDraw extends AppCompatActivity {
         // Handle View Combined List button
         Button viewCombinedListButton = findViewById(R.id.view_combined_list_button);
 
-        viewCombinedListButton.setOnClickListener(v -> {
-            navigateToCancelledListActivity();
-        });
+//        viewCombinedListButton.setOnClickListener(v -> {
+//            navigateToCancelledListActivity();
+//        });
 
         sendNotificationBtn.setOnClickListener(v -> {
             NotificationDialogFragment dialog = new NotificationDialogFragment();
@@ -412,19 +413,19 @@ public class EventDraw extends AppCompatActivity {
         });
     }
 
-    private void navigateToCancelledListActivity() {
-        // Check if both lists are empty
-        if (cancelledList.isEmpty() && rejectedList.isEmpty()) {
-            Toast.makeText(this, "No entrants to display in the Cancelled List.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Pass the Cancelled and Rejected lists to the CancelledListActivity
-        Intent intent = new Intent(EventDraw.this, CancelledListActivity.class);
-        intent.putExtra("cancelledList", new ArrayList<>(cancelledList)); // Pass the cancelled list
-        intent.putExtra("rejectedList", new ArrayList<>(rejectedList)); // Pass the rejected list
-        startActivity(intent); // Start the CancelledListActivity
-    }
+//    private void navigateToCancelledListActivity() {
+//        // Check if both lists are empty
+//        if (cancelledList.isEmpty() && rejectedList.isEmpty()) {
+//            Toast.makeText(this, "No entrants to display in the Cancelled List.", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        // Pass the Cancelled and Rejected lists to the CancelledListActivity
+//        Intent intent = new Intent(EventDraw.this, CancelledListActivity.class);
+//        intent.putExtra("cancelledList", new ArrayList<>(cancelledList)); // Pass the cancelled list
+//        intent.putExtra("rejectedList", new ArrayList<>(rejectedList)); // Pass the rejected list
+//        startActivity(intent); // Start the CancelledListActivity
+//    }
 
     private void loadEventData () {
         db.collection("EVENT_PROFILES").document(uid).get()
@@ -606,11 +607,22 @@ public class EventDraw extends AppCompatActivity {
     private void clearSelectedEntrant() {
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
 
+
+        List<DocumentReference> tempList = new ArrayList<>();
+        for (String id : selectedIdList){
+            DocumentReference userRef = db.collection("USER_PROFILES").document(id);
+            tempList.add(userRef);
+        }
+        rejectedList.addAll(selectedList);
         selectedList.clear();
         selectedIdList.clear();
+        rejectedAdapter.notifyDataSetChanged();
 
         db.runTransaction((Transaction.Function<Void>) transaction -> {
             transaction.update(eventRef, "pending", new ArrayList<>());
+            for (DocumentReference ref : tempList) {
+                transaction.update(eventRef, "rejected", FieldValue.arrayUnion(ref));
+            }
             return null;
         }).addOnSuccessListener(aVoid -> {
             notifyEntrants();
