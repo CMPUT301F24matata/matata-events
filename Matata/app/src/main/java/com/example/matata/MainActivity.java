@@ -262,7 +262,6 @@ public class MainActivity extends AppCompatActivity {
         QR_scanner = findViewById(R.id.qr_scanner);
         eventHistory = findViewById(R.id.event_history);
         explore = findViewById(R.id.event_map);
-        notificationButton = findViewById(R.id.notifiy_button);
         FacilityProfile = findViewById(R.id.FacilityProfile);
         admin = findViewById(R.id.admin);
         list_toggle = findViewById(R.id.ListToggle);
