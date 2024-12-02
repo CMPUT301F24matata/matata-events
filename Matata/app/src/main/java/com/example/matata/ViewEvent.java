@@ -463,7 +463,7 @@ public class ViewEvent extends AppCompatActivity {
             if (accepted == null) {
                 accepted = new ArrayList<>();
             }
-<<<<<<< HEAD
+
             if (!accepted.contains(entrantRef)) {
                 accepted.add(entrantRef);
                 transaction.update(eventRef, "accepted", accepted);
@@ -471,12 +471,12 @@ public class ViewEvent extends AppCompatActivity {
                 // Remove entrant from pending list
                 transaction.update(eventRef, "pending", FieldValue.arrayRemove(entrantRef));
             }
-=======
+
             accepted.add(entrantRef);
             transaction.update(eventRef, "accepted", accepted);
             pending.remove(entrantRef);
             transaction.update(eventRef, "pending", pending);
->>>>>>> 8fc6894615f3dd8dd2fca58a9b4f39389d9100aa
+
             return null;
 
         }).addOnSuccessListener(aVoid -> {
