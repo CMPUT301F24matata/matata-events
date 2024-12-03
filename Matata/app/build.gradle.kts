@@ -56,6 +56,9 @@ android {
     configurations.all {
         resolutionStrategy {
             force("com.google.protobuf:protobuf-javalite:3.21.12")
+            force("androidx.test:core:1.5.0")
+            force("androidx.test.ext:junit:1.1.5")
+            force("androidx.test.espresso:espresso-core:3.5.1")
         }
     }
 
@@ -65,16 +68,15 @@ android {
 
 dependencies {
 
-    debugImplementation ("androidx.fragment:fragment-testing-manifest:<version>")
-    debugImplementation ("androidx.fragment:fragment-testing:<version>")
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.libraries.places:places:3.5.0")
-
+    implementation("androidx.multidex:multidex:2.0.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
 
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation(libs.fragment.testing)
     testImplementation(libs.ext.junit)
     androidTestImplementation(platform("com.google.firebase:firebase-bom:32.7.1"))
 
@@ -82,18 +84,18 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.activity:activity:1.9.2")
     implementation(libs.play.services.maps)
-    implementation(libs.fragment.testing)
 
     testImplementation("junit:junit:4.13.2")
     testImplementation(libs.core)
-    testImplementation(libs.junit.jupiter)
+
+    androidTestImplementation("androidx.test:core:1.5.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-idling-resource:3.5.1")
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.2.0")
+
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -145,9 +147,6 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-functions")
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("org.robolectric:robolectric:4.9")
-    implementation ("junit:junit:4.13.2")
-
 
     // Exclude protobuf-lite from test dependencies
     androidTestImplementation("androidx.test:core:1.5.0") {
@@ -162,12 +161,10 @@ dependencies {
     // Explicitly include the correct version of protobuf-javalite for testing
     androidTestImplementation("com.google.protobuf:protobuf-javalite:3.21.2")
 
+
+
     // Ensure that Firestore is included in the test configuration
     androidTestImplementation("com.google.firebase:firebase-firestore:24.10.1") {
         exclude(group= "com.google.protobuf", module= "protobuf-lite")
     }
-
-    androidTestImplementation ("androidx.test:core:1.5.0")
-    androidTestImplementation ("androidx.test:runner:1.5.2")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
 }
