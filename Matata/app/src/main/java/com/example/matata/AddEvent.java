@@ -491,7 +491,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         String formattedDate = dateFormat.format(currentDate);
 
         Map<String, Object> Event_details = new HashMap<>();
-        Event_details.put("Poster", posterURI);
+        Event_details.put("Poster", "");
         Event_details.put("Title", event.getTitle());
         Event_details.put("Date", event.getDate());
         Event_details.put("Time", event.getTime());
@@ -523,7 +523,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
                 });
 
         if (isDefaultImage) {
-            Event_details.put("Poster", "");
+            Event_details.put("Poster", posterURI);
             executeDBchange(Event_details, EVENT_ID, intent, view);
         } else {
             Bitmap bmpjpg = ((BitmapDrawable) posterPic.getDrawable()).getBitmap();
@@ -540,6 +540,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
             imagesRef.putFile(returned)
                     .addOnSuccessListener(v -> imagesRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         posterURI = uri.toString();
+                        Log.wtf("SO its Here",posterURI);
                         Event_details.put("Poster", posterURI);
                         temp.delete();
                         executeDBchange(Event_details, EVENT_ID, intent, view);

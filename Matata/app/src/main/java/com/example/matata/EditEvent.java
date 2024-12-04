@@ -219,12 +219,7 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         });
 
         genrQR.setText("Update Event");
-        genrQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
 
         if (!eveTitle.getText().toString().isEmpty() &&
                 !descriptionBox.getText().toString().isEmpty() &&
@@ -425,53 +420,51 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         Log.d(TAG, "isDefaultImage: " + isDefaultImage);
 
         if (isDefaultImage) {
-            if (posterURI != null && !posterURI.isEmpty()) {
-                updates.put("Poster", posterURI); // Retain existing poster URI
-                Log.d(TAG, "Using existing poster URI: " + posterURI);
-            } else {
-                updates.put("Poster", ""); // Handle empty or missing posterURI
-                Log.d(TAG, "Default poster URI is empty");
-            }
+            // Use the existing poster URI if available
+            updates.put("Poster", posterURI != null ? posterURI : "");
+            Log.d(TAG, "Using existing or default poster URI: " + posterURI);
+
             docRef.update(updates)
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditEvent.this, "Event updated successfully", Toast.LENGTH_SHORT).show();
                         Intent intentHome = new Intent(EditEvent.this, MainActivity.class);
                         startActivity(intentHome);
                         finish();
                     })
                     .addOnFailureListener(e -> {
-                        Log.e(TAG, "Error updating event in Firestore", e);
-                        Toast.makeText(EditEvent.this, "Event Update Error", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Error updating Firestore: ", e);
+                        Toast.makeText(this, "Failed to update event.", Toast.LENGTH_SHORT).show();
                     });
         } else {
+            // Only proceed with the upload if global_Uri is valid
             posterRef.putFile(global_Uri)
                     .addOnSuccessListener(taskSnapshot -> {
                         posterRef.getDownloadUrl()
                                 .addOnSuccessListener(uri -> {
                                     String downloadUrl = uri.toString();
                                     updates.put("Poster", downloadUrl);
-                                    Log.d(TAG, "Uploaded poster URI: " + downloadUrl);
+                                    Log.d(TAG, "Uploaded new poster URI: " + downloadUrl);
 
                                     docRef.update(updates)
                                             .addOnSuccessListener(aVoid -> {
-                                                Toast.makeText(EditEvent.this, "Event Successfully updated", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(EditEvent.this, "Event updated successfully", Toast.LENGTH_SHORT).show();
                                                 Intent intentHome = new Intent(EditEvent.this, MainActivity.class);
                                                 startActivity(intentHome);
                                                 finish();
                                             })
                                             .addOnFailureListener(e -> {
-                                                Log.e(TAG, "Error updating event in Firestore", e);
-                                                Toast.makeText(EditEvent.this, "Event Update Error", Toast.LENGTH_SHORT).show();
+                                                Log.e(TAG, "Error updating Firestore: ", e);
+                                                Toast.makeText(this, "Failed to update event.", Toast.LENGTH_SHORT).show();
                                             });
                                 })
                                 .addOnFailureListener(e -> {
-                                    Log.e(TAG, "Error getting download URL", e);
-                                    Toast.makeText(EditEvent.this, "Failed to update poster URL", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "Error getting download URL: ", e);
+                                    Toast.makeText(this, "Failed to upload image.", Toast.LENGTH_SHORT).show();
                                 });
                     })
                     .addOnFailureListener(e -> {
-                        Log.e(TAG, "Error uploading poster", e);
-                        Toast.makeText(EditEvent.this, "Poster upload failed", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Error uploading image: ", e);
+                        Toast.makeText(this, "Image upload failed.", Toast.LENGTH_SHORT).show();
                     });
         }
     }

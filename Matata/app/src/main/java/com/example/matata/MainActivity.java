@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
@@ -33,7 +34,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -153,6 +159,10 @@ public class MainActivity extends AppCompatActivity {
 
     private List<DocumentReference> myList;
 
+
+
+
+
     /**
      * Called when the activity is first created. Initializes user profiles in Firestore if necessary,
      * sets up UI components, handles notification permissions, and loads event data.
@@ -161,6 +171,10 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
         super.onCreate(savedInstanceState);
@@ -242,6 +256,8 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Displays a frozen dialog when the user's account is marked as frozen.
      */
+
+
     private void showFrozenDialog() {
         FrozenDialogFragment dialogFragment = new FrozenDialogFragment();
         dialogFragment.setCancelable(false);
