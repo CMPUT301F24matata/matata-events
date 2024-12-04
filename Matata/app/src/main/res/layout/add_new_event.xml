@@ -17,7 +17,6 @@
             android:id="@+id/headerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#232323"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingTop="16dp"
@@ -189,49 +188,48 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="16dp"
             android:gravity="center_vertical"
+            android:layout_gravity="end"
             android:paddingRight="15dp"
             android:trackTint="@color/white"
             android:textColor="@color/white"
             android:text="Require Geolocation"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-        <Button
-            android:id="@+id/genQR"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="0dp"
             android:layout_marginEnd="16dp"
-            android:backgroundTint="#3C6392"
-            android:drawablePadding="8dp"
-            android:elevation="6dp"
-            android:fontFamily="@font/sansation_regular"
-            android:letterSpacing="0.05"
-            android:outlineProvider="background"
-            android:padding="14dp"
-            android:text="@string/create_event"
-            android:textAllCaps="false"
-            android:textColor="#F5F5F5"
-            android:textStyle="bold" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/clearAllButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="#B35858"
-            android:drawablePadding="8dp"
-            android:elevation="6dp"
-            android:fontFamily="@font/sansation_regular"
-            android:letterSpacing="0.05"
-            android:outlineProvider="background"
-            android:padding="14dp"
-            android:text="@string/clear_all"
-            android:textAllCaps="false"
-            android:textColor="#F5F5F5"
-            android:textStyle="bold" />
+            <Button
+                android:id="@+id/clearAllButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#FF6F61"
+                android:fontFamily="@font/sansation_regular"
+                android:letterSpacing="0.05"
+                android:text="@string/clear_all"
+                android:textColor="#FFFFFFFF"
+                android:padding="12dp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/genQR"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#1DB954"
+                android:fontFamily="@font/sansation_regular"
+                android:letterSpacing="0.05"
+                android:text="@string/create_event"
+                android:textColor="#FFFFFFFF"
+                android:padding="12dp"
+                android:textStyle="bold"
+                android:layout_marginStart="8dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

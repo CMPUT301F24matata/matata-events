@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@drawable/img_1"
     tools:context=".CancelledListActivity">
 
     <!-- Header Section -->
@@ -12,15 +12,17 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#232323"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
+        android:orientation="horizontal"
         tools:ignore="MissingConstraints">
 
         <ImageView
             android:id="@+id/go_back_cancelled_list"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="10dp"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_back_arrow"
@@ -28,7 +30,7 @@
             app:tint="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
             android:id="@+id/cancelled_list_title"
@@ -37,7 +39,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             android:fontFamily="@font/sansation_bold"
-            android:text="Cancelled and Rejected Entrants"
+            android:text="@string/cancelled_and_rejected_entrants"
             android:textSize="22sp"
             android:textColor="@color/white"
             app:layout_constraintStart_toEndOf="@id/go_back_cancelled_list"
@@ -50,12 +52,9 @@
     <!-- RecyclerView Section -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/header"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/header">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,17 +63,18 @@
             android:padding="16dp">
 
             <!-- Cancelled Section -->
+
             <TextView
                 android:id="@+id/cancelled_section_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cancelled Entrants"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:textColor="#FFFFFF"
                 android:background="@drawable/section_divider"
+                android:padding="16dp"
+                android:text="@string/cancelled_entrants"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/sansation_bold"
                 app:drawableEndCompat="@drawable/ic_expand_less" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -89,11 +89,11 @@
                 android:id="@+id/rejected_section_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Rejected Entrants"
-                android:textSize="16sp"
+                android:text="@string/rejected_entrants"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:padding="16dp"
+                android:fontFamily="@font/sansation_bold"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/section_divider"
                 app:drawableEndCompat="@drawable/ic_expand_less" />

@@ -11,13 +11,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_matat_app"
+        android:background="@drawable/new_bg"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#1A1A1A"
             android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
@@ -46,7 +45,7 @@
                 android:contentDescription="@string/admin_view"
                 android:visibility="gone"
                 android:src="@drawable/admin"
-                app:tint="#F5F5DC"/>
+                app:tint="#FFFFFFFF"/>
 
             <ImageView
                 android:id="@+id/add_event"
@@ -56,7 +55,7 @@
                 android:layout_marginEnd="20dp"
                 android:contentDescription="@string/add_event"
                 android:src="@drawable/add_event_pic"
-                app:tint="#F5F5DC"/>
+                app:tint="#FFFFFFFF"/>
 
             <ImageView
                 android:id="@+id/FacilityProfile"
@@ -66,7 +65,7 @@
                 android:layout_marginEnd="20dp"
                 android:contentDescription="@string/organiser_profile"
                 android:src="@drawable/organiser_profile"
-                app:tint="#F5F5DC"/>
+                app:tint="#FFFFFFFF"/>
 
             <ImageView
                 android:id="@+id/profile_picture"
@@ -76,7 +75,7 @@
                 android:layout_marginEnd="0dp"
                 android:contentDescription="@string/profile_picture"
                 android:src="@drawable/user_profile"
-                app:tint="#F5F5DC" />
+                app:tint="#FFFFFFFF" />
 
         </LinearLayout>
 
@@ -85,7 +84,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#1A1A1A"
             android:orientation="vertical"
             tools:ignore="MissingConstraints">
 
@@ -94,8 +92,7 @@
                 android:id="@+id/toggle"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"
+
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -109,8 +106,8 @@
                     android:layout_weight="1"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="Explore"
-                    android:textColor="#F5F5DC" />
+                    android:text="EXPLORE"
+                    android:textColor="#FFFFFFFF" />
 
                 <RadioButton
                     android:layout_marginRight="1dp"
@@ -123,29 +120,21 @@
                     android:background="@drawable/toggle_widget_background"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="List"
-                    android:textColor="#F5F5DC" />
+                    android:text="LIST"
+                    android:textColor="#FFFFFFFF" />
             </RadioGroup>
-
 
         </LinearLayout>
 
         <androidx.fragment.app.FragmentContainerView
-            android:background="@drawable/new_bg"
             android:id="@+id/scrollListFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-
-
-
         </androidx.fragment.app.FragmentContainerView>
 
-
-
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -181,9 +170,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#F5F5DC"
+                android:textColor="#FFFFFFFF"
                 android:layout_gravity="center"
-                android:text="History"/>
+                android:text="@string/history"/>
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -198,7 +187,7 @@
             android:enabled="true"
             android:foreground="@drawable/baseline_qr_code_scanner_24"
             android:foregroundGravity="center"
-            android:foregroundTint="#FFFFFF"
+            android:foregroundTint="#FFFFFFFF"
             android:scaleType="center"
             android:tint="#405889"
             android:translationZ="0dp"
@@ -228,7 +217,7 @@
                 android:layout_height="wrap_content"
                 android:text="Explore"
                 android:layout_gravity="center"
-                android:textColor="#F5F5DC"/>
+                android:textColor="#FFFFFFFF"/>
         </LinearLayout>
 
     </LinearLayout>

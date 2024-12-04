@@ -76,11 +76,6 @@ public class AdminView extends AppCompatActivity {
     private ImageView iconDashboard;
 
     /**
-     * An {@link ImageView} representing the Users navigation icon in the bottom navigation bar.
-     */
-    private ImageView iconUsers;
-
-    /**
      * An {@link ImageView} representing the Reports navigation icon in the bottom navigation bar.
      */
     private ImageView iconReports;
@@ -352,7 +347,6 @@ public class AdminView extends AppCompatActivity {
         usersDropdownButton = findViewById(R.id.users_dropdown_button);
         facilitiesDropdownButton = findViewById(R.id.facilities_dropdown_button);
         iconDashboard = findViewById(R.id.icon_dashboard);
-        iconUsers = findViewById(R.id.icon_users);
         iconReports = findViewById(R.id.icon_reports);
         iconNotifications = findViewById(R.id.icon_notifications);
         iconSettings = findViewById(R.id.icon_settings);
