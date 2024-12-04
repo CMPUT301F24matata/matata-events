@@ -92,22 +92,22 @@ public class EventDraw extends AppCompatActivity {
     /**
      * List of all entrants for the event.
      */
-    private List<Entrant> entrantList;
+    List<Entrant> entrantList;
 
     /**
      * List of selected entrants.
      */
-    private List<Entrant> selectedList;
+    List<Entrant> selectedList;
 
     /**
      * List of accepted entrants.
      */
-    private List<Entrant> acceptedList;
+    List<Entrant> acceptedList;
 
     /**
      * List of rejected entrants.
      */
-    private List<Entrant> rejectedList;
+    List<Entrant> rejectedList;
 
     /**
      * Adapter for displaying pending entrants.
@@ -202,7 +202,7 @@ public class EventDraw extends AppCompatActivity {
     /**
      * Map linking each entrant to their status (e.g., accepted, rejected).
      */
-    private Map<String, Entrant> entrantMap;
+    Map<String, Entrant> entrantMap;
 
     /**
      * List of IDs for selected entrants.
@@ -212,7 +212,7 @@ public class EventDraw extends AppCompatActivity {
     /**
      * The number of entrants to draw in the current draw operation.
      */
-    private int drawNum;
+    int drawNum;
 
     /**
      * The number of remaining positions available in the event.
@@ -543,7 +543,7 @@ public class EventDraw extends AppCompatActivity {
     /**
      * Sets the selected entrants and updates Firestore accordingly.
      */
-    private void setSelectedEntrant() {
+    void setSelectedEntrant() {
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
 
         List<Map.Entry<String, Entrant>> tempList = new ArrayList<>(entrantMap.entrySet());
@@ -585,7 +585,7 @@ public class EventDraw extends AppCompatActivity {
     /**
      * Clears selected entrants from the pending list in Firestore.
      */
-    private void clearSelectedEntrant() {
+    void clearSelectedEntrant() {
         DocumentReference eventRef = db.collection("EVENT_PROFILES").document(uid);
 
 

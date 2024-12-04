@@ -78,6 +78,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation(libs.fragment.testing)
     testImplementation(libs.ext.junit)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation(platform("com.google.firebase:firebase-bom:32.7.1"))
 
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
