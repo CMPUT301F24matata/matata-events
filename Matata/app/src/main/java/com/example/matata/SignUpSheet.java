@@ -117,7 +117,12 @@ public class SignUpSheet extends AppCompatActivity {
                 signup_sheet.put("terms and conditions", true);
 
                 signup.add(signup_sheet)
-                        .addOnSuccessListener(documentReference -> Log.d("Firestore", "Signup sheet added"))
+                        .addOnSuccessListener(documentReference ->{
+                            Log.d("Firestore", "Signup sheet added");
+                            Intent resultIntent = new Intent();
+                            setResult(RESULT_OK, resultIntent);
+                            finish();
+                        })
                         .addOnFailureListener(e -> Log.w("Firestore", "Error adding signup sheet", e));
 
                 // Fetch geolocation
