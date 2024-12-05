@@ -140,6 +140,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
      */
     private String EVENT_ID;
 
+    private String facilityID;
     /**
      * String containing the URI of the uploaded poster image.
      */
@@ -204,6 +205,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         });
 
         DocumentReference docRef = db.collection("FACILITY_PROFILES").document(USER_ID);
+        facilityID=db.collection("FACILITY_PROFILES").document(USER_ID).getId();
         docRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -500,7 +502,7 @@ public class AddEvent extends AppCompatActivity implements TimePickerListener, D
         Event_details.put("Capacity", event.getCapacity());
         Event_details.put("WaitlistLimit", event.getWaitlistLimit());
         Event_details.put("bitmap", compressedBMP);
-        Event_details.put("OrganizerID", USER_ID);
+        Event_details.put("OrganizerID", facilityID);
         Event_details.put("Status", "Active");
         Event_details.put("CreationDate", formattedDate);
         Event_details.put("GeoRequirement", event.getGeoRequirement());
