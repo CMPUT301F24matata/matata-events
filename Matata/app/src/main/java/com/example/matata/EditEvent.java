@@ -419,8 +419,8 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
         Log.d(TAG, "Initial posterURI: " + posterURI);
         Log.d(TAG, "isDefaultImage: " + isDefaultImage);
 
-        if (isDefaultImage) {
-            // Use the existing poster URI if available
+        if (isDefaultImage || global_Uri == null) {
+            // Use the existing poster URI or the default image
             updates.put("Poster", posterURI != null ? posterURI : "");
             Log.d(TAG, "Using existing or default poster URI: " + posterURI);
 
@@ -436,7 +436,8 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                         Toast.makeText(this, "Failed to update event.", Toast.LENGTH_SHORT).show();
                     });
         } else {
-            // Only proceed with the upload if global_Uri is valid
+            // Upload the new image and update the Firestore document with the new poster URI
+            Log.d(TAG, "Uploading new poster image...");
             posterRef.putFile(global_Uri)
                     .addOnSuccessListener(taskSnapshot -> {
                         posterRef.getDownloadUrl()
@@ -468,5 +469,6 @@ public class EditEvent extends AppCompatActivity implements DatePickerListener,T
                     });
         }
     }
+
 
 }

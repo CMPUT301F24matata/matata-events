@@ -644,6 +644,9 @@ public class EventDraw extends AppCompatActivity {
                     if ("waitlist".equals(listType)) {
                         entrantMap.put(snapshot.getId(), entrant);
                     }
+                    if("pending".equals(listType)){
+                        selectedIdList.add(snapshot.getId());
+                    }
                 }
             }
             adapter.notifyDataSetChanged();
