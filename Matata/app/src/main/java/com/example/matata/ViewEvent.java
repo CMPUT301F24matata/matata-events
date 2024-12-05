@@ -279,8 +279,6 @@ public class ViewEvent extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 eventRef.delete()
                                             .addOnSuccessListener(aVoid->{
-                                                notifyEvents();
-                                                notifyMyself();
                                                 Toast.makeText(ViewEvent.this,"Event Deleted",Toast.LENGTH_SHORT).show();
                                                 Intent intent_main=new Intent(ViewEvent.this,MainActivity.class);
                                                 startActivity(intent_main);
@@ -405,11 +403,9 @@ public class ViewEvent extends AppCompatActivity {
         builder.setNegativeButton("Decline", (dialog, which) -> {
             eventRef.update("pending", FieldValue.arrayRemove(entrantRef))
                     .addOnSuccessListener(aVoid -> {
-                        notifyMyself();
-                        notifyEvents();
                         Log.d("Firebase", "User declined invitation, removed from pending list");
                         waitlistBtn.setText("Join Waitlist");
-                        resampleEntrant();
+                        //resampleEntrant();
                         Toast.makeText(ViewEvent.this, "Invitation Declined", Toast.LENGTH_SHORT).show();
                     }).addOnFailureListener(e -> Log.e("Firebase", "Error declining invitation", e));
             addToRejected();
@@ -450,10 +446,11 @@ public class ViewEvent extends AppCompatActivity {
             Log.d("User list", "notified entrants to subscribe to rejected.");
             return null;
         }).addOnSuccessListener(aVoid -> {
-            notifyEvents();
-            notifyMyself();
             Log.d("Firebase", "Entrant added to rejected list successfully");
-            eventRef.update("pending", FieldValue.arrayRemove(entrantRef));
+            eventRef.update("pending", FieldValue.arrayRemove(entrantRef)).addOnSuccessListener(v -> {
+                notifyMyself();
+                notifyEvents();
+            });
         }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to rejected list", e));
     }
 
@@ -481,8 +478,8 @@ public class ViewEvent extends AppCompatActivity {
             return null;
 
         }).addOnSuccessListener(aVoid -> {
-            notifyEvents();
             notifyMyself();
+            notifyEvents();
             Log.d("Firebase", "Entrant added to accepted list successfully");
             refreshEntrantStatus();
            // eventRef.update("pending", FieldValue.arrayRemove(entrantRef));
@@ -570,11 +567,12 @@ public class ViewEvent extends AppCompatActivity {
             notifications.subscribeToTopic("Waitlist-" + uid);*/
             return null;
         }).addOnSuccessListener(aVoid -> {
-            notifyMyself();
-            notifyEvents();
             Log.d("Firebase", "Entrant added to waitlist successfully");
             waitlistBtn.setText("Withdraw");
-            eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
+            eventRef.update("rejected", FieldValue.arrayRemove(entrantRef)).addOnSuccessListener(v -> {
+                notifyEvents();
+                notifyMyself();
+            });
         }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
     }
 
@@ -593,11 +591,8 @@ public class ViewEvent extends AppCompatActivity {
 
             return null;
         }).addOnSuccessListener(aVoid -> {
-            notifyMyself();
-            notifyEvents();
             Log.d("Firebase", "Entrant added to waitlist successfully");
-            waitlistBtn.setText("Withdraw");
-            eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
+            notifyMyself();
         }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant tfo waitlist", e));
     }
 
@@ -622,8 +617,8 @@ public class ViewEvent extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", "Entrant withdrew from waitlist successfully");
                     waitlistBtn.setText("Join Waitlist");
-                    notifyEvents();
                     notifyMyself();
+                    notifyEvents();
                     removeFromMyList();
                     // Unsubscribe from topic
                     /*Notifications notifications = new Notifications();
@@ -641,15 +636,12 @@ public class ViewEvent extends AppCompatActivity {
                     transaction.update(entrantRef, "myList", myList);
                 }
             }
-            Log.d("Subscriptionn issue check", "MyList: " + myList);
+            Log.d("Subscription issue check", "MyList: " + myList);
 
             return null;
         }).addOnSuccessListener(aVoid -> {
-            notifyEvents();
-            notifyMyself();
             Log.d("Firebase", "Entrant added to waitlist successfully");
-            waitlistBtn.setText("Join Waitlist");
-            eventRef.update("rejected", FieldValue.arrayRemove(entrantRef));
+            notifyMyself();
         }).addOnFailureListener(e -> Log.e("Firebase", "Error adding entrant to waitlist", e));
     }
 
@@ -738,8 +730,6 @@ public class ViewEvent extends AppCompatActivity {
             }
             return null;
         }).addOnSuccessListener(aVoid -> {
-            notifyEvents();
-            notifyMyself();
             Log.d("Firebase", "Successfully resampled a new entrant from waitlist");
             Toast.makeText(ViewEvent.this, "A new entrant has been selected!", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> Log.e("Firebase", "Error resampling a new entrant", e));
