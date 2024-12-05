@@ -66,11 +66,11 @@
 
             <TextView
                 android:id="@+id/cancelled_section_text"
+                android:text="@string/cancelled_entrants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/section_divider"
                 android:padding="16dp"
-                android:text="@string/cancelled_entrants"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 android:textStyle="bold"

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@drawable/img_6"
     tools:context=".MainActivity">
 
         <LinearLayout
@@ -17,7 +17,6 @@
                 android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#232323"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:paddingTop="16dp"
@@ -61,37 +60,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
                 android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingTop="16dp"
-                android:paddingRight="9dp"
-                android:paddingBottom="16dp">
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
 
                 <Button
                     android:id="@+id/draw_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:backgroundTint="#405889"
-                    android:text="Draw" />
+                    android:backgroundTint="#1DB954"
+                    android:text="@string/draw"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="8dp" />
 
                 <TextView
                     android:id="@+id/total_entrant_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="8dp"
                     android:text="From:"
-                    android:textColor="#FFFFFF" />
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_vertical" />
 
                 <Button
                     android:id="@+id/map_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Map"
-                    android:visibility="invisible"/>
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:backgroundTint="#405889"
+                    android:visibility="invisible" />
 
             </LinearLayout>
+
 
             <TextView
                 android:id="@+id/remaining_text"
@@ -121,16 +129,16 @@
                     <!-- Accepted Section -->
                 <TextView
                     android:id="@+id/accepted_section_text"
+                    android:text="@string/accepted_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Accepted"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:background="@drawable/section_divider"
+                    android:padding="16dp"
                     android:textColor="#FFFFFF"
-                    app:drawableEndCompat="@drawable/ic_expand_less"
-                    android:background="@drawable/section_divider"/>
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/sansation_bold"
+                    app:drawableEndCompat="@drawable/ic_expand_less"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -142,26 +150,27 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/accepted_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/entrant_card"/>
+                        tools:listitem="@layout/entrant_card" />
                 </LinearLayout>
 
                     <!-- Pending Section -->
                 <TextView
                     android:id="@+id/pending_section_text"
+                    android:text="Pending"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Pending"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:background="@drawable/section_divider"
+                    android:padding="16dp"
                     android:textColor="#FFFFFF"
-                    app:drawableEndCompat="@drawable/ic_expand_less"
-                    android:background="@drawable/section_divider"/>
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/sansation_bold"
+                    app:drawableEndCompat="@drawable/ic_expand_less"/>
 
                     <View
                         android:layout_width="match_parent"
@@ -173,32 +182,39 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
+
+                    <Button
+                        android:id="@+id/clearPendingList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginEnd="25dp"
+                        android:backgroundTint="#FF6F61"
+                        android:letterSpacing="0.05"
+                        android:text="@string/clear_pending_list"/>
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/pending_recyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         tools:listitem="@layout/entrant_card"/>
-                    <Button
-                        android:id="@+id/clearPendingList"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:text="Clear Pending list"/>
+
                 </LinearLayout>
 
                 <!-- Rejected Section -->
                 <TextView
                     android:id="@+id/rejected_section_text"
+                    android:text="Cancelled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Cancelled"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:background="@drawable/section_divider"
+                    android:padding="16dp"
                     android:textColor="#FFFFFF"
-                    app:drawableEndCompat="@drawable/ic_expand_less"
-                    android:background="@drawable/section_divider"/>
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/sansation_bold"
+                    app:drawableEndCompat="@drawable/ic_expand_less"/>
 
                     <View
                         android:layout_width="match_parent"
@@ -222,21 +238,22 @@
                     <!-- Waiting list Section -->
                 <TextView
                     android:id="@+id/waiting_section_text"
+                    android:text="Waitlist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Waitlist"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:background="@drawable/section_divider"
+                    android:padding="16dp"
                     android:textColor="#FFFFFF"
-                    app:drawableEndCompat="@drawable/ic_expand_less"
-                    android:background="@drawable/section_divider"/>
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/sansation_bold"
+                    app:drawableEndCompat="@drawable/ic_expand_less"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
                         android:background="@android:color/transparent" />
+
                 <LinearLayout
                     android:id="@+id/waitlist_section"
                     android:layout_width="match_parent"
@@ -244,33 +261,44 @@
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
 
-
-
-
                     <Switch
                         android:id="@+id/limitSwitch"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="75dp"
+                        android:layout_marginEnd="75dp"
                         android:layout_gravity="end"
+                        android:fontFamily="@font/sansation_bold"
                         android:text="Set waitlist limit"
                         android:textColor="@color/white"/>
+
                     <EditText
                         android:id="@+id/waitlistLimit"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginEnd="25dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="5dp"
                         android:visibility="gone"
                         android:inputType="number"
-                        android:hint="# of entrants allowed in waitlist"
+                        android:hint="@string/set_limit"
                         android:drawableEnd="@drawable/ic_edit"
                         android:background="@drawable/edit_text_background" />
+
                     <Button
                         android:id="@+id/saveButton"
-                        android:visibility="gone"
-                        android:layout_gravity="end"
-                        android:layout_width="wrap_content"
+
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:visibility="gone"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginEnd="25dp"
+                        android:backgroundTint="#FF6F61"
+                        android:letterSpacing="0.05"
                         android:text="Save"/>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -314,7 +342,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:backgroundTint="#405889"
+            android:backgroundTint="#FFC107"
             android:text="Send Notification"
             android:textColor="@color/white" />
     </LinearLayout>

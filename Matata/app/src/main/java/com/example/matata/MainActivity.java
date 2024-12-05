@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -26,6 +27,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -311,11 +313,27 @@ public class MainActivity extends AppCompatActivity {
         Toggle.setOnCheckedChangeListener((button, checkedID) -> {
             Log.wtf(TAG, "Checked ID: " + checkedID);
             Fragment fragment;
+
+            Typeface boldFont = ResourcesCompat.getFont(this, R.font.sansation_bold);
+            Typeface regularFont = ResourcesCompat.getFont(this, R.font.sansation_light);
+
             if (checkedID == R.id.ListToggle) {
+
+                list_toggle.setTypeface(list_toggle.getTypeface(), Typeface.BOLD);
+                scroll_toggle.setTypeface(scroll_toggle.getTypeface(), Typeface.NORMAL);
+
+                list_toggle.setTypeface(boldFont);
+                scroll_toggle.setTypeface(regularFont);
+
                 Log.wtf(TAG, "List checked");
                 fragment = new Recycler_fragment();
 
             } else if (checkedID == R.id.ExploreToggle) {
+                scroll_toggle.setTypeface(scroll_toggle.getTypeface(), Typeface.BOLD);
+                list_toggle.setTypeface(list_toggle.getTypeface(), Typeface.NORMAL);
+                scroll_toggle.setTypeface(boldFont);
+                list_toggle.setTypeface(regularFont);
+
                 fragment = new SwipeView();
             } else {
                 fragment = null;
@@ -342,7 +360,6 @@ public class MainActivity extends AppCompatActivity {
         QR_scanner.setOnClickListener(view -> startActivity(new Intent(view.getContext(), QR_camera.class)));
 
         eventHistory.setOnClickListener(view -> startActivity(new Intent(view.getContext(), EventHistory.class)));
-
 
         explore.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ExploreEvents.class);

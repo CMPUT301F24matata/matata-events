@@ -79,7 +79,7 @@
 
         </LinearLayout>
 
-        <!-- Search Box Below Header -->
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -98,7 +98,7 @@
                 <RadioButton
                     android:layout_marginTop="1dp"
                     android:layout_marginBottom="1dp"
-                    android:layout_marginLeft="1dp"
+                    android:layout_marginStart="1dp"
                     android:id="@+id/ExploreToggle"
                     android:background="@drawable/toggle_widget_background"
                     android:layout_width="0dp"
@@ -106,23 +106,26 @@
                     android:layout_weight="1"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="EXPLORE"
+                    android:fontFamily="@font/sansation_light"
+                    android:text="@string/discover"
                     android:textColor="#FFFFFFFF" />
 
                 <RadioButton
-                    android:layout_marginRight="1dp"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginBottom="1dp"
                     android:id="@+id/ListToggle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginBottom="1dp"
                     android:layout_weight="1"
                     android:background="@drawable/toggle_widget_background"
                     android:button="@null"
+                    android:fontFamily="@font/sansation_bold"
                     android:gravity="center"
-                    android:text="LIST"
+                    android:text="@string/index"
                     android:textColor="#FFFFFFFF" />
             </RadioGroup>
+
 
         </LinearLayout>
 
@@ -130,6 +133,7 @@
             android:id="@+id/scrollListFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:layout_weight="1">
 
         </androidx.fragment.app.FragmentContainerView>

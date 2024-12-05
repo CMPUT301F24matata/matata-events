@@ -210,10 +210,10 @@
                 android:backgroundTint="#FF6F61"
                 android:fontFamily="@font/sansation_regular"
                 android:letterSpacing="0.05"
-                android:text="@string/clear_all"
                 android:textColor="#FFFFFFFF"
                 android:padding="12dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:text="@string/clear_all" />
 
             <Button
                 android:id="@+id/genQR"
@@ -223,11 +223,11 @@
                 android:backgroundTint="#1DB954"
                 android:fontFamily="@font/sansation_regular"
                 android:letterSpacing="0.05"
-                android:text="@string/create_event"
                 android:textColor="#FFFFFFFF"
                 android:padding="12dp"
                 android:textStyle="bold"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="8dp"
+                android:text="@string/create_event" />
 
         </LinearLayout>
 

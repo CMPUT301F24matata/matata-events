@@ -58,7 +58,6 @@ public class ManageAllQRActivity extends AppCompatActivity {
         qrContainer = findViewById(R.id.QRContainer);
         ImageView btnBack = findViewById(R.id.btnBack);
         ImageView iconDashboard = findViewById(R.id.icon_dashboard);
-        ImageView iconUsers = findViewById(R.id.icon_users);
         ImageView iconReports = findViewById(R.id.icon_reports);
         ImageView iconNotifications = findViewById(R.id.icon_notifications);
         ImageView iconSettings = findViewById(R.id.icon_settings);

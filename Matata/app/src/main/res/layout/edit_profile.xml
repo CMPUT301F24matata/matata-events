@@ -13,7 +13,6 @@
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#232323"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="16dp"
@@ -79,7 +78,7 @@
                     android:id="@+id/initials"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/sansation_regular"
+                    android:fontFamily="@font/sansation_bold"
                     android:shadowColor="#000000"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -93,7 +92,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/sansation_regular"
+                    android:fontFamily="@font/sansation_bold"
                     android:shadowColor="#000000"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -108,6 +107,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_edit"
+                    android:layout_marginTop="5dp"
                     android:enabled="true"
                     android:fontFamily="@font/sansation_regular"
                     android:hint="@string/user_name"
@@ -123,7 +123,7 @@
                     android:text="@string/email"
                     android:textSize="16sp"
                     android:layout_marginTop="12dp"
-                    android:fontFamily="@font/sansation_regular"
+                    android:fontFamily="@font/sansation_bold"
                     android:shadowColor="#000000"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -136,6 +136,7 @@
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_edit"
                     android:enabled="true"
+                    android:layout_marginTop="5dp"
                     android:hint="@string/example_example_com"
                     android:background="@drawable/edit_text_background"
                     android:padding="12dp"
@@ -148,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/phone"
                     android:textSize="16sp"
-                    android:fontFamily="@font/sansation_regular"
+                    android:fontFamily="@font/sansation_bold"
                     android:shadowColor="#000000"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -164,6 +165,7 @@
                     android:enabled="true"
                     android:hint="@string/optional"
                     android:background="@drawable/edit_text_background"
+                    android:layout_marginTop="5dp"
                     android:padding="12dp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/sansation_regular"
@@ -172,7 +174,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/sansation_regular"
+                    android:fontFamily="@font/sansation_bold"
                     android:shadowColor="#000000"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -190,12 +192,13 @@
                     android:padding="12dp"
                     android:spinnerMode="dropdown"
                     android:dropDownWidth="match_parent"
+                    android:layout_marginTop="5dp"
                     android:popupBackground="@drawable/dropdown_background" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/sansation_regular"
+                    android:fontFamily="@font/sansation_bold"
                     android:shadowColor="#000000"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -215,6 +218,7 @@
                     android:hint="@string/mm_dd_yyyy"
                     android:background="@drawable/edit_text_background"
                     android:padding="12dp"
+                    android:layout_marginTop="5dp"
                     android:textColor="@color/black"
                     android:textColorHint="#CCCCCC"
                     android:focusable="false"
@@ -232,7 +236,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/notifications"
-                        android:fontFamily="@font/sansation_regular"
+                        android:fontFamily="@font/sansation_bold"
                         android:shadowColor="#000000"
                         android:shadowDx="1"
                         android:shadowDy="1"
@@ -250,37 +254,39 @@
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/saveButton"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:padding="14dp"
-                    android:text="@string/save"
-                    android:textColor="#F5F5F5"
-                    android:textAllCaps="false"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.05"
-                    android:backgroundTint="#4B69A4"
-                    android:fontFamily="@font/sansation_regular"
-                    android:elevation="6dp"
-                    android:outlineProvider="background" />
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/clearAllButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:padding="14dp"
-                    android:text="Clear All"
-                    android:textColor="#F5F5F5"
-                    android:textAllCaps="false"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.05"
-                    android:backgroundTint="#9D4B4B"
-                    android:fontFamily="@font/sansation_regular"
-                    android:elevation="6dp"
-                    android:outlineProvider="background" />
+                    <Button
+                        android:id="@+id/clearAllButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="#FF6F61"
+                        android:fontFamily="@font/sansation_bold"
+                        android:letterSpacing="0.05"
+                        android:textColor="#FFFFFFFF"
+                        android:padding="12dp"
+                        android:textStyle="bold"
+                        android:text="@string/clear_all" />
+
+                    <Button
+                        android:id="@+id/saveButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="#1DB954"
+                        android:fontFamily="@font/sansation_bold"
+                        android:letterSpacing="0.05"
+                        android:textColor="#FFFFFFFF"
+                        android:padding="12dp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/save" />
+
+                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>

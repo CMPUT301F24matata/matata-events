@@ -33,9 +33,9 @@
         <!-- Set the splash screen background -->
         <item name="windowSplashScreenBackground">@color/black</item>
         <!-- Set the splash screen icon -->
-        <item name="windowSplashScreenAnimatedIcon">@drawable/admin_icon</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/img_3</item>
         <!-- Set the duration -->
-        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="windowSplashScreenAnimationDuration">2000</item>
         <item name="postSplashScreenTheme">@style/Theme.Matata</item>
     </style>
 </resources>

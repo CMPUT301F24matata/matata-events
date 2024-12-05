@@ -195,6 +195,16 @@
     <string name="cancelled_and_rejected_entrants">Cancelled &amp; Rejected Entrants</string>
     <string name="event_engagement">Event Engagement</string>
     <string name="history">History</string>
+    <string name="explore">EXPLORE</string>
+    <string name="discover">DISCOVER</string>
+    <string name="index">INDEX</string>
+    <string name="sample_event_name">Sample Event Name</string>
+    <string name="_00_00">00:00</string>
+    <string name="accepted_2">Accepted</string>
+    <string name="draw">Draw</string>
+    <string name="clear_pending_list">Clear Pending list</string>
+    <string name="set_limit">Set Limit</string>
+    <string name="qr_scanner">QR SCANNER</string>
     <string-array name="groups_array">
         <item>Waitlist</item>
         <item>Pending</item>

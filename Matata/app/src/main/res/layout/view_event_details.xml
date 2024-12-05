@@ -21,7 +21,6 @@
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#232323"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
@@ -75,7 +74,6 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="16dp"
-                    android:background="#232323"
                     android:elevation="10dp"
                     android:src="@drawable/baseline_delete_24"
                     app:tint="@color/white" />
@@ -98,7 +96,6 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="16dp"
-                    android:background="#232323"
                     android:elevation="10dp"
                     android:src="@drawable/ic_edit"
                     app:tint="@color/white" />
@@ -121,7 +118,6 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="16dp"
-                    android:background="#232323"
                     android:elevation="10dp"
                     android:src="@drawable/baseline_people_alt_24"
                     app:tint="@color/white" />
@@ -148,14 +144,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/view_text_background"
-            android:backgroundTint="#FBFBFB"
             android:maxLines="1"
-            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/sansation_bold"
             android:padding="12dp"
             android:singleLine="true"
-            android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="22sp"
             android:textStyle="bold"
             tools:text="Event Title" />
 
@@ -168,13 +164,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/view_text_background"
-            android:drawableStart="@drawable/person"
-            android:drawablePadding="8dp"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:textColor="@color/black"
+            android:padding="8dp"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:fontFamily="@font/sansation_bold"
+            android:textStyle="bold"
+            android:gravity="center"
             android:textSize="16sp"
             tools:text="Capacity: 100" />
 
@@ -185,12 +180,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/view_text_background"
-            android:gravity="top|left"
             android:maxLines="5"
             android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:textColor="@color/black"
+
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:fontFamily="@font/sansation_bold"
+            android:textStyle="bold"
+            android:gravity="center"
             android:textSize="16sp"
             tools:text="Event Description: This is a sample description for the event." />
 
@@ -210,16 +207,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/view_text_background"
-
                 android:drawablePadding="8dp"
-                android:gravity="center_vertical"
                 android:padding="12dp"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
+                android:fontFamily="@font/sansation_bold"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:textSize="16sp"
-                android:layout_marginBottom="16dp"
                 app:drawableStartCompat="@drawable/ic_clock"
-
                 tools:text="Time: 7:00 PM" />
 
             <TextView
@@ -228,12 +224,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/view_text_background"
                 android:drawablePadding="8dp"
-                android:gravity="center_vertical"
                 android:padding="12dp"
-                android:layout_marginBottom="16dp"
-                android:textColor="@color/black"
+                android:fontFamily="@font/sansation_bold"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:textSize="16sp"
                 app:drawableStartCompat="@drawable/ic_calendar"
                 tools:text="Date: 12/12/2023" />
@@ -246,55 +243,47 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/view_text_background"
             android:drawablePadding="8dp"
-            android:gravity="center_vertical"
             android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:textColor="@color/black"
+            android:fontFamily="@font/sansation_bold"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:textSize="16sp"
             app:drawableStartCompat="@drawable/ic_location"
             tools:text="Location: University Hall" />
 
-        <!-- Share and QR Button Section -->
-        <LinearLayout
+        <Button
+            android:id="@+id/join_waitlist_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:theme="@style/Button.White"
+            android:fontFamily="@font/sansation_bold"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#003366"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:padding="10dp"
+            android:text="@string/pending"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/show_QR"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#416E92"
-                android:contentDescription="@string/qr_code"
-                android:enabled="true"
-                android:focusable="true"
-                android:foreground="@drawable/baseline_qr_code_scanner_24"
-                android:foregroundGravity="center"
-                android:foregroundTint="@color/white" />
-
-            <Button
-                android:id="@+id/join_waitlist_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:theme="@style/Button.White"
-                android:backgroundTint="#406D91"
-                android:padding="10dp"
-                android:text="@string/pending"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
-
-        </LinearLayout>
-
-
-
-
-
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/show_QR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#416E92"
+            android:contentDescription="@string/qr_code"
+            android:enabled="true"
+            android:layout_marginTop="10dp"
+            android:focusable="true"
+            android:layout_gravity="center"
+            android:foreground="@drawable/baseline_qr_code_scanner_24"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/white" />
 
     </LinearLayout>
 

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@drawable/img_7"
     android:padding="16dp">
 
     <TextView
@@ -10,45 +11,79 @@
         android:layout_height="wrap_content"
         android:text="Select Group to Notify"
         android:textSize="18sp"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/sansation_bold"
         android:textStyle="bold"
-        android:paddingBottom="8dp" />
+        android:gravity="center"
+        android:paddingBottom="16dp" />
 
     <Spinner
         android:id="@+id/group_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:gravity="center"
+        android:layout_marginEnd="15dp"
+        android:textColor="@color/white"
+        android:background="@drawable/edit_text_background"
+        android:fontFamily="@font/sansation_bold"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Title"
+        android:layout_marginTop="10dp"
         android:textSize="18sp"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/sansation_bold"
         android:textStyle="bold"
-        android:paddingBottom="8dp" />
+        android:gravity="center"
+        android:paddingBottom="16dp" />
 
     <EditText
         android:id="@+id/title_EditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:textColor="@color/white"
+        android:background="@drawable/edit_text_background"
+        android:fontFamily="@font/sansation_bold"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Message"
         android:textSize="18sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/sansation_bold"
         android:textStyle="bold"
-        android:paddingBottom="8dp" />
+        android:gravity="center"
+        android:paddingBottom="16dp" />
 
     <EditText
         android:id="@+id/message_EditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:textColor="@color/white"
+        android:background="@drawable/edit_text_background"
+        android:fontFamily="@font/sansation_bold"/>
 
     <Button
         android:id="@+id/send_notification_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#405889"
+        android:layout_gravity="center"
+        android:backgroundTint="#FFC107"
         android:layout_marginTop="16dp"
         android:text="Send Notification" />
 

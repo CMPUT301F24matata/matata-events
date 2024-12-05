@@ -9,7 +9,6 @@
     tools:context=".AdminView"
     tools:ignore="ExtraText">
 
-    <!-- Header Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
         android:layout_width="match_parent"

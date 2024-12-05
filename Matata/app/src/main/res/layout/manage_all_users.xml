@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@drawable/img_9"
     tools:context=".ManageAllUsersActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#232323"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="16dp"
@@ -66,12 +65,11 @@
 
     </ScrollView>
 
-    <!-- Bottom Navigation -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:background="#232323"
+        android:layout_height="60dp"
+
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -86,17 +84,8 @@
             android:layout_weight="1"
             android:contentDescription="@string/dashboard"
             android:src="@drawable/dashboard"
-            android:layout_gravity="center_vertical"/>
-
-        <!-- Users Icon -->
-        <ImageView
-            android:id="@+id/icon_users"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:contentDescription="@string/users"
-            android:src="@drawable/users" />
+            app:tint="@color/white" />
 
         <!-- Reports Icon -->
         <ImageView
@@ -106,7 +95,8 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:contentDescription="@string/reports"
-            android:src="@drawable/report" />
+            android:src="@drawable/report"
+            app:tint="@color/white" />
 
         <!-- Notifications Icon -->
         <ImageView
@@ -116,7 +106,8 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:contentDescription="@string/notifications"
-            android:src="@drawable/notifications"/>
+            android:src="@drawable/notifications"
+            app:tint="@color/white" />
 
         <!-- Settings Icon -->
         <ImageView
@@ -126,7 +117,8 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:contentDescription="@string/settings"
-            android:src="@drawable/exit"/>
+            android:src="@drawable/exit"
+            app:tint="@color/white" />
 
     </LinearLayout>
 
