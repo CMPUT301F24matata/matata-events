@@ -428,6 +428,7 @@ public class EventDraw extends AppCompatActivity {
                         loadList(accepted, acceptedList, acceptedAdapter, "accepted");
                         rejectedList.clear();
                         loadList(rejected, rejectedList, rejectedAdapter, "rejected");
+                        entrantMap.clear();
                         entrantList.clear();
                         loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
 
