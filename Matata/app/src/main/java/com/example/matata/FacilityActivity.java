@@ -1,4 +1,7 @@
+//hello
 package com.example.matata;
+
+import static androidx.camera.core.CameraXThreads.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,7 +13,12 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,15 +29,27 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -126,10 +146,18 @@ public class FacilityActivity extends AppCompatActivity {
      */
     private ImageView btnBackProfile;
 
+    private PlacesClient placesClient;
+    private RecyclerView suggestions;
+    private PredictionAdapter predictionAdapter;
+    private boolean isPreloading = true;
+    private LatLng selectedLatLng;
+
 
     /**
      * ActivityResultLauncher for handling the result of profile picture selection.
      */
+
+
     private final ActivityResultLauncher<Intent> profilePicLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -149,6 +177,12 @@ public class FacilityActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_facility_profile);
+
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(),"AIzaSyBrBi-UznGkZ2cluWnvg1ndThNw7EbYuYU");
+        }
+        placesClient = Places.createClient(this);
+
 
         db = FirebaseFirestore.getInstance();
 
@@ -170,6 +204,19 @@ public class FacilityActivity extends AppCompatActivity {
         clearAllButton = findViewById(R.id.clearAllButton);
         btnBackProfile = findViewById(R.id.btnBackProfile);
         profileIcon = findViewById(R.id.profileIcon);
+        suggestions=findViewById(R.id.address_suggestions);
+
+
+        suggestions.setVisibility(View.GONE);
+        predictionAdapter = new PredictionAdapter(prediction -> {
+            getPlaceDetails(prediction.getPlaceId());
+            facilityAddress.clearFocus();
+
+        });
+        suggestions.setLayoutManager(new LinearLayoutManager(this));
+        suggestions.setAdapter(predictionAdapter);
+
+
 
         btnBackProfile.setOnClickListener(v -> finish());
 
@@ -184,6 +231,32 @@ public class FacilityActivity extends AppCompatActivity {
             Intent intent = new Intent(FacilityActivity.this, FacilityPicActivity.class);
             intent.putExtra("userId", USER_ID);
             profilePicLauncher.launch(intent);
+        });
+
+        facilityAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().isEmpty()) { // Remove isPreloading dependency
+                    fetchAutocompletePredictions(s.toString());
+                } else {
+                    predictionAdapter.updateData(new ArrayList<>());
+                    suggestions.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                facilityAddress.clearFocus();
+            }
+        });
+        facilityAddress.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                suggestions.setVisibility(View.VISIBLE);
+            } else {
+                suggestions.setVisibility(View.GONE);
+            }
         });
 
         saveButton.setOnClickListener(v -> {
@@ -260,6 +333,13 @@ public class FacilityActivity extends AppCompatActivity {
         facilityProfile.put("owner", owner);
         facilityProfile.put("freeze", "awake");
 
+        if (selectedLatLng != null) {
+            GeoPoint geoPoint = new GeoPoint(selectedLatLng.latitude, selectedLatLng.longitude);
+            facilityProfile.put("location", geoPoint);
+        } else {
+            Log.w("GeoPoint", "No location selected, GeoPoint not saved.");
+        }
+
         db.collection("FACILITY_PROFILES").document(USER_ID)
                 .set(facilityProfile)
                 .addOnSuccessListener(aVoid -> {
@@ -267,6 +347,14 @@ public class FacilityActivity extends AppCompatActivity {
                     finish();
                 })
                 .addOnFailureListener(e -> Toast.makeText(FacilityActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show());
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Cleanup listeners or other resources associated with PlacesClient
+        if (placesClient != null) {
+            placesClient = null;
+        }
     }
 
     /**
@@ -309,35 +397,35 @@ public class FacilityActivity extends AppCompatActivity {
         docRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
+                        // Load existing data into fields
+                        String name = documentSnapshot.getString("name");
+                        String address = documentSnapshot.getString("address");
+                        String email = documentSnapshot.getString("email");
+                        boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
+                        String sImageUri = documentSnapshot.getString("profileUri");
+                        String capacity = documentSnapshot.getString("capacity");
+                        String contact = documentSnapshot.getString("contact");
+                        String owner = documentSnapshot.getString("owner");
 
-                        String freeze = documentSnapshot.getString("freeze");
+                        facilityName.setText(name);
+                        facilityAddress.setText(address);
+                        facilityCapacity.setText(capacity);
+                        facilityContact.setText(contact);
+                        facilityEmail.setText(email);
+                        facilityOwner.setText(owner);
+                        switchNotification.setChecked(notificationsChecked);
 
-                        if (Objects.equals(freeze, "frozen")) {
-                            FacilityFrozenDialogFragment dialog = new FacilityFrozenDialogFragment();
-                            dialog.show(getSupportFragmentManager(), "FacilityFrozenDialog");
-                        } else if (Objects.equals(freeze, "awake")) {
-                            String name = documentSnapshot.getString("name");
-                            String address = documentSnapshot.getString("address");
-                            String email = documentSnapshot.getString("email");
-                            boolean notificationsChecked = Boolean.TRUE.equals(documentSnapshot.getBoolean("notifications"));
-                            String sImageUri = documentSnapshot.getString("profileUri");
-                            String capacity = documentSnapshot.getString("capacity");
-                            String contact = documentSnapshot.getString("contact");
-                            String owner = documentSnapshot.getString("owner");
-
-                            facilityName.setText(name);
-                            facilityAddress.setText(address);
-                            facilityCapacity.setText(capacity);
-                            facilityContact.setText(contact);
-                            facilityEmail.setText(email);
-                            facilityOwner.setText(owner);
-                            switchNotification.setChecked(notificationsChecked);
-
-                            loadFacilityPicture(sImageUri);
-                        }
+                        loadFacilityPicture(sImageUri);
+                    } else {
+                        // Profile doesn't exist: ensure address suggestions work
+                        facilityAddress.setEnabled(true); // Ensure the field is active
                     }
                 })
-                .addOnFailureListener(e -> Toast.makeText(FacilityActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Toast.makeText(FacilityActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show();
+                    // Allow address suggestions even on failure
+                    facilityAddress.setEnabled(true);
+                });
     }
 
     /**
@@ -369,4 +457,52 @@ public class FacilityActivity extends AppCompatActivity {
         String base64String = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
         return Uri.parse("data:image/png;base64," + base64String);
     }
+    @SuppressLint("RestrictedApi")
+    private void fetchAutocompletePredictions(String q){
+        RectangularBounds bounds = RectangularBounds.newInstance(
+                new LatLng(53.2, -113.7),
+                new LatLng(53.8, -113.2)
+        );
+        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                .setQuery(q)
+                .setCountries("CA")
+                .setLocationBias(bounds)
+                .build();
+        placesClient.findAutocompletePredictions(request)
+                .addOnSuccessListener(response -> {
+                    List<AutocompletePrediction> predictions = response.getAutocompletePredictions();
+                    if (!predictions.isEmpty()) {
+                        predictionAdapter.updateData(predictions);
+                        suggestions.setVisibility(View.VISIBLE);
+                    } else {
+                        suggestions.setVisibility(View.GONE);
+                    }
+                })
+                .addOnFailureListener(exception -> {
+                    Log.wtf(TAG, "Autocomplete prediction fetch failed: " + exception.getMessage());
+                    suggestions.setVisibility(View.GONE);
+                });
+    }
+    private void getPlaceDetails(String placeId) {
+        List<Place.Field> placeFields = Arrays.asList(
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.ADDRESS,
+                Place.Field.LAT_LNG
+        );
+        FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();
+        placesClient.fetchPlace(request)
+                .addOnSuccessListener(response -> {
+                    Place place = response.getPlace();
+                    Log.d("Place Details", "Name: " + place.getName());
+                    Log.d("Place Details", "Address: " + place.getAddress());
+                    Log.d("Place Details", "LatLng: " + place.getLatLng());
+                    facilityAddress.setText(place.getAddress());
+                    selectedLatLng = place.getLatLng();
+                })
+                .addOnFailureListener(exception -> {
+                    Log.e("TAG", "Error fetching place details: " + exception.getMessage());
+                });
+    }
+
 }
