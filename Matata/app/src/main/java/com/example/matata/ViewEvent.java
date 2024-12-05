@@ -391,13 +391,6 @@ public class ViewEvent extends AppCompatActivity {
             Intent intent = new Intent(ViewEvent.this, SignUpSheet.class);
             intent.putExtra("Unique_id", uid);
             signUpSheetLauncher.launch(intent);
-
-
-//            startActivity(intent);
-//            waitlistBtn.setText("Accepted");
-//            Toast.makeText(ViewEvent.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
-//            addToAccepted();
-
         });
 
         builder.setNegativeButton("Decline", (dialog, which) -> {
@@ -472,11 +465,7 @@ public class ViewEvent extends AppCompatActivity {
                 transaction.update(eventRef, "pending", FieldValue.arrayRemove(entrantRef));
             }
 
-            accepted.add(entrantRef);
-            transaction.update(eventRef, "accepted", accepted);
-            pending.remove(entrantRef);
-            transaction.update(eventRef, "pending", pending);
-
+            
             return null;
 
         }).addOnSuccessListener(aVoid -> {
