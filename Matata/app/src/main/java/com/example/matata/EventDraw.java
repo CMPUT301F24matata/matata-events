@@ -399,6 +399,7 @@ public class EventDraw extends AppCompatActivity {
 
                 if (value != null){
                     loadEventData();
+                    Log.d("load event data", "load event data ");
                     loadLimit(uid);
                 }
             }
@@ -422,14 +423,14 @@ public class EventDraw extends AppCompatActivity {
 
                         // Load entrants for each list
                         selectedIdList.clear();
-                        selectedList.clear();
+                        //selectedList.clear();
                         loadList(pending, selectedList, pendingAdapter, "pending");
-                        acceptedList.clear();
+                        //acceptedList.clear();
                         loadList(accepted, acceptedList, acceptedAdapter, "accepted");
-                        rejectedList.clear();
+                        //rejectedList.clear();
                         loadList(rejected, rejectedList, rejectedAdapter, "rejected");
                         entrantMap.clear();
-                        entrantList.clear();
+                        //entrantList.clear();
                         loadList(waitlist, entrantList, waitlistAdapter, "waitlist");
 
                         capacity = document.getLong("Capacity").intValue();
@@ -625,8 +626,13 @@ public class EventDraw extends AppCompatActivity {
      */
     void loadList(List<DocumentReference> ref, List<Entrant> list, EntrantAdapter adapter, String listType) {
         if (ref == null || ref.isEmpty()) {
+            list.clear();
+            adapter.notifyDataSetChanged();
             return;
         }
+
+        // Do not clear the main list here
+        // list.clear();
 
         List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
         for (DocumentReference doc : ref) {
@@ -634,26 +640,44 @@ public class EventDraw extends AppCompatActivity {
         }
 
         Tasks.whenAllComplete(tasks).addOnCompleteListener(t -> {
+            List<Entrant> tempList = new ArrayList<>(); // Temporary list
+            Map<String, Entrant> tempEntrantMap = new LinkedHashMap<>(); // Temporary map
+
             for (Task<DocumentSnapshot> task : tasks) {
                 DocumentSnapshot snapshot = task.getResult();
                 if (snapshot.exists()) {
+                    // Extract data
                     String name = snapshot.getString("username");
                     String phone = snapshot.getString("phone");
                     String email = snapshot.getString("email");
 
                     Entrant entrant = new Entrant(name, phone, email);
-                    list.add(entrant);
+                    tempList.add(entrant);
+
                     if ("waitlist".equals(listType)) {
-                        entrantMap.put(snapshot.getId(), entrant);
+                        tempEntrantMap.put(snapshot.getId(), entrant);
                     }
-                    if("pending".equals(listType)){
+                    if ("pending".equals(listType)) {
                         selectedIdList.add(snapshot.getId());
                     }
                 }
             }
+
+            // Synchronize updates to the main list and maps
+            synchronized (this) {
+                list.clear();
+                list.addAll(tempList);
+
+                if ("waitlist".equals(listType)) {
+                    entrantMap.clear();
+                    entrantMap.putAll(tempEntrantMap);
+                }
+            }
+
             adapter.notifyDataSetChanged();
         });
     }
+
 
     /**
      * Sets the waitlist limit in Firestore based on user input.
