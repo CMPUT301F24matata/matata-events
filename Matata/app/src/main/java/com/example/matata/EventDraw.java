@@ -421,6 +421,7 @@ public class EventDraw extends AppCompatActivity {
                         List<DocumentReference> rejected = (List<DocumentReference>) document.get("rejected");
 
                         // Load entrants for each list
+                        selectedIdList.clear();
                         selectedList.clear();
                         loadList(pending, selectedList, pendingAdapter, "pending");
                         acceptedList.clear();
