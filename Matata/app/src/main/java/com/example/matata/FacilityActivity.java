@@ -241,6 +241,7 @@ public class FacilityActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().isEmpty()) { // Remove isPreloading dependency
                     fetchAutocompletePredictions(s.toString());
+                    suggestions.setVisibility(View.VISIBLE);
                 } else {
                     predictionAdapter.updateData(new ArrayList<>());
                     suggestions.setVisibility(View.GONE);
@@ -248,7 +249,7 @@ public class FacilityActivity extends AppCompatActivity {
             }
             @Override
             public void afterTextChanged(Editable s) {
-                facilityAddress.clearFocus();
+
             }
         });
         facilityAddress.setOnFocusChangeListener((v, hasFocus) -> {
