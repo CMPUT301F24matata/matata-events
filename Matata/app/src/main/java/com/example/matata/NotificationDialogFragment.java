@@ -58,7 +58,7 @@ public class NotificationDialogFragment extends DialogFragment {
     /**
      * Array of recipient groups available for non-admin users.
      */
-    private String[] groups = {"Waitlist", "Pending", "Accepted", "Rejected"};
+    private String[] groups = {"Waitlist", "Pending", "Accepted", "Cancelled"};
 
     /**
      * Array of recipient groups available for admin users.
@@ -147,7 +147,7 @@ public class NotificationDialogFragment extends DialogFragment {
                     notifications.sendNotification(this.getActivity(), "Pending-" + uid, titleString, messageString);
                 } else if (selectedGroup.equals("Accepted")) {
                     notifications.sendNotification(this.getActivity(), "Accepted-" + uid, titleString, messageString);
-                } else if (selectedGroup.equals("Rejected")) {
+                } else if (selectedGroup.equals("Cancelled")) {
                     notifications.sendNotification(this.getActivity(), "Rejected-" + uid, titleString, messageString);
                 } else {
                     notifications.sendNotification(this.getActivity(), "All", titleString, messageString);
