@@ -472,10 +472,6 @@ public class ViewEvent extends AppCompatActivity {
                 transaction.update(eventRef, "pending", FieldValue.arrayRemove(entrantRef));
             }
 
-            accepted.add(entrantRef);
-            transaction.update(eventRef, "accepted", accepted);
-            pending.remove(entrantRef);
-            transaction.update(eventRef, "pending", pending);
 
             return null;
 
