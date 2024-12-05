@@ -1,12 +1,15 @@
 package com.example.matata;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -40,7 +43,8 @@ public class ExploreEvents extends AppCompatActivity {
      * ImageView for navigating back to the previous screen.
      */
     private ImageView goBack;
-
+    private String par_act;
+    private String EventID;
     /**
      * Called when the activity is created.
      * Initializes the UI components, sets up the back button listener, and loads the map fragment.
@@ -53,7 +57,12 @@ public class ExploreEvents extends AppCompatActivity {
         setContentView(R.layout.explore_events);
 
         goBack=findViewById(R.id.goBackMap);
-
+        par_act=getIntent().getStringExtra("prev_act");
+        try{
+            EventID=getIntent().getStringExtra("Unique_id");
+        }catch (Exception e){
+            throw e;
+        }
         goBack.setOnClickListener(v->finish());
         loadMapFragment();
 
@@ -73,7 +82,24 @@ public class ExploreEvents extends AppCompatActivity {
 
         FragmentManager fragmentManager =getSupportFragmentManager();
         FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
-        MapsActivity mapsActivity = new MapsActivity();
+        Fragment mapsActivity;
+
+        if (par_act.equals("main")) {
+            mapsActivity = new MapsActivity();
+        } else if (par_act.equals("draw")) {
+            mapsActivity = new MapsActivityEntrant();
+
+            if (EventID != null) {
+                Bundle args = new Bundle();
+                args.putString("Unique_id", EventID);
+                mapsActivity.setArguments(args);
+            } else {
+                Log.e("LoadMapFragment", "EventID is null!");
+            }
+        } else {
+            throw new IllegalArgumentException("Unknown activity type: " + par_act);
+        }
+
         fragmentTransaction.replace(R.id.map_display, mapsActivity);
         fragmentTransaction.commit();
 

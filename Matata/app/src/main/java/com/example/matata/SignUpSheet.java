@@ -2,7 +2,10 @@ package com.example.matata;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -13,9 +16,14 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,26 +31,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * SignUpSheet class handles the creation of a sign-up form for event attendees.
- * Users can input their personal and emergency contact information, dietary preferences,
- * arrival time, and accessibility needs. Once submitted, this data is saved to Firestore.
- *
- */
 public class SignUpSheet extends AppCompatActivity {
 
-    /**
-     * Initializes the sign-up form, sets up the UI components, and handles
-     * data submission to Firestore upon clicking the submit button.
-     *
-     * @param savedInstanceState if the activity is being re-initialized, this contains the data it most recently supplied
-     */
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private double latitude, longitude;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up_sheet);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         ImageButton back = findViewById(R.id.btnBack);
         EditText name = findViewById(R.id.full_name);
@@ -60,13 +61,12 @@ public class SignUpSheet extends AppCompatActivity {
         String uid = intent.getStringExtra("Unique_id");
         Log.wtf(TAG, uid);
 
-        // Set up adapter for dietary preferences
+        // Set up adapters
         ArrayAdapter<CharSequence> dietAdapter = ArrayAdapter.createFromResource(
                 this, R.array.dietary_options, android.R.layout.simple_spinner_item);
         dietAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dietSpinner.setAdapter(dietAdapter);
 
-        // Set up adapter for accessibility needs
         ArrayAdapter<CharSequence> accessibilityAdapter = ArrayAdapter.createFromResource(
                 this, R.array.accessibility_options, android.R.layout.simple_spinner_item);
         accessibilityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -88,7 +88,6 @@ public class SignUpSheet extends AppCompatActivity {
             String s_accessibility = accessibilitySpinner.getSelectedItem().toString().trim();
             boolean s_terms = terms.isChecked();
 
-            // Validate required fields
             if (s_name.isEmpty()) {
                 Toast.makeText(this, "No Name Found", Toast.LENGTH_SHORT).show();
             } else if (s_email.isEmpty()) {
@@ -102,7 +101,7 @@ public class SignUpSheet extends AppCompatActivity {
             } else if (!s_terms) {
                 Toast.makeText(this, "Please Check the Terms and Condition box", Toast.LENGTH_SHORT).show();
             } else {
-                // Save data to Firestore
+                // Save user data to Firestore
                 DocumentReference event = db.collection("EVENT_PROFILES").document(uid);
                 CollectionReference signup = event.collection("SIGNUP_SHEETS");
 
@@ -118,28 +117,56 @@ public class SignUpSheet extends AppCompatActivity {
                 signup_sheet.put("terms and conditions", true);
 
                 signup.add(signup_sheet)
-                        .addOnSuccessListener(documentReference -> {
-                            Log.d("Firestore", "Signup sheet added");
-                            // Set RESULT_OK and finish the activity
-                            Intent resultIntent = new Intent();
-                            setResult(RESULT_OK, resultIntent);
-                            finish();
-                        })
-
+                        .addOnSuccessListener(documentReference -> Log.d("Firestore", "Signup sheet added"))
                         .addOnFailureListener(e -> Log.w("Firestore", "Error adding signup sheet", e));
 
-                //finish();
+                // Fetch geolocation
+                fetchLocationAndSave(uid);
             }
         });
     }
 
+    private void fetchLocationAndSave(String uid) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            return;
+        }
 
-    // On back button press
-    @Override
-    public void onBackPressed() {
-        setResult(RESULT_CANCELED); // Send RESULT_CANCELED if user exits
-        super.onBackPressed();
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, location -> {
+            if (location != null) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Map<String, Object> locationData = new HashMap<>();
+                locationData.put("latitude", latitude);
+                locationData.put("longitude", longitude);
+                locationData.put("timestamp", System.currentTimeMillis());
+
+                // Add new geolocation as a separate document
+                db.collection("EVENT_PROFILES")
+                        .document(uid)
+                        .collection("USER_LOCATIONS")
+                        .add(locationData) // Firestore auto-generates a unique document ID
+                        .addOnSuccessListener(documentReference -> Log.d("Firestore", "Location saved with ID: " + documentReference.getId()))
+                        .addOnFailureListener(e -> Log.w("Firestore", "Error saving location", e));
+            } else {
+                Log.w("Location", "Location is null. Unable to save.");
+                Toast.makeText(this, "Unable to fetch location. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                fetchLocationAndSave(getIntent().getStringExtra("Unique_id"));
+            } else {
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
-

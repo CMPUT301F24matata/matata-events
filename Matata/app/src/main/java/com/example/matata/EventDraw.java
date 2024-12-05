@@ -266,6 +266,8 @@ public class EventDraw extends AppCompatActivity {
 
     private Button sendNotificationBtn;
 
+    private ImageView map;
+
     /**
      * Initializes the EventDraw activity and sets up Firebase, RecyclerViews, and various controls.
      *
@@ -305,6 +307,7 @@ public class EventDraw extends AppCompatActivity {
         acceptedRecyclerView = findViewById(R.id.accepted_recyclerView);
         rejectedRecyclerView = findViewById(R.id.rejected_recyclerView);
         waitlistRecyclerView = findViewById(R.id.waitlist_recyclerView);
+        map=findViewById(R.id.entrant_map);
 
         entrantList = new ArrayList<>();
         waitlistAdapter = new EntrantAdapter(this, entrantList, "Waitlist");
@@ -331,12 +334,17 @@ public class EventDraw extends AppCompatActivity {
         entrantMap = new LinkedHashMap<>();
         selectedIdList = new ArrayList<>();
 
+        map.setOnClickListener(a->{
+            Intent intent=new Intent(EventDraw.this,ExploreEvents.class);
+            intent.putExtra("Unique_id",uid);
+            intent.putExtra("prev_act","draw");
+            startActivity(intent);
+        });
+
         loadLimit(uid);
 
-        // Back button to close the activity
         backBtn.setOnClickListener(v -> finish());
 
-        // Draw button opens a confirmation dialog
         drawBtn.setOnClickListener(view -> checkDrawStatus());
 
         clearPendingList = findViewById(R.id.clearPendingList);

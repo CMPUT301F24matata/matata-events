@@ -363,6 +363,7 @@ public class MainActivity extends AppCompatActivity {
 
         explore.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ExploreEvents.class);
+            intent.putExtra("prev_act","main");
             startActivity(intent);
             // Add event search logic here
         });
