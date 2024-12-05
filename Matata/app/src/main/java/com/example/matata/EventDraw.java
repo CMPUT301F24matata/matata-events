@@ -566,7 +566,7 @@ public class EventDraw extends AppCompatActivity {
                 pending.add(entrantRef);
                 waitlist.remove(entrantRef);
                 entrantList.remove(entrant.getValue());
-                entrantMap.remove(entrant.getKey(),entrant.getValue());
+                entrantMap.remove(entrant.getKey());
             }
             transaction.update(eventRef, "pending", pending);
             transaction.update(eventRef, "waitlist", waitlist);
