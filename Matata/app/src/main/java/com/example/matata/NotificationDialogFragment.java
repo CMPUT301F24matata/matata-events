@@ -58,7 +58,7 @@ public class NotificationDialogFragment extends DialogFragment {
     /**
      * Array of recipient groups available for non-admin users.
      */
-    private String[] groups = {"Waitlist", "Pending", "Accepted", "Rejected"};
+    private String[] groups = {"Waitlist", "Pending", "Accepted", "Cancelled"};
 
     /**
      * Array of recipient groups available for admin users.
