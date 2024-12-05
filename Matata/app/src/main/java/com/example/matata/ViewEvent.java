@@ -650,26 +650,25 @@ public class ViewEvent extends AppCompatActivity {
                 String Date = documentSnapshot.getString("Date");
                 String Location = documentSnapshot.getString("Location");
                 Boolean GeoRequirement = documentSnapshot.getBoolean("GeoRequirement");
+                String ImageUri = documentSnapshot.getString("Poster");
 
-                argbase64 = documentSnapshot.getString("bitmap");
-                try{
-                    String ImageUri = documentSnapshot.getString("Poster");
+                Log.d(TAG, "Image URL: " + ImageUri); // Log the URL
 
-                    assert ImageUri != null;
-                    if (!ImageUri.isEmpty()) {
-                        Glide.with(this).load(ImageUri).into(poster);
-                    }
-                    else{
-                        Glide.with(this).load(R.drawable.ic_upload).into(poster);
-                    }
-                }catch(Exception e){
-                    throw e;
+                // Load poster image
+                if (ImageUri != null && !ImageUri.isEmpty()) {
+                    Glide.with(this)
+                            .load(ImageUri)
+                            .into(poster);
+                } else {
+                    Log.e(TAG, "Poster URL is null or empty");
+                    Glide.with(this)
+                            .load(R.drawable.ic_upload) // Fallback image
+                            .into(poster);
                 }
 
-                Bitmap QR = decodeBase64toBmp(argbase64);
-
+                // Update other fields
                 title.setText(Title != null ? Title : "");
-                capacity.setText(String.valueOf(Capacity));
+                capacity.setText(Capacity != null ? String.valueOf(Capacity) : "0");
                 desc.setText(Description != null ? Description : "");
                 time.setText(Time != null ? Time : "");
                 date.setText(Date != null ? Date : "");
@@ -678,7 +677,10 @@ public class ViewEvent extends AppCompatActivity {
             } else {
                 Toast.makeText(ViewEvent.this, "No event found", Toast.LENGTH_SHORT).show();
             }
-        }).addOnFailureListener(e -> Toast.makeText(ViewEvent.this, "Failed to load event", Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Failed to load event details", e);
+            Toast.makeText(ViewEvent.this, "Failed to load event", Toast.LENGTH_SHORT).show();
+        });
     }
 
     /**
