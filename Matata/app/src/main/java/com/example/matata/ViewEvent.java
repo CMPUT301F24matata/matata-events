@@ -668,6 +668,7 @@ public class ViewEvent extends AppCompatActivity {
                 String Location = documentSnapshot.getString("Location");
                 Boolean GeoRequirement = documentSnapshot.getBoolean("GeoRequirement");
                 String ImageUri = documentSnapshot.getString("Poster");
+                argbase64=documentSnapshot.getString("bitmap");
 
                 Log.d(TAG, "Image URL: " + ImageUri); // Log the URL
 
