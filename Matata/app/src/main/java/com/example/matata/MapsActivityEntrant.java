@@ -58,7 +58,7 @@ public class MapsActivityEntrant extends Fragment implements OnMapReadyCallback 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LatLng edmonton = new LatLng(53.5461, -113.4937);
+        LatLng edmonton = new LatLng(37.42, -122.08);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(edmonton, 11));
         if (EventID != null) {
             fetchAndDisplayMarkers(EventID);
